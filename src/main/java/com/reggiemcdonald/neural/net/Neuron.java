@@ -24,10 +24,10 @@ public interface Neuron {
 
     /**
      * Sets the output of this neuron
-     * @param signal
+     * @param output
      * @return
      */
-    Neuron setOutput (float signal);
+    Neuron setOutput (double output);
 
     /**
      * Propagates signal forward through the network
@@ -87,7 +87,7 @@ public interface Neuron {
      * Returns the list of synapses from neurons of the previous layer, to this neuron
      * @return
      */
-    List<Synapse> getSynapseToThis ();
+    List<Synapse> getSynapsesToThis();
 
     /**
      * Returns the layer that this neuron is contained within

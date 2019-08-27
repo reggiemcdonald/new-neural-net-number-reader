@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * A class to represent a neuron of the hidden layer with a sigmoid activation curve
+ * A class toThis represent a neuron of the hidden layer with a sigmoid activation curve
  */
 public class SigmoidNeuron implements Neuron {
-    private List<Synapse>  to, from;
+    private List<Synapse> toThis, fromThis;
     private Layer          layer;
     private double         bias, output;
     private int            neuralIndex;
@@ -19,8 +19,8 @@ public class SigmoidNeuron implements Neuron {
 
     public SigmoidNeuron () {
         Random r            = new Random ();
-        this.to             = new ArrayList<>();
-        this.from           = new ArrayList<>();
+        this.toThis         = new ArrayList<>();
+        this.fromThis       = new ArrayList<>();
         this.layer          = null;
         this.bias           = r.nextGaussian();
         this.output         = r.nextGaussian();
@@ -29,8 +29,8 @@ public class SigmoidNeuron implements Neuron {
     }
 
     public SigmoidNeuron (double bias, double output) {
-        this.to             = new ArrayList<>();
-        this.from           = new ArrayList<>();
+        this.toThis         = new ArrayList<>();
+        this.fromThis       = new ArrayList<>();
         this.layer          = null;
         this.bias           = bias;
         this.output         = output;
@@ -50,8 +50,8 @@ public class SigmoidNeuron implements Neuron {
     }
 
     @Override
-    public Neuron setOutput(float signal) {
-        this.output = signal;
+    public Neuron setOutput(double output) {
+        this.output = output;
         return this;
     }
 
@@ -88,26 +88,26 @@ public class SigmoidNeuron implements Neuron {
 
     @Override
     public Neuron addSynapseFromThis(Synapse s) {
-        if (from.add (s))
+        if (fromThis.add (s))
             s.to().addSynapseToThis (s);
         return this;
     }
 
     @Override
     public Neuron addSynapseToThis(Synapse s) {
-        if (to.add (s))
+        if (toThis.add (s))
             s.from().addSynapseFromThis (s);
         return this;
     }
 
     @Override
     public List<Synapse> getSynapsesFromThis() {
-        return from;
+        return fromThis;
     }
 
     @Override
-    public List<Synapse> getSynapseToThis() {
-        return to;
+    public List<Synapse> getSynapsesToThis() {
+        return toThis;
     }
 
     @Override

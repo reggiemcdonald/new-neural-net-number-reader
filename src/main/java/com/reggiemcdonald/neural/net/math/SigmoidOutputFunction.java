@@ -19,7 +19,7 @@ public class SigmoidOutputFunction implements OutputFunction {
 
     @Override
     public double compute () {
-        List<Synapse> synapses = neuron.getSynapseToThis ();
+        List<Synapse> synapses = neuron.getSynapsesToThis();
         return sigmoid (z (synapses));
     }
 

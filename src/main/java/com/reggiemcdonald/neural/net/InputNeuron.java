@@ -7,24 +7,24 @@ import java.util.List;
 import java.util.Random;
 
 public class InputNeuron implements Neuron {
-    private List<Synapse> to;
+    private List<Synapse> fromThis;
     private Layer         layer;
     private double        output;
     private int           neuralIndex;
 
     public InputNeuron () {
         Random r    = new Random ();
-        to          = new ArrayList<>();
+        fromThis    = new ArrayList<>();
         layer       = null;
         output      = r.nextGaussian ();
         neuralIndex = -1;
     }
 
     public InputNeuron (double output) {
-        this.to     = new ArrayList<>();
-        layer       = null;
-        this.output = output;
-        neuralIndex = -1;
+        this.fromThis = new ArrayList<>();
+        layer         = null;
+        this.output   = output;
+        neuralIndex   = -1;
     }
 
 
@@ -40,8 +40,8 @@ public class InputNeuron implements Neuron {
     }
 
     @Override
-    public Neuron setOutput(float signal) {
-        this.output = signal;
+    public Neuron setOutput(double output) {
+        this.output = output;
         return this;
     }
 
@@ -77,7 +77,7 @@ public class InputNeuron implements Neuron {
 
     @Override
     public Neuron addSynapseFromThis(Synapse s) {
-        if (to.add (s)) {
+        if (fromThis.add (s)) {
             s.from().addSynapseToThis (s);
         }
         return this;
@@ -90,11 +90,11 @@ public class InputNeuron implements Neuron {
 
     @Override
     public List<Synapse> getSynapsesFromThis() {
-        return this.to;
+        return this.fromThis;
     }
 
     @Override
-    public List<Synapse> getSynapseToThis() {
+    public List<Synapse> getSynapsesToThis() {
         return null;
     }
 

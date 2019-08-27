@@ -2,62 +2,94 @@ package com.reggiemcdonald.neural.net;
 
 import com.reggiemcdonald.neural.net.math.OutputFunction;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class OutputNeuron implements Neuron {
+    private List<Synapse>  toThis;
+    private Layer          layer;
+    private double         output, bias;
+    private int            neuralIndex;
+    private OutputFunction outputFunction;
+
+    public OutputNeuron () {
+        Random r    = new Random();
+        toThis      = new ArrayList<>();
+        layer       = null;
+        bias        = r.nextGaussian();
+        output      = r.nextGaussian();
+        neuralIndex = -1;
+    }
+
+    public OutputNeuron (double bias, double output) {
+        toThis      = new ArrayList<>();
+        layer       = null;
+        this.bias   = bias;
+        this.output = output;
+        neuralIndex = -1;
+    }
+
+
     @Override
     public double getOutput() {
-        return 0;
+        return output;
     }
 
     @Override
     public double compute() {
-        return 0;
+        output = outputFunction.compute();
+        return output;
     }
 
     @Override
-    public Neuron setOutput(float signal) {
-        return null;
+    public Neuron setOutput(double output) {
+        this.output = output;
+        return this;
     }
 
     @Override
     public void propagate() {
-
+        // TODO: Remove??
     }
 
     @Override
     public double getBias() {
-        return 0;
+        return bias;
     }
 
     @Override
     public void setBias(float bias) {
-
+        this.bias = bias;
     }
 
     @Override
     public void addBiasUpdate(float biasUpdate) {
-
+        // TODO: Learning
     }
 
     @Override
     public double getBiasUpdate() {
+        // TODO: Learning
         return 0;
     }
 
     @Override
     public void zeroBiasUpdate() {
-
+        // TODO: Learning
     }
 
     @Override
     public Neuron addSynapseFromThis(Synapse s) {
-        return null;
+        // Do nothing
+        return this;
     }
 
     @Override
     public Neuron addSynapseToThis(Synapse s) {
-        return null;
+        if (toThis.add (s))
+            s.from().addSynapseFromThis(s);
+        return this;
     }
 
     @Override
@@ -66,27 +98,28 @@ public class OutputNeuron implements Neuron {
     }
 
     @Override
-    public List<Synapse> getSynapseToThis() {
-        return null;
+    public List<Synapse> getSynapsesToThis() {
+        return toThis;
     }
 
     @Override
     public Layer layer() {
-        return null;
+        return layer;
     }
 
     @Override
     public void setLayerAndIndex(Layer layer, int index) {
-
+        this.layer       = layer;
+        this.neuralIndex = index;
     }
 
     @Override
     public int getNeuralIndex() {
-        return 0;
+        return neuralIndex;
     }
 
     @Override
     public OutputFunction outputFunction() {
-        return null;
+        return outputFunction;
     }
 }
