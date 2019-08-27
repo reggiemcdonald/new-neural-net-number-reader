@@ -21,7 +21,8 @@ public class Layer {
     // TODO: layer-wise computation
 
     public void update () {
-        // TODO
+        for (Neuron neuron : neurons)
+            neuron.compute ();
     }
 
     /**

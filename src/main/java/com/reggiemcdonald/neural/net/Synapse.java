@@ -42,7 +42,7 @@ public class Synapse {
      * Returns the from neuron of this synapse
      * @return
      */
-    public Neuron getFrom () {
+    public Neuron from () {
         return from;
     }
 
@@ -50,7 +50,7 @@ public class Synapse {
      * Returns the to neuron of this synapse
      * @return
      */
-    public Neuron getTo () {
+    public Neuron to () {
         return to;
     }
 

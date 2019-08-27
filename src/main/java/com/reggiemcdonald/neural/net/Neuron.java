@@ -1,9 +1,11 @@
 package com.reggiemcdonald.neural.net;
 
+import com.reggiemcdonald.neural.net.math.OutputFunction;
+
 import java.util.List;
 
 /**
- * An abstract neuron, representing a node in an artifical neural network
+ * An abstract neuron, representing a node in an artificial neural network
  */
 
 public interface Neuron {
@@ -104,6 +106,12 @@ public interface Neuron {
      * @return
      */
     int getNeuralIndex ();
+
+    /**
+     * Returns the outputting function for this neuron
+     * @return
+     */
+    OutputFunction outputFunction ();
 
 
 }
