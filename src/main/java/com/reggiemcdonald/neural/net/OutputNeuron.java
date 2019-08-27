@@ -1,6 +1,7 @@
 package com.reggiemcdonald.neural.net;
 
 import com.reggiemcdonald.neural.net.math.OutputFunction;
+import com.reggiemcdonald.neural.net.math.SigmoidOutputFunction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,7 @@ public class OutputNeuron implements Neuron {
         bias        = r.nextGaussian();
         output      = r.nextGaussian();
         neuralIndex = -1;
+        outputFunction = new SigmoidOutputFunction(this);
     }
 
     public OutputNeuron (double bias, double output) {
@@ -28,6 +30,7 @@ public class OutputNeuron implements Neuron {
         this.bias   = bias;
         this.output = output;
         neuralIndex = -1;
+        outputFunction = new SigmoidOutputFunction(this);
     }
 
 
