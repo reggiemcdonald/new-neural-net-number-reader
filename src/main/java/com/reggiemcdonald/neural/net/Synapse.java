@@ -6,7 +6,6 @@ package com.reggiemcdonald.neural.net;
  */
 public class Synapse {
     private Neuron from, to;
-    private Layer parentLayer;
     private double weight;
 
     public Synapse (Neuron from, Neuron to, double weight) {

@@ -9,10 +9,16 @@ import java.util.List;
 public interface Neuron {
 
     /**
-     * Return the outputting value from this
+     * Return the last set output
      * @return
      */
     double getOutput ();
+
+    /**
+     * Compute the output of this
+     * @return
+     */
+    double compute ();
 
     /**
      * Sets the output of this neuron
@@ -86,6 +92,18 @@ public interface Neuron {
      * @return
      */
     Layer layer ();
+
+    /**
+     * Sets the parent layer of this, and its index in the layer
+     */
+    void setLayerAndIndex (Layer layer, int index);
+
+
+    /**
+     * Returns the position of the neuron in the layer
+     * @return
+     */
+    int getNeuralIndex ();
 
 
 }
