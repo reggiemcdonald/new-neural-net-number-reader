@@ -3,6 +3,9 @@ package com.reggiemcdonald.neural.net;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * An abstraction of a layer in a neural network
+ */
 public class Layer {
     private List<Neuron>  neurons;
     private int           layerIndex;

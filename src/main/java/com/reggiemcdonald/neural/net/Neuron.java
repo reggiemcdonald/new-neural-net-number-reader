@@ -75,7 +75,7 @@ public interface Neuron {
      * @param s
      * @return
      */
-    Neuron addSyanpseToThis (Synapse s);
+    Neuron addSynapseToThis(Synapse s);
 
     /**
      * Returns the list of synapses from this neuron, to neurons in the next layer
