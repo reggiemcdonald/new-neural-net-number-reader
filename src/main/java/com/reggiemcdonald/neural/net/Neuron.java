@@ -81,4 +81,11 @@ public interface Neuron {
      */
     List<Synapse> getSynapseToThis ();
 
+    /**
+     * Returns the layer that this neuron is contained within
+     * @return
+     */
+    Layer layer ();
+
+
 }
