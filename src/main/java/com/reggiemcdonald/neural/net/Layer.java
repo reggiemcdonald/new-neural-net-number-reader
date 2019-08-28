@@ -9,15 +9,18 @@ import java.util.List;
 public class Layer {
     private List<Neuron>  neurons;
     private int           layerIndex;
+    private LayerType     type;
 
-    public Layer (int layerIndex) {
+    public Layer (int layerIndex, LayerType type) {
         this.neurons     = new ArrayList<>();
         this.layerIndex  = layerIndex;
+        this.type        = type;
     }
 
-    public Layer (List<Neuron> neurons, int layerIndex) {
+    public Layer (List<Neuron> neurons, int layerIndex, LayerType type) {
         this.neurons     = neurons;
         this.layerIndex  = layerIndex;
+        this.type        = type;
         setThisAsParentLayer ();
     }
 
@@ -67,6 +70,14 @@ public class Layer {
             neuron.setLayerAndIndex (null, -1);
         }
         return this;
+    }
+
+    /**
+     * Return the type of this layer
+     * @return
+     */
+    public LayerType type () {
+        return type;
     }
 
     /**
