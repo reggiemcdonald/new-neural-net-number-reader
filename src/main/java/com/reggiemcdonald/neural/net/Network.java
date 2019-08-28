@@ -19,6 +19,11 @@ public class Network {
         connectAndCreateLayers(layerSets);
     }
 
+    /**
+     * Creates a set of neuron sets that will be converted to layers of the network
+     * @param layer_dimensions
+     * @return
+     */
     private List<List<Neuron>> makeLayerSets (int[] layer_dimensions) {
         List< List<Neuron> > layerSets = new ArrayList<>();
         Random r                     = new Random();
@@ -46,6 +51,10 @@ public class Network {
         return layerSets;
     }
 
+    /**
+     * Sets the layers of this
+     * @param layerSets
+     */
     private void connectAndCreateLayers(List< List<Neuron> > layerSets) {
         Random r = new Random();
         int layerIndex = 0;
@@ -61,6 +70,15 @@ public class Network {
         output = connectAndCreateLayer(layerSets.get(layerSets.size()-1), null, layerIndex, LayerType.OUTPUT, r);
     }
 
+    /**
+     * Returns a layer with the neurons of earlyLayer. Connects earlylayer to lateLayer if lateLayer is given
+     * @param earlyLayer
+     * @param lateLayer
+     * @param layerIndex
+     * @param layerType
+     * @param r
+     * @return
+     */
     private Layer connectAndCreateLayer(List<Neuron> earlyLayer, List<Neuron> lateLayer, int layerIndex, LayerType layerType, Random r) {
         if (lateLayer != null) {
             for (Neuron from : earlyLayer) {
