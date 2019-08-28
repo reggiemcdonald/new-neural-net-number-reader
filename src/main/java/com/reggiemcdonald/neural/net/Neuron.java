@@ -2,13 +2,14 @@ package com.reggiemcdonald.neural.net;
 
 import com.reggiemcdonald.neural.net.math.OutputFunction;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * An abstract neuron, representing a node in an artificial neural network
  */
 
-public interface Neuron {
+public interface Neuron extends Serializable {
 
     /**
      * Return the last set output
@@ -105,7 +106,7 @@ public interface Neuron {
      * Returns the position of the neuron in the layer
      * @return
      */
-    int getNeuralIndex ();
+    int neuralIndex();
 
     /**
      * Returns the outputting function for this neuron

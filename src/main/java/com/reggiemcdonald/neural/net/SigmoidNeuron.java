@@ -11,21 +11,22 @@ import java.util.Random;
  * A class toThis represent a neuron of the hidden layer with a sigmoid activation curve
  */
 public class SigmoidNeuron implements Neuron {
-    private List<Synapse> toThis, fromThis;
-    private Layer          layer;
-    private double         bias, output;
-    private int            neuralIndex;
-    private OutputFunction outputFunction;
+    private List<Synapse>    toThis, fromThis;
+    private Layer            layer;
+    private transient double output;
+    private double           bias;
+    private int              neuralIndex;
+    private OutputFunction   outputFunction;
 
     public SigmoidNeuron () {
         Random r            = new Random ();
         this.toThis         = new ArrayList<>();
         this.fromThis       = new ArrayList<>();
         this.layer          = null;
-        this.bias           = r.nextGaussian();
-        this.output         = r.nextGaussian();
+        this.bias           = r.nextGaussian ();
+        this.output         = r.nextGaussian ();
         this.neuralIndex    = -1;
-        this.outputFunction = new SigmoidOutputFunction(this);
+        this.outputFunction = new SigmoidOutputFunction (this);
     }
 
     public SigmoidNeuron (double bias, double output) {
@@ -35,7 +36,7 @@ public class SigmoidNeuron implements Neuron {
         this.bias           = bias;
         this.output         = output;
         this.neuralIndex    = -1;
-        this.outputFunction = new SigmoidOutputFunction(this);
+        this.outputFunction = new SigmoidOutputFunction (this);
     }
 
     @Override
@@ -122,7 +123,7 @@ public class SigmoidNeuron implements Neuron {
     }
 
     @Override
-    public int getNeuralIndex() {
+    public int neuralIndex() {
         return neuralIndex;
     }
 

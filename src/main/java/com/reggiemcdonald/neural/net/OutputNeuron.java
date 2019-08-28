@@ -8,11 +8,12 @@ import java.util.List;
 import java.util.Random;
 
 public class OutputNeuron implements Neuron {
-    private List<Synapse>  toThis;
-    private Layer          layer;
-    private double         output, bias;
-    private int            neuralIndex;
-    private OutputFunction outputFunction;
+    private List<Synapse>    toThis;
+    private Layer            layer;
+    private double           bias;
+    private transient double output;
+    private int              neuralIndex;
+    private OutputFunction   outputFunction;
 
     public OutputNeuron () {
         Random r    = new Random();
@@ -117,7 +118,7 @@ public class OutputNeuron implements Neuron {
     }
 
     @Override
-    public int getNeuralIndex() {
+    public int neuralIndex() {
         return neuralIndex;
     }
 

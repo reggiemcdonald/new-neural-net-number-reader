@@ -1,5 +1,6 @@
 package com.reggiemcdonald.neural.net;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -8,7 +9,7 @@ import java.util.Random;
  * A class representing a neural network
  * Should refactor to create a NetworkFactory class
  */
-public class Network {
+public class Network implements Serializable {
     private Layer input, output;
     private List<Layer> hidden;
 
@@ -87,6 +88,60 @@ public class Network {
             }
         }
         return new Layer (earlyLayer, layerIndex, layerType);
+    }
+
+    /**
+     * Set the input layer for propagation, returning this
+     * @param img
+     * @return
+     */
+    public Network input (double[][] img) {
+        for (int i = 0 ; i < img.length ; i++) {
+            for (int j = 0; j < img[i].length; j++) {
+                input.getNeuronAt((i * 28) + j).setOutput(img[i][j]);
+            }
+        }
+        return this;
+    }
+
+    /**
+     * Forward propagate throughout the neural network, returning this
+     * Assumes that the input layer has been set
+     * @return
+     */
+    public Network propagate () {
+        // Propagate the signal throughout the layers of the neural network
+        for (Layer layer : hidden)
+            layer.update ();
+        return this;
+    }
+
+    /**
+     * Return an array of outputs from the output layer
+     * @return
+     */
+    public double[] output () {
+        double[] o = new double[output.size()];
+        for (Neuron n : output)
+            o[n.neuralIndex()] = n.getOutput();
+        return o;
+    }
+
+    /**
+     * Return the index of the neuron in the output layer with the highest output
+     * @return
+     */
+    public int result () {
+        double [] o = output ();
+        int res = 0;
+        double max = o[0];
+        for (int i = 1; i < o.length ; i++) {
+            if (o[i] > max) {
+                res = i;
+                max = o[i];
+            }
+        }
+        return res;
     }
 
 

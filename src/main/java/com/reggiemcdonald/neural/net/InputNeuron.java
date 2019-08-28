@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.Random;
 
 public class InputNeuron implements Neuron {
-    private List<Synapse> fromThis;
-    private Layer         layer;
-    private double        output;
-    private int           neuralIndex;
+    private List<Synapse>    fromThis;
+    private Layer            layer;
+    private transient double output;
+    private int              neuralIndex;
 
     public InputNeuron () {
         Random r    = new Random ();
@@ -35,7 +35,7 @@ public class InputNeuron implements Neuron {
 
     @Override
     public double compute() {
-        // Input Neurons directly output their set signal
+        // Input Neurons directly output their set signal (the input)
         return output;
     }
 
@@ -110,7 +110,7 @@ public class InputNeuron implements Neuron {
     }
 
     @Override
-    public int getNeuralIndex() {
+    public int neuralIndex() {
         return neuralIndex;
     }
 

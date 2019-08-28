@@ -1,12 +1,13 @@
 package com.reggiemcdonald.neural.net;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
  * An abstraction of a layer in a neural network
  */
-public class Layer {
+public class Layer implements Iterable<Neuron> {
     private List<Neuron>  neurons;
     private int           layerIndex;
     private LayerType     type;
@@ -81,6 +82,22 @@ public class Layer {
     }
 
     /**
+     * Returns the index of this layer in the network
+     * @return
+     */
+    public int layerIndex () {
+        return layerIndex;
+    }
+
+    /**
+     * Returns the number of neurons in this layer
+     * @return
+     */
+    public int size () {
+        return neurons.size();
+    }
+
+    /**
      * Set this as the parent layer to all neurons in this layer
      */
     private void setThisAsParentLayer () {
@@ -89,6 +106,8 @@ public class Layer {
     }
 
 
-
-
+    @Override
+    public Iterator<Neuron> iterator() {
+        return neurons.iterator();
+    }
 }
