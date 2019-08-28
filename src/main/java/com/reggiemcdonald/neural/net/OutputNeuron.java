@@ -13,7 +13,7 @@ public class OutputNeuron implements Neuron {
     private double           bias;
     private transient double output;
     private int              neuralIndex;
-    private OutputFunction   outputFunction;
+    private OutputFunction outputFunction;
 
     public OutputNeuron () {
         Random r    = new Random();
@@ -50,11 +50,6 @@ public class OutputNeuron implements Neuron {
     public Neuron setOutput(double output) {
         this.output = output;
         return this;
-    }
-
-    @Override
-    public void propagate() {
-        // TODO: Remove??
     }
 
     @Override

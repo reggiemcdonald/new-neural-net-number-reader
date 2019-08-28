@@ -1,10 +1,12 @@
 package com.reggiemcdonald.neural.net;
 
+
 import com.reggiemcdonald.neural.net.math.OutputFunction;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
 
 public class InputNeuron implements Neuron {
     private List<Synapse>    fromThis;
@@ -43,11 +45,6 @@ public class InputNeuron implements Neuron {
     public Neuron setOutput(double output) {
         this.output = output;
         return this;
-    }
-
-    @Override
-    public void propagate() {
-        // TODO: Remove ??
     }
 
     @Override

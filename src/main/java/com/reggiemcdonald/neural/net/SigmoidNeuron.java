@@ -16,7 +16,7 @@ public class SigmoidNeuron implements Neuron {
     private transient double output;
     private double           bias;
     private int              neuralIndex;
-    private OutputFunction   outputFunction;
+    private OutputFunction outputFunction;
 
     public SigmoidNeuron () {
         Random r            = new Random ();
@@ -26,7 +26,7 @@ public class SigmoidNeuron implements Neuron {
         this.bias           = r.nextGaussian ();
         this.output         = r.nextGaussian ();
         this.neuralIndex    = -1;
-        this.outputFunction = new SigmoidOutputFunction (this);
+        this.outputFunction = new SigmoidOutputFunction(this);
     }
 
     public SigmoidNeuron (double bias, double output) {
@@ -54,11 +54,6 @@ public class SigmoidNeuron implements Neuron {
     public Neuron setOutput(double output) {
         this.output = output;
         return this;
-    }
-
-    @Override
-    public void propagate() {
-        // TODO: Remove?
     }
 
     @Override

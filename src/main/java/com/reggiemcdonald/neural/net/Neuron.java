@@ -31,11 +31,6 @@ public interface Neuron extends Serializable {
     Neuron setOutput (double output);
 
     /**
-     * Propagates signal forward through the network
-     */
-    void propagate ();
-
-    /**
      * Gets the bias of this neuron
      * @return
      */
