@@ -1,6 +1,6 @@
 package com.reggiemcdonald.neural.net;
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -10,14 +10,17 @@ import java.util.Random;
  * Should refactor to create a NetworkFactory class
  */
 public class Network implements Serializable {
+    public static final String SAVE_PATH = "network_state.nerl";
+
     private Layer input, output;
     private List<Layer> hidden;
 
     public Network (int[] layer_dimensions) {
         if (layer_dimensions.length < 3)
             throw new RuntimeException ("Network must have at least three layers");
+        hidden = new ArrayList<>();
         List<List<Neuron>> layerSets = makeLayerSets (layer_dimensions);
-        connectAndCreateLayers(layerSets);
+        connectAndCreateLayers (layerSets);
     }
 
     /**
@@ -26,7 +29,7 @@ public class Network implements Serializable {
      * @return
      */
     private List<List<Neuron>> makeLayerSets (int[] layer_dimensions) {
-        List< List<Neuron> > layerSets = new ArrayList<>();
+        List< List<Neuron> > layerSets = new ArrayList<>(layer_dimensions.length);
         Random r                     = new Random();
         // Input layer
         List<Neuron> inputSet = new ArrayList<>();
@@ -36,7 +39,7 @@ public class Network implements Serializable {
         layerSets.add (inputSet);
 
         // Hidden Layer
-        for (int i = 1; i < layer_dimensions.length; i++) {
+        for (int i = 1; i < layer_dimensions.length - 1; i++) {
             List<Neuron> layer = new ArrayList<>(layer_dimensions[i]);
             for (int j = 0; j < layer_dimensions[i]; j++)
                 layer.add (new SigmoidNeuron( r.nextGaussian (), r.nextGaussian () ));
@@ -48,7 +51,7 @@ public class Network implements Serializable {
         for (int i = 0; i < layer_dimensions[layer_dimensions.length - 1]; i++) {
             outputSet.add (new OutputNeuron( r.nextGaussian (), r.nextGaussian () ));
         }
-
+        layerSets.add (outputSet);
         return layerSets;
     }
 
@@ -63,7 +66,7 @@ public class Network implements Serializable {
         input = connectAndCreateLayer(layerSets.get (0), layerSets.get (1), layerIndex, LayerType.INPUT, r);
         layerIndex++;
         // Create the hidden layers
-        for (int i = 1; i < layerSets.size() - 2; i++) {
+        for (int i = 1; i < layerSets.size() - 1; i++) {
             hidden.add (connectAndCreateLayer(layerSets.get(i), layerSets.get(i+1), layerIndex, LayerType.HIDDEN, r));
             layerIndex++;
         }
@@ -131,8 +134,7 @@ public class Network implements Serializable {
      * Return the index of the neuron in the output layer with the highest output
      * @return
      */
-    public int result () {
-        double [] o = output ();
+    public int result (double[] o) {
         int res = 0;
         double max = o[0];
         for (int i = 1; i < o.length ; i++) {
@@ -144,6 +146,35 @@ public class Network implements Serializable {
         return res;
     }
 
+    /**
+     * Save the network, layers, neurons, and synapses, their weights and biases
+     * Does not save the double output value in each neuron
+     * ~~~~~ All fields labelled transient are not serialized ~~~~~~
+     * @param network
+     */
+    public static void save (Network network, String path) {
+        File f = new File (path);
+
+        try (FileOutputStream   fos = new FileOutputStream (f);
+             ObjectOutputStream oos = new ObjectOutputStream (fos)) {
+            oos.writeObject(network);
+        } catch (Exception e) {
+            System.out.println("Network save issue: " + e.getMessage());
+        }
+    }
+
+    public static Network load (String path) {
+        File f = new File (path);
+        Network network = null;
+        try (FileInputStream fis = new FileInputStream(f);
+            ObjectInputStream ois = new ObjectInputStream(fis)) {
+            network = (Network)ois.readObject();
+            return network;
+        } catch (Exception e) {
+            System.out.println("There was an error restoring the network: " + e.getMessage());
+        }
+        return network;
+    }
 
 
 }

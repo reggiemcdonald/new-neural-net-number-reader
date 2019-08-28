@@ -74,7 +74,8 @@ public class InputNeuron implements Neuron {
 
     @Override
     public Neuron addSynapseFromThis(Synapse s) {
-        if (fromThis.add (s)) {
+        if (fromThis.contains (s)) {
+            fromThis.add (s);
             s.from().addSynapseToThis (s);
         }
         return this;

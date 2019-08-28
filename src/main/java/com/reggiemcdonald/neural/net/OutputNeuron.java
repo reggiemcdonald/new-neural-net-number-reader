@@ -86,8 +86,10 @@ public class OutputNeuron implements Neuron {
 
     @Override
     public Neuron addSynapseToThis(Synapse s) {
-        if (toThis.add (s))
+        if (!toThis.contains (s)) {
+            toThis.add (s);
             s.from().addSynapseFromThis(s);
+        }
         return this;
     }
 

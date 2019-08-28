@@ -1,6 +1,8 @@
 package com.reggiemcdonald.neural.net.math;
 
-public interface OutputFunction {
+import java.io.Serializable;
+
+public interface OutputFunction extends Serializable {
 
     /**
      * Compute the output

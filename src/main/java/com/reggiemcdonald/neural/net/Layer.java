@@ -1,5 +1,6 @@
 package com.reggiemcdonald.neural.net;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -7,7 +8,7 @@ import java.util.List;
 /**
  * An abstraction of a layer in a neural network
  */
-public class Layer implements Iterable<Neuron> {
+public class Layer implements Iterable<Neuron>, Serializable {
     private List<Neuron>  neurons;
     private int           layerIndex;
     private LayerType     type;

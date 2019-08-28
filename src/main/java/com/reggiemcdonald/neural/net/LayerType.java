@@ -1,6 +1,8 @@
 package com.reggiemcdonald.neural.net;
 
-public enum LayerType {
+import java.io.Serializable;
+
+public enum LayerType implements Serializable {
 
     // Layer of input neurons
     INPUT,

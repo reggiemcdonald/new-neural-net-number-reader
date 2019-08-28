@@ -1,10 +1,12 @@
 package com.reggiemcdonald.neural.net;
 
+import java.io.Serializable;
+
 /**
  * A class to represent the connection between two neurons in adjacent layers,
  * where this.from.layer().layerIndex() < this.to.layer().layerIndex() is strictly true
  */
-public class Synapse {
+public class Synapse implements Serializable {
     private Neuron from, to;
     private double weight;
 
