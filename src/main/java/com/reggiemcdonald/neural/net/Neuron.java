@@ -1,5 +1,6 @@
 package com.reggiemcdonald.neural.net;
 
+import com.reggiemcdonald.neural.net.math.Learner;
 import com.reggiemcdonald.neural.net.math.OutputFunction;
 
 import java.io.Serializable;
@@ -41,23 +42,6 @@ public interface Neuron extends Serializable {
      * @param bias
      */
     void setBias (float bias);
-
-    /**
-     * Adds to the bias update to this neuron
-     * @param biasUpdate
-     */
-    void addBiasUpdate (float biasUpdate);
-
-    /**
-     * Returns the bias update of this neuron
-     * @return
-     */
-    double getBiasUpdate ();
-
-    /**
-     * Sets the bias update of this neuron to zero
-     */
-    void zeroBiasUpdate ();
 
     /**
      * Adds a synapse from this neuron, to another neuron in the next layer
@@ -108,6 +92,12 @@ public interface Neuron extends Serializable {
      * @return
      */
     OutputFunction outputFunction ();
+
+    /**
+     * Returns the learner of the given neuron, if one exists
+     * @return
+     */
+    Learner learner();
 
 
 }

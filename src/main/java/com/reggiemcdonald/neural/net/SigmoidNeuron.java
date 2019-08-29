@@ -1,5 +1,7 @@
 package com.reggiemcdonald.neural.net;
 
+import com.reggiemcdonald.neural.net.math.HiddenNeuronLearner;
+import com.reggiemcdonald.neural.net.math.Learner;
 import com.reggiemcdonald.neural.net.math.OutputFunction;
 import com.reggiemcdonald.neural.net.math.SigmoidOutputFunction;
 
@@ -17,6 +19,7 @@ public class SigmoidNeuron implements Neuron {
     private double           bias;
     private int              neuralIndex;
     private OutputFunction outputFunction;
+    private Learner learner;
 
     public SigmoidNeuron () {
         Random r            = new Random ();
@@ -27,6 +30,7 @@ public class SigmoidNeuron implements Neuron {
         this.output         = r.nextGaussian ();
         this.neuralIndex    = -1;
         this.outputFunction = new SigmoidOutputFunction(this);
+        this.learner        = new HiddenNeuronLearner(this);
     }
 
     public SigmoidNeuron (double bias, double output) {
@@ -37,6 +41,7 @@ public class SigmoidNeuron implements Neuron {
         this.output         = output;
         this.neuralIndex    = -1;
         this.outputFunction = new SigmoidOutputFunction (this);
+        this.learner        = new HiddenNeuronLearner (this);
     }
 
     @Override
@@ -64,22 +69,6 @@ public class SigmoidNeuron implements Neuron {
     @Override
     public void setBias(float bias) {
         this.bias = bias;
-    }
-
-    @Override
-    public void addBiasUpdate(float biasUpdate) {
-        // TODO: Learning
-    }
-
-    @Override
-    public double getBiasUpdate() {
-        // TODO: Learning
-        return 0;
-    }
-
-    @Override
-    public void zeroBiasUpdate() {
-        // TODO: Learning
     }
 
     @Override
@@ -129,5 +118,10 @@ public class SigmoidNeuron implements Neuron {
     @Override
     public OutputFunction outputFunction() {
         return outputFunction;
+    }
+
+    @Override
+    public Learner learner() {
+        return learner;
     }
 }

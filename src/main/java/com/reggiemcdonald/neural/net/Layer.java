@@ -106,6 +106,25 @@ public class Layer implements Iterable<Neuron>, Serializable {
             neurons.get(i).setLayerAndIndex(this, i);
     }
 
+    /**
+     * Returns the activation array of this layer
+     * @return
+     */
+    public double[] activations () {
+        double[] a = new double[size()];
+        for (Neuron n : neurons)
+            a[n.neuralIndex()] = n.getOutput();
+        return a;
+    }
+
+    public double [] deriveActivations (double[] activations) {
+        for (Neuron n : neurons) {
+            int idx = n.neuralIndex();
+            activations[idx] = n.outputFunction().derivative(activations[idx]);
+        }
+        return activations;
+    }
+
 
     @Override
     public Iterator<Neuron> iterator() {

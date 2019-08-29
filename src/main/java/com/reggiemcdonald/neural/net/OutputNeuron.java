@@ -1,6 +1,8 @@
 package com.reggiemcdonald.neural.net;
 
+import com.reggiemcdonald.neural.net.math.Learner;
 import com.reggiemcdonald.neural.net.math.OutputFunction;
+import com.reggiemcdonald.neural.net.math.OutputNeuronLearner;
 import com.reggiemcdonald.neural.net.math.SigmoidOutputFunction;
 
 import java.util.ArrayList;
@@ -14,26 +16,28 @@ public class OutputNeuron implements Neuron {
     private transient double output;
     private int              neuralIndex;
     private OutputFunction outputFunction;
+    private Learner learner;
 
     public OutputNeuron () {
-        Random r    = new Random();
-        toThis      = new ArrayList<>();
-        layer       = null;
-        bias        = r.nextGaussian();
-        output      = r.nextGaussian();
-        neuralIndex = -1;
-        outputFunction = new SigmoidOutputFunction(this);
+        Random r         = new Random();
+        toThis           = new ArrayList<>();
+        layer            = null;
+        bias             = r.nextGaussian();
+        output           = r.nextGaussian();
+        neuralIndex      = -1;
+        outputFunction   = new SigmoidOutputFunction(this);
+        learner = new OutputNeuronLearner(this);
     }
 
     public OutputNeuron (double bias, double output) {
-        toThis      = new ArrayList<>();
-        layer       = null;
-        this.bias   = bias;
-        this.output = output;
-        neuralIndex = -1;
-        outputFunction = new SigmoidOutputFunction(this);
+        this.toThis           = new ArrayList<>();
+        this.layer            = null;
+        this.bias             = bias;
+        this.output           = output;
+        this.neuralIndex      = -1;
+        this.outputFunction   = new SigmoidOutputFunction (this);
+        this.learner = new OutputNeuronLearner(this);
     }
-
 
     @Override
     public double getOutput() {
@@ -60,22 +64,6 @@ public class OutputNeuron implements Neuron {
     @Override
     public void setBias(float bias) {
         this.bias = bias;
-    }
-
-    @Override
-    public void addBiasUpdate(float biasUpdate) {
-        // TODO: Learning
-    }
-
-    @Override
-    public double getBiasUpdate() {
-        // TODO: Learning
-        return 0;
-    }
-
-    @Override
-    public void zeroBiasUpdate() {
-        // TODO: Learning
     }
 
     @Override
@@ -122,5 +110,10 @@ public class OutputNeuron implements Neuron {
     @Override
     public OutputFunction outputFunction() {
         return outputFunction;
+    }
+
+    @Override
+    public Learner learner() {
+        return learner;
     }
 }

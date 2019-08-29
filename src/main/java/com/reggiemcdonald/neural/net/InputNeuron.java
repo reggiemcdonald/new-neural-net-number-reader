@@ -1,6 +1,7 @@
 package com.reggiemcdonald.neural.net;
 
 
+import com.reggiemcdonald.neural.net.math.Learner;
 import com.reggiemcdonald.neural.net.math.OutputFunction;
 
 import java.util.ArrayList;
@@ -58,21 +59,6 @@ public class InputNeuron implements Neuron {
     }
 
     @Override
-    public void addBiasUpdate(float biasUpdate) {
-        // Do nothing as InputNeurons do not need bias updates
-    }
-
-    @Override
-    public double getBiasUpdate() {
-        return 0;
-    }
-
-    @Override
-    public void zeroBiasUpdate() {
-        // Do nothing
-    }
-
-    @Override
     public Neuron addSynapseFromThis(Synapse s) {
         if (fromThis.contains (s)) {
             fromThis.add (s);
@@ -114,6 +100,11 @@ public class InputNeuron implements Neuron {
 
     @Override
     public OutputFunction outputFunction() {
+        return null;
+    }
+
+    @Override
+    public Learner learner() {
         return null;
     }
 }

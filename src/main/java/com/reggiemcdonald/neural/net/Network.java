@@ -1,7 +1,10 @@
 package com.reggiemcdonald.neural.net;
 
+import com.reggiemcdonald.neural.res.NumberImage;
+
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -124,10 +127,7 @@ public class Network implements Serializable {
      * @return
      */
     public double[] output () {
-        double[] o = new double[output.size()];
-        for (Neuron n : output)
-            o[n.neuralIndex()] = n.getOutput();
-        return o;
+        return output.activations();
     }
 
     /**
@@ -144,6 +144,63 @@ public class Network implements Serializable {
             }
         }
         return res;
+    }
+
+    public void learn (List<NumberImage> trainingData, int epochs, int batchSize, double eta, boolean verbose) {
+        // Randomize the order of the images
+        Collections.shuffle (trainingData);
+        // Partition into batches of size batchSize
+        List< List<NumberImage> > batches = new ArrayList<>();
+        int idx = 0;
+        for (int i = 0; i < trainingData.size() / batchSize; i++) {
+            List<NumberImage> batch = new ArrayList<>();
+            for (int j = 0; j < batchSize; j++) {
+                batch.add (trainingData.get (idx));
+                idx++;
+            }
+            batches.add (batch);
+        }
+        // For 0 to epoch times ...
+        for (int i = 0; i < epochs; i++) {
+            // For each batch
+            System.out.println("Beginning Epoch " + i);
+            for (List<NumberImage> batch : batches)
+                learn_batch (batch, eta);
+            if (verbose)
+                test (trainingData);
+        }
+
+    }
+
+    private void learn_batch (List<NumberImage> batch, double eta) {
+        // TODO
+        // Input each image and then backwards propagate
+        for (NumberImage x : batch) {
+            input (x.image);
+            propagate ();
+            backwardsPropagate();
+
+        }
+    }
+
+    private Network backwardsPropagate() {
+        return this;
+    }
+
+    /**
+     * Count the number of images correctly identified
+     * @param data
+     */
+    private void test (List<NumberImage> data) {
+        int num_correct = 0;
+        for (NumberImage i : data) {
+            input (i.image);
+            propagate();
+            if (result(output()) == result(i.label))
+                num_correct++;
+        }
+        System.out.println("Correct: " + num_correct + " out of " + data.size());
+
     }
 
     /**
@@ -163,6 +220,11 @@ public class Network implements Serializable {
         }
     }
 
+    /**
+     * Restores a Network object from file located at the specified path
+     * @param path
+     * @return
+     */
     public static Network load (String path) {
         File f = new File (path);
         Network network = null;
