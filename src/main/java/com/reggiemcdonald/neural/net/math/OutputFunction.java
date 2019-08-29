@@ -16,4 +16,11 @@ public interface OutputFunction extends Serializable {
      */
     double derivative (double d);
 
+    /**
+     * Return the zed parameter
+     * @return
+     */
+    double z ();
+
+
 }

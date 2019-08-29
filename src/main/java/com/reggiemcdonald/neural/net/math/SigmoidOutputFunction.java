@@ -19,8 +19,7 @@ public class SigmoidOutputFunction implements OutputFunction {
 
     @Override
     public double compute () {
-        List<Synapse> synapses = neuron.getSynapsesToThis();
-        return sigmoid (z (synapses));
+        return sigmoid (z ());
     }
 
     @Override
@@ -39,10 +38,11 @@ public class SigmoidOutputFunction implements OutputFunction {
 
     /**
      * Calculates the z param (weighted sum of inputs to neuron)
-     * @param synapses
-     * @return
+     * @return z param
      */
-    public double z (List<Synapse> synapses) {
+    @Override
+    public double z () {
+        List<Synapse> synapses = neuron.getSynapsesToThis();
         double output = 0;
         for (Synapse s : synapses)
             output += ( s.getWeight() * s.from().getOutput () );

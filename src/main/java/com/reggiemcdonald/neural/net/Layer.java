@@ -1,5 +1,9 @@
 package com.reggiemcdonald.neural.net;
 
+import com.reggiemcdonald.neural.net.math.HiddenLayerLearner;
+import com.reggiemcdonald.neural.net.math.LayerLearner;
+import com.reggiemcdonald.neural.net.math.OutputLayerLearner;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -12,11 +16,13 @@ public class Layer implements Iterable<Neuron>, Serializable {
     private List<Neuron>  neurons;
     private int           layerIndex;
     private LayerType     type;
+    private LayerLearner  layerLearner;
 
     public Layer (int layerIndex, LayerType type) {
         this.neurons     = new ArrayList<>();
         this.layerIndex  = layerIndex;
         this.type        = type;
+        initLayerLearner ();
     }
 
     public Layer (List<Neuron> neurons, int layerIndex, LayerType type) {
@@ -24,6 +30,23 @@ public class Layer implements Iterable<Neuron>, Serializable {
         this.layerIndex  = layerIndex;
         this.type        = type;
         setThisAsParentLayer ();
+        initLayerLearner ();
+    }
+
+    private void initLayerLearner () {
+        switch (type) {
+            case INPUT:
+                layerLearner = null;
+                break;
+            case HIDDEN:
+                layerLearner = new HiddenLayerLearner (this);
+                break;
+            case OUTPUT:
+                layerLearner = new OutputLayerLearner (this);
+                break;
+            default:
+                layerLearner = null;
+        }
     }
 
     // TODO: layer-wise computation
@@ -117,12 +140,40 @@ public class Layer implements Iterable<Neuron>, Serializable {
         return a;
     }
 
-    public double [] deriveActivations (double[] activations) {
+    public double [] derive(double[] activations) {
         for (Neuron n : neurons) {
             int idx = n.neuralIndex();
             activations[idx] = n.outputFunction().derivative(activations[idx]);
         }
         return activations;
+    }
+
+    /**
+     * Return the errors of this layer
+     * @param delta_next
+     * @return
+     */
+
+    /**
+     * This is wrong. I need to sum the product of deltaNext[i] with the ith weight of each neuron in the current layer
+     *      * To accomplish this, I need an additional abstraction so that layers will compute deltas differently
+     * @param delta_next
+     * @return
+     */
+    public double[] delta (double[] delta_next) {
+        return layerLearner.delta (delta_next);
+    }
+
+    public void addBiasUpdate (double[] error) {
+        layerLearner.addBiasUpdate (error);
+    }
+
+    public void addWeightUpdate (double[] error) {
+        layerLearner.addWeightUpdate (error);
+    }
+
+    public void applyUpdates (int n, double eta) {
+        layerLearner.applyUpdates(n, eta);
     }
 
 

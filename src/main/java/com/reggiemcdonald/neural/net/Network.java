@@ -163,7 +163,7 @@ public class Network implements Serializable {
         // For 0 to epoch times ...
         for (int i = 0; i < epochs; i++) {
             // For each batch
-            System.out.println("Beginning Epoch " + i);
+            System.out.println("Beginning Epoch " + (i+1));
             for (List<NumberImage> batch : batches)
                 learn_batch (batch, eta);
             if (verbose)
@@ -178,13 +178,38 @@ public class Network implements Serializable {
         for (NumberImage x : batch) {
             input (x.image);
             propagate ();
-            backwardsPropagate();
-
+            backwardsPropagate(x.label);
         }
+        finalizeLearning (batch.size(), eta);
     }
 
-    private Network backwardsPropagate() {
+    private Network backwardsPropagate(double[] expected) {
+        // Compute error in output layer
+        double[] deltaL = output.delta(output_cost_derivative(expected));
+        output.addBiasUpdate (deltaL);
+        output.addWeightUpdate (deltaL);
+        // Propagate to the earlier layers
+        for (int i = hidden.size() - 1; i > -1; i--) {
+            Layer layer = hidden.get(i);
+            double[] delta = layer.delta(deltaL);
+            layer.addBiasUpdate(delta);
+            layer.addWeightUpdate(delta);
+        }
         return this;
+    }
+
+//    private double[] deltaL (double[] expected) {
+//        double[] activations     = output ();
+//        double[] cost_derivative = cost_derivative (activations, expected);
+//        double[] zL              = output.zs();
+//    }
+
+    private double[] output_cost_derivative (double[] expected) {
+        double[] activations = output();
+
+        for (int i = 0; i < activations.length; i++)
+            activations[i] -= expected[i];
+        return activations;
     }
 
     /**
@@ -201,6 +226,12 @@ public class Network implements Serializable {
         }
         System.out.println("Correct: " + num_correct + " out of " + data.size());
 
+    }
+
+    private void finalizeLearning (int n, double eta) {
+        output.applyUpdates(n, eta);
+        for (Layer layer : hidden)
+            layer.applyUpdates(n, eta);
     }
 
     /**
