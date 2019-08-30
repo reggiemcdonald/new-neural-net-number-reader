@@ -54,7 +54,7 @@ public class InputNeuron implements Neuron {
     }
 
     @Override
-    public void setBias(float bias) {
+    public void setBias(double bias) {
         // Do nothing as Input Neurons do not need bias
     }
 

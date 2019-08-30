@@ -3,6 +3,7 @@ package com.reggiemcdonald.neural.net.math;
 import com.reggiemcdonald.neural.net.Neuron;
 import com.reggiemcdonald.neural.net.Synapse;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class HiddenNeuronLearner implements Learner {
@@ -33,12 +34,18 @@ public class HiddenNeuronLearner implements Learner {
 
     @Override
     public void applyWeightUpdate(int n, double eta) {
-
+        List<Synapse> synapses = neuron.getSynapsesToThis();
+        for (int i = 0; i < synapses.size(); i++) {
+            Synapse s = synapses.get(i);
+            s.setWeight( s.getWeight() - ((eta/n) * weightUpdate[i]) );
+        }
+        Arrays.fill(weightUpdate,0);
     }
 
     @Override
     public void applyBiasUpdate(int n, double eta) {
-
+        neuron.setBias( neuron.getBias() - ((eta/n) * biasUpdate) );
+        biasUpdate = 0;
     }
 
     @Override

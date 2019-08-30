@@ -41,7 +41,7 @@ public interface Neuron extends Serializable {
      * Sets the bias of this neuron
      * @param bias
      */
-    void setBias (float bias);
+    void setBias (double bias);
 
     /**
      * Adds a synapse from this neuron, to another neuron in the next layer

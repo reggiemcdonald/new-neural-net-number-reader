@@ -67,7 +67,7 @@ public class SigmoidNeuron implements Neuron {
     }
 
     @Override
-    public void setBias(float bias) {
+    public void setBias(double bias) {
         this.bias = bias;
     }
 

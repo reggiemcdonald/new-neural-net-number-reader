@@ -178,7 +178,7 @@ public class Network implements Serializable {
         for (NumberImage x : batch) {
             input (x.image);
             propagate ();
-            backwardsPropagate(x.label);
+            backwardsPropagate (x.label);
         }
         finalizeLearning (batch.size(), eta);
     }
