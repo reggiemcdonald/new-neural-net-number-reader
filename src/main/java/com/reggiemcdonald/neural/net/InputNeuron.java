@@ -60,9 +60,9 @@ public class InputNeuron implements Neuron {
 
     @Override
     public Neuron addSynapseFromThis(Synapse s) {
-        if (fromThis.contains (s)) {
+        if (!fromThis.contains (s)) {
             fromThis.add (s);
-            s.from().addSynapseToThis (s);
+            s.to().addSynapseToThis (s);
         }
         return this;
     }

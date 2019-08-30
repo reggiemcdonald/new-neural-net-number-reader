@@ -37,14 +37,14 @@ public class HiddenNeuronLearner implements Learner {
         List<Synapse> synapses = neuron.getSynapsesToThis();
         for (int i = 0; i < synapses.size(); i++) {
             Synapse s = synapses.get(i);
-            s.setWeight( s.getWeight() - ((eta/n) * weightUpdate[i]) );
+            s.setWeight( s.getWeight() - (eta/n * weightUpdate[i]) );
         }
         Arrays.fill(weightUpdate,0);
     }
 
     @Override
     public void applyBiasUpdate(int n, double eta) {
-        neuron.setBias( neuron.getBias() - ((eta/n) * biasUpdate) );
+        neuron.setBias( neuron.getBias() - (eta/n * biasUpdate) );
         biasUpdate = 0;
     }
 
@@ -83,12 +83,6 @@ public class HiddenNeuronLearner implements Learner {
 
     @Override
     public double delta(double[] deltaNext) {
-//        double[] weights = weights ();
-//        double delta = 0.0;
-//        for (double w : weights)
-//            delta += (w * deltaNext);
-//        OutputFunction outputFunction = neuron.outputFunction();
-//        return delta * outputFunction.derivative( outputFunction.compute() );
         return 0;
     }
 

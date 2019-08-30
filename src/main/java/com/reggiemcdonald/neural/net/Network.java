@@ -104,7 +104,7 @@ public class Network implements Serializable {
     public Network input (double[][] img) {
         for (int i = 0 ; i < img.length ; i++) {
             for (int j = 0; j < img[i].length; j++) {
-                input.getNeuronAt((i * 28) + j).setOutput(img[i][j]);
+                input.getNeuronAt((i * 28) + j).setOutput(img[i][j] / 255);
             }
         }
         return this;
@@ -119,6 +119,7 @@ public class Network implements Serializable {
         // Propagate the signal throughout the layers of the neural network
         for (Layer layer : hidden)
             layer.update ();
+        output.update();
         return this;
     }
 
@@ -185,38 +186,32 @@ public class Network implements Serializable {
 
     private Network backwardsPropagate(double[] expected) {
         // Compute error in output layer
-        double[] deltaL = output.delta(output_cost_derivative(expected));
-        output.addBiasUpdate (deltaL);
-        output.addWeightUpdate (deltaL);
+        double[] delta = output.delta(output_cost_derivative(expected));
+        output.addBiasUpdate (delta);
+        output.addWeightUpdate (delta);
         // Propagate to the earlier layers
         for (int i = hidden.size() - 1; i > -1; i--) {
             Layer layer = hidden.get(i);
-            double[] delta = layer.delta(deltaL);
+            delta = layer.delta(delta);
             layer.addBiasUpdate(delta);
             layer.addWeightUpdate(delta);
         }
         return this;
     }
 
-//    private double[] deltaL (double[] expected) {
-//        double[] activations     = output ();
-//        double[] cost_derivative = cost_derivative (activations, expected);
-//        double[] zL              = output.zs();
-//    }
-
     private double[] output_cost_derivative (double[] expected) {
         double[] activations = output();
-
+        double[] delta = new double[activations.length];
         for (int i = 0; i < activations.length; i++)
-            activations[i] -= expected[i];
-        return activations;
+            delta[i] = activations[i] - expected[i];
+        return delta;
     }
 
     /**
      * Count the number of images correctly identified
      * @param data
      */
-    private void test (List<NumberImage> data) {
+    public void test (List<NumberImage> data) {
         int num_correct = 0;
         for (NumberImage i : data) {
             input (i.image);

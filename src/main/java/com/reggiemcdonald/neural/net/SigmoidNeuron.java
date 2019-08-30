@@ -82,7 +82,7 @@ public class SigmoidNeuron implements Neuron {
 
     @Override
     public Neuron addSynapseToThis(Synapse s) {
-        if (toThis.contains (s)) {
+        if (!toThis.contains (s)) {
             toThis.add (s);
             s.from().addSynapseFromThis(s);
         }
