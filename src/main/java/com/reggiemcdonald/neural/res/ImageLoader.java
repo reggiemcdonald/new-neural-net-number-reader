@@ -76,7 +76,7 @@ public class ImageLoader {
         }
     }
 
-    public static void saveImage (float[][] img) throws IOException {
+    public static void saveImage (double[][] img) throws IOException {
         BufferedImage bImg = new BufferedImage(24,24, BufferedImage.TYPE_INT_RGB);
         for (int y = 0 ; y < 24; y++) {
             for (int x = 0; x < 24; x++)
