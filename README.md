@@ -1,7 +1,7 @@
 ## New Neural Net Number Reader
 #### A neural net for reading handwritten numbers built using nothing more than the Java Standard Libraries. 
 
-This is my second attempt at a neural network for reading handwritten numbers, built without the use of ML libraries. If you would like to see my first attempt (which uses a 3rd party linear algebra library) [see here](https://github.com/reggiemcdonald/neural-net-number-reader).
+This is my second attempt at a neural network for reading handwritten numbers, built without the use of ML libraries. This network is significantly more performant and accurate than my first implementation. If you would like to see my first attempt (which uses a 3rd party linear algebra library) [see here](https://github.com/reggiemcdonald/neural-net-number-reader).
 
 ### What is it? 
 This is an artificial neural network that is taught using the [MNIST Dataset](http://yann.lecun.com/exdb/mnist/) to read handwritten numbers. For example - given an image such as: 
