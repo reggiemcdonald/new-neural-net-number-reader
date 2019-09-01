@@ -7,6 +7,9 @@ This is my second attempt at a neural network for reading handwritten numbers, b
 This is an artificial neural network that is taught using the [MNIST Dataset](http://yann.lecun.com/exdb/mnist/) to read handwritten numbers. For example - given an image such as: 
 ![](number-image.bmp), the network is expected to signal that the input represents a "5". On average, the network will be able to <strong>read the image correctly 97% of the time</strong>.
 
+### How does it work? 
+Currently, there is a very primitive text-based UI. You can run it to train a network, and then view images and see what the network guesses them to be. Running is simple! Open the project up in intelliJ or Elclipse, and run the `main (String[])` function defined in `class Main`. The first time you run it will take longer, as it will run the training protocol.
+
 ### What is an Artifical Neural Network? 
 To understand aritifical neural networks, its beneficial to first try and understand their biological inspiration. The architecture of an artifical neural network is based upon organic neural networks such as the human brain. The human brain is a dense collection of specialized cells called neurons, which serve as its atomic thinking units. Neurons may form connections to other neurons in the brain/body - biologists call these connections synapses. Analogously, a neuron may be thought of as a graph node, and each synapse as a directed edge to a neighbouring node; the result is a directed graph!
 
@@ -28,7 +31,9 @@ The middle layer will consist of some number of neurons. A recommended size for 
 The output layer will contain 10 neurons, one for each digit that we would like our network to recognize. The output layer works like the hidden layer, but has no neurons to propagate the signal any farther. We take the neuron in the output layer with the strongest signal to be the signalling neuron. In the case of the number reader, the index of the outputting neuron signifies the number that the neural network has converged upon, and ultimately, its guess as to what the image is. 
 
 ### Learning 
-#### // TODO
+The above process is only meaningful however, when the network has been trained. In its naïve state, the neural network wont be any better than random chance (and in practice with the MNIST dataset, its almost exactly 10% correct). Training the network relies upon a technique called <strong>backwards propagation</strong>. Backwards propagation relies upon computing the degree to which the network is wrong, and then working backwards to adjust the weights and biases in the network accordingly.
+
+
 
 
 
