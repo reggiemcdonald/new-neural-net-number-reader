@@ -8,7 +8,7 @@ This is an artificial neural network that is taught using the [MNIST Dataset](ht
 ![](number-image.bmp), the network is expected to signal that the input represents a "5". On average, the network will be able to <strong>read the image correctly 97% of the time</strong>.
 
 ### How does it work? 
-Currently, there is a very primitive text-based UI. You can run it to train a network, and then view images and see what the network guesses them to be. Running is simple! Open the project up in intelliJ or Elclipse, and run the `main (String[])` function defined in `class Main`. The first time you run it will take longer, as it will run the training protocol.
+Currently, there is a very primitive text-based UI. You can run it to train a network, and then view images and see what the network guesses them to be. Running is simple! Open the project up in intelliJ or Elclipse, and run the `main (String[])` function defined in `class Main`. The first time you run it will take longer, as it will run the training protocol. After, the network will be saved to disk, so launching `main` will be much faster.
 
 ### What is an Artifical Neural Network? 
 To understand aritifical neural networks, its beneficial to first try and understand their biological inspiration. The architecture of an artifical neural network is based upon organic neural networks such as the human brain. The human brain is a dense collection of specialized cells called neurons, which serve as its atomic thinking units. Neurons may form connections to other neurons in the brain/body - biologists call these connections synapses. Analogously, a neuron may be thought of as a graph node, and each synapse as a directed edge to a neighbouring node; the result is a directed graph!
@@ -32,6 +32,8 @@ The output layer will contain 10 neurons, one for each digit that we would like 
 
 ### Learning 
 The above process is only meaningful however, when the network has been trained. In its naïve state, the neural network wont be any better than random chance (and in practice with the MNIST dataset, its almost exactly 10% correct). Training the network relies upon a technique called <strong>backwards propagation</strong>. Backwards propagation relies upon computing the degree to which the network is wrong, and then working backwards to adjust the weights and biases in the network accordingly.
+
+#### // TODO
 
 
 
