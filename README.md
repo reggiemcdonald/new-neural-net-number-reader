@@ -5,7 +5,7 @@ This is my second attempt at a neural network for reading handwritten numbers, b
 
 ### What is it? 
 This is an artificial neural network that is taught using the [MNIST Dataset](http://yann.lecun.com/exdb/mnist/) to read handwritten numbers. For example - given an image such as: 
-![](number-image.bmp), the network is expected to signal that the input represents a "5". On average, the network will be able to <strong>read the image correctly 97% of the time</strong>.
+![](number-image.bmp), the network is expected to signal that the input represents a "5". On average, the network will be able to <strong>read the image correctly 96% of the time</strong>.
 
 ### How does it work? 
 Currently, there is a very primitive text-based UI. You can run it to train a network, and then view images and see what the network guesses them to be. Running is simple! Open the project up in intelliJ or Elclipse, and run the `main (String[])` function defined in `class Main`. The first time you run it will take longer, as it will run the training protocol. After, the network will be saved to disk, so launching `main` will be much faster.
