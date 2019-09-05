@@ -17,6 +17,31 @@ public class Synapse implements Serializable {
     }
 
     /**
+     * Specify n_in to construct synapse with an optimal weight intialization
+     * @param from
+     * @param to
+     * @param gaussian
+     * @param n_in
+     */
+    public Synapse (Neuron from, Neuron to, double gaussian, int n_in) {
+        this.from   = from;
+        this.to     = to;
+        this.weight = optimizeWeightInit (gaussian, n_in);
+    }
+
+    /**
+     * Return an optimization of the initial weight for this synapse
+     * which is a gaussian with a tightened distribution
+     * std. dev. is 1/sqrt(n_in)
+     * @param gaussian
+     * @param n_in
+     * @return
+     */
+    private double optimizeWeightInit (double gaussian, int n_in) {
+        return gaussian * (1 / Math.sqrt(n_in));
+    }
+
+    /**
      * Sets the from neuron of this synapse
      * @param from
      */
@@ -63,4 +88,5 @@ public class Synapse implements Serializable {
     public double getWeight () {
         return weight;
     }
+
 }

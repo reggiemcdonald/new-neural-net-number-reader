@@ -41,7 +41,7 @@ public class Main {
             s.nextInt();
             network.input(img.image).propagate();
             System.out.println("Network answer: " + network.result(network.output()));
-            System.out.println("Actual answer " + network.result(img.label));
+            System.out.println("Actual answer " + (char)img.label);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

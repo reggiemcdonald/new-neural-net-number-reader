@@ -90,7 +90,7 @@ public class Network implements Serializable {
         if (lateLayer != null) {
             for (Neuron from : earlyLayer) {
                 for (Neuron to : lateLayer)
-                    from.addSynapseFromThis(new Synapse(from, to, r.nextGaussian()));
+                    from.addSynapseFromThis(new Synapse(from, to, r.nextGaussian(), earlyLayer.size()));
             }
         }
         return new Layer (earlyLayer, layerIndex, layerType);
@@ -179,7 +179,7 @@ public class Network implements Serializable {
         for (NumberImage x : batch) {
             input (x.image);
             propagate ();
-            backwardsPropagate (x.label);
+            backwardsPropagate (x.getResult());
         }
         finalizeLearning (batch.size(), eta);
     }
@@ -216,7 +216,7 @@ public class Network implements Serializable {
         for (NumberImage i : data) {
             input (i.image);
             propagate();
-            if (result(output()) == result(i.label))
+            if (result(output()) == i.label)
                 num_correct++;
         }
         System.out.println("Correct: " + num_correct + " out of " + data.size());
