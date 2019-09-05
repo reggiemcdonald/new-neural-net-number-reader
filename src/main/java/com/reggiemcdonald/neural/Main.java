@@ -24,6 +24,7 @@ public class Main {
         if (network == null) {
             network = new Network(new int[]{784, 30, 10});
             network.learn (ImageLoader.load(ImageLoader.TEST_IMAGES, ImageLoader.TEST_LABELS),30,10,3.0,false);
+            network.test (ImageLoader.load(ImageLoader.TRAIN_IMAGES, ImageLoader.TRAIN_LABELS));
             Network.save (network, Network.SAVE_PATH);
         } else {
             System.out.println("Loaded network from previous state");

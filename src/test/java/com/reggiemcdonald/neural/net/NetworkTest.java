@@ -10,10 +10,10 @@ public class NetworkTest {
 
     @Test
     public void testNetwork () {
-        Network network = new Network (new int [] {784,30,10});
-        List<NumberImage> trainingImages = ImageLoader.load (ImageLoader.TEST_IMAGES, ImageLoader.TEST_LABELS);
+        Network network = new Network (new int [] {784,100,10});
+        List<NumberImage> trainingImages = ImageLoader.load (ImageLoader.TRAIN_IMAGES, ImageLoader.TRAIN_LABELS);
         network.test (trainingImages);
         network.learn (trainingImages,30,10,3.0,true);
-        network.test (ImageLoader.load (ImageLoader.TRAIN_IMAGES, ImageLoader.TRAIN_LABELS));
+        network.test (ImageLoader.load (ImageLoader.TEST_IMAGES, ImageLoader.TEST_LABELS));
     }
 }
