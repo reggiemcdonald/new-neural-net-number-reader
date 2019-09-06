@@ -77,7 +77,8 @@ public class OutputNeuronLearner implements Learner {
     @Override
     public double delta(double[] deltaNext) {
         OutputFunction outputFunction = neuron.outputFunction();
-        return deltaNext[neuron.neuralIndex()] * outputFunction.derivative(outputFunction.compute());
+//        return deltaNext[neuron.neuralIndex()] * outputFunction.derivative(outputFunction.compute());
+        return deltaNext[neuron.neuralIndex()];
     }
 
     private double[] activations () {

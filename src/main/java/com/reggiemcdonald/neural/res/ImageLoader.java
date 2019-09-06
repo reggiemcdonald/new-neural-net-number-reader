@@ -26,6 +26,11 @@ public class ImageLoader {
     public static final Path TRAIN_IMAGES = Paths.get ("train_images.gz");
     public static final Path TRAIN_LABELS = Paths.get ("train_labels.gz");
 
+    public static final Path EXTENDED_TRAIN_IMAGES = Paths.get ("emnist-train-images.gz");
+    public static final Path EXTENDED_TRAIN_LABELS = Paths.get ("emnist-train-labels.gz");
+    public static final Path EXTENDED_TEST_IMAGES  = Paths.get ("emnist-test-images.gz" );
+    public static final Path EXTENDED_TEST_LABELS  = Paths.get ("emnist-test-labels.gz" );
+
     public static List<NumberImage> load (Path imgs, Path labels) {
         byte[] decomp_images = ImageLoader.unarchive (imgs);
         byte[] decomp_labels = ImageLoader.unarchive (labels);
