@@ -1,7 +1,7 @@
-package com.reggiemcdonald.neural.net.math;
+package com.reggiemcdonald.neural.feedforward.net.math;
 
-import com.reggiemcdonald.neural.net.Neuron;
-import com.reggiemcdonald.neural.net.Synapse;
+import com.reggiemcdonald.neural.feedforward.net.Neuron;
+import com.reggiemcdonald.neural.feedforward.net.Synapse;
 
 import java.util.List;
 

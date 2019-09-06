@@ -1,12 +1,11 @@
-package com.reggiemcdonald.neural.net;
+package com.reggiemcdonald.neural.feedforward.net;
 
 
-import com.reggiemcdonald.neural.net.math.Learner;
-import com.reggiemcdonald.neural.net.math.OutputFunction;
+import com.reggiemcdonald.neural.feedforward.net.math.Learner;
+import com.reggiemcdonald.neural.feedforward.net.math.OutputFunction;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 
 public class InputNeuron implements Neuron {
@@ -16,10 +15,9 @@ public class InputNeuron implements Neuron {
     private int              neuralIndex;
 
     public InputNeuron () {
-        Random r    = new Random ();
         fromThis    = new ArrayList<>();
         layer       = null;
-        output      = r.nextGaussian ();
+        output      = 0.;
         neuralIndex = -1;
     }
 

@@ -1,4 +1,4 @@
-package com.reggiemcdonald.neural.net.math;
+package com.reggiemcdonald.neural.feedforward.net.math;
 
 import java.io.Serializable;
 

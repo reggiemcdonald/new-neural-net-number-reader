@@ -1,7 +1,7 @@
-package com.reggiemcdonald.neural.net;
+package com.reggiemcdonald.neural.feedforward.net;
 
-import com.reggiemcdonald.neural.net.math.Learner;
-import com.reggiemcdonald.neural.net.math.OutputFunction;
+import com.reggiemcdonald.neural.feedforward.net.math.Learner;
+import com.reggiemcdonald.neural.feedforward.net.math.OutputFunction;
 
 import java.io.Serializable;
 import java.util.List;

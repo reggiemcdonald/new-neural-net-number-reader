@@ -1,7 +1,7 @@
-package com.reggiemcdonald.neural.net;
+package com.reggiemcdonald.neural.feedforward.net;
 
-import com.reggiemcdonald.neural.res.ImageLoader;
-import com.reggiemcdonald.neural.res.NumberImage;
+import com.reggiemcdonald.neural.feedforward.res.ImageLoader;
+import com.reggiemcdonald.neural.feedforward.res.NumberImage;
 import org.junit.Test;
 
 import java.util.List;

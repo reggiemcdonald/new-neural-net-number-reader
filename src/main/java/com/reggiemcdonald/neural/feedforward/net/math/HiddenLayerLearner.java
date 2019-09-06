@@ -1,6 +1,6 @@
-package com.reggiemcdonald.neural.net.math;
+package com.reggiemcdonald.neural.feedforward.net.math;
 
-import com.reggiemcdonald.neural.net.Layer;
+import com.reggiemcdonald.neural.feedforward.net.Layer;
 
 public class HiddenLayerLearner extends LayerLearner {
 

@@ -1,4 +1,4 @@
-package com.reggiemcdonald.neural.res;
+package com.reggiemcdonald.neural.feedforward.res;
 
 public class NumberImage {
     public double[][] image;

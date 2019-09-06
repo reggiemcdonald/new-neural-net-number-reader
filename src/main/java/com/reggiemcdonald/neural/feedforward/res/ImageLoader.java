@@ -1,4 +1,4 @@
-package com.reggiemcdonald.neural.res;
+package com.reggiemcdonald.neural.feedforward.res;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

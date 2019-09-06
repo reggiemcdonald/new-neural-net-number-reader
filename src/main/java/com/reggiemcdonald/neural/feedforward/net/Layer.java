@@ -1,8 +1,8 @@
-package com.reggiemcdonald.neural.net;
+package com.reggiemcdonald.neural.feedforward.net;
 
-import com.reggiemcdonald.neural.net.math.HiddenLayerLearner;
-import com.reggiemcdonald.neural.net.math.LayerLearner;
-import com.reggiemcdonald.neural.net.math.OutputLayerLearner;
+import com.reggiemcdonald.neural.feedforward.net.math.HiddenLayerLearner;
+import com.reggiemcdonald.neural.feedforward.net.math.LayerLearner;
+import com.reggiemcdonald.neural.feedforward.net.math.OutputLayerLearner;
 
 import java.io.Serializable;
 import java.util.ArrayList;

@@ -1,10 +1,10 @@
-package com.reggiemcdonald.neural.net;
+package com.reggiemcdonald.neural.feedforward.net;
 
 import java.io.Serializable;
 
 public enum LayerType implements Serializable {
 
-    // Layer of input neurons
+    // CNNLayer of input neurons
     INPUT,
 
     // The middle layers

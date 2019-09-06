@@ -1,8 +1,8 @@
-package com.reggiemcdonald.neural;
+package com.reggiemcdonald.neural.feedforward;
 
-import com.reggiemcdonald.neural.net.Network;
-import com.reggiemcdonald.neural.res.ImageLoader;
-import com.reggiemcdonald.neural.res.NumberImage;
+import com.reggiemcdonald.neural.feedforward.net.Network;
+import com.reggiemcdonald.neural.feedforward.res.ImageLoader;
+import com.reggiemcdonald.neural.feedforward.res.NumberImage;
 
 import java.awt.*;
 import java.io.File;
