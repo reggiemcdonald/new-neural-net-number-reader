@@ -1,6 +1,8 @@
 package com.reggiemcdonald.neural.convolutional.net;
 
+import com.reggiemcdonald.neural.convolutional.math.ConvCOutput;
 import com.reggiemcdonald.neural.convolutional.math.InputCOutput;
+import com.reggiemcdonald.neural.convolutional.net.learning.ConvCLearner;
 import com.reggiemcdonald.neural.convolutional.net.learning.InputCLearner;
 
 public class CNeuronFactory {
@@ -23,6 +25,10 @@ public class CNeuronFactory {
                 return neuron
                         .learner(new InputCLearner(neuron))
                         .outputFunction(new InputCOutput(neuron));
+            case CN_TYPE_CONV:
+                return neuron
+                        .learner(new ConvCLearner(neuron))
+                        .outputFunction(new ConvCOutput(neuron));
             // TODO: Complete neural factory
             default:
                 throw new RuntimeException("Not yet implemented");
@@ -45,6 +51,10 @@ public class CNeuronFactory {
                         .learner(new InputCLearner(neuron))
                         .outputFunction(new InputCOutput(neuron));
             // TODO: Complete neural factory
+            case CN_TYPE_CONV:
+                return neuron
+                        .learner(new InputCLearner(neuron))
+                        .outputFunction(new ConvCOutput(neuron));
             default:
                 throw new RuntimeException("Not yet implemented");
         }

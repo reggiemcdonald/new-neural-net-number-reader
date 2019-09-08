@@ -23,7 +23,7 @@ public class SigmoidalLayer implements CNNLayer {
     }
 
     @Override
-    public CNNLayer connect(CNNLayer to) {
+    public CNNLayer connect(CNNLayer from) {
         return this;
     }
 

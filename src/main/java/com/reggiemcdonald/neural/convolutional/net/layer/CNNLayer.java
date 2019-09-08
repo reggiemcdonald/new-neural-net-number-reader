@@ -21,11 +21,11 @@ public interface CNNLayer extends Iterable<CNeuron> {
     CNeuron get (int idx);
 
     /**
-     * Connects this layer to an adjacent layer
-     * @param to
+     * Creates connections from from, to this
+     * @param from
      * @return
      */
-    CNNLayer connect (CNNLayer to);
+    CNNLayer connect (CNNLayer from);
 
 
 

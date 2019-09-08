@@ -2,13 +2,11 @@ package com.reggiemcdonald.neural.convolutional.net.learning;
 
 import com.reggiemcdonald.neural.convolutional.net.CNeuron;
 
-public class ConvCLearner implements CLearner {
+public class PoolCLearner implements CLearner{
     private CNeuron neuron;
 
-    public ConvCLearner (CNeuron neuron) {
+    public PoolCLearner (CNeuron neuron) {
         this.neuron = neuron;
     }
-
-
     // TODO
 }

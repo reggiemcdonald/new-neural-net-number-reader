@@ -11,7 +11,7 @@ public class ConvolutionalNetwork {
     private int inputDimension, hiddenLayers, stride;
 
     private List<CNNLayer> inputs;
-    private List<CNNLayer> convolutionals;
+    private List<List<CNNLayer>> convolutionals;
     private List<CNNLayer> poolings;
 
     private CNNLayer sigmoidalOutput;
@@ -19,8 +19,8 @@ public class ConvolutionalNetwork {
 
     /**
      * A really rough constructor :( TODO make this better
-     * @param inputLayerSizes      an int[] of perfect squares describing the sizes of the input layers
-     * @param convolutionalSizes   an int[] of perfect squares describing the sizes of the convolutions (keep small)
+     * @param inputLayerSizes      an int[] of dimensions for the square 2D input layers
+     * @param convolutionalSizes   an int[] describing the sizes of the convolutions (keep small)
      * @param poolingSizes         an int[] of the pooling sizes
      * @param numberOfOutputs      the number of neurons in the output layer
      * @param stride               the stride length - TODO: Should this be an int[]
@@ -51,34 +51,64 @@ public class ConvolutionalNetwork {
     private void createConvolutions (int[] sizes) {
         // TODO: CNN Init
         convolutionals = new ArrayList<>(sizes.length);
-        for (int i : sizes)
-            convolutionals.add (new ConvolutionLayer(i));
+        // The first convolutional Layer
+        List<CNNLayer> l = new ArrayList<>();
+        for (CNNLayer layer : inputs) {
+            int dim_x, dim_y;
+            dim_x = dim_y = getNextDim(layer.dim_x(), sizes[0]);
+            l.add (new ConvolutionLayer(dim_x, dim_y, sizes[0]));
+        }
+        convolutionals.add (l);
+        int pastDim = convolutionals.get(0).get(0).dim_x();
+        for (int i = 1; i < sizes.length; i++) {
+            int dim_x, dim_y;
+            dim_x = dim_y = getNextDim(pastDim, sizes[i]);
+            List<CNNLayer> l1 = new ArrayList<>();
+            for (int j = 0; j < inputs.size(); j++) {
+                l1.add (new ConvolutionLayer(dim_x, dim_y, sizes[i]));
+            }
+            convolutionals.add (l1);
+            pastDim = dim_x;
+        }
     }
 
     private void createPoolings (int[] sizes) {
         // TODO: CNN Init
-        poolings = new ArrayList<>(sizes.length);
-        for (int i : sizes)
-            poolings.add (new PoolingLayer(i));
     }
 
     private void createOutputs (boolean hasSigmoidal, int sigmoidalSize, int softmaxSize) {
         // TODO: CNN init
-        if (hasSigmoidal)
-            sigmoidalOutput = new SigmoidalLayer(sigmoidalSize);
-        softmaxOutput   = new SoftmaxLayer(softmaxSize);
     }
 
-    /**
-     * Performs the conversion from coordinate to linear index (x,y) -> z
-     * using dim for modulo arithmetic
-     * @param x
-     * @param y
-     * @param dim
-     * @return
-     */
-    private int toLinearIndex (int x, int y, int dim) {
-        // TODO: CNN Misc
-        return 0; // Stub
+    private void connect () {
+        // Connect the input layers to the first convolutional layers
+        connect (inputs, convolutionals.get(0));
+        // connect the later convolutional layers to each other
+        for (int i = 1; i < convolutionals.size()-1; i++) {
+            connect(convolutionals.get(i), convolutionals.get(i+1));
+        }
+        // Connect the last convolutional to the pooling layer
+        connect (convolutionals.get(convolutionals.size()-1), poolings);
+
+        // TODO: Connect poolings to sigmoidal output
+
+        // Connect the sigmoidal output to the softmax layer
+        softmaxOutput.connect(sigmoidalOutput);
+
+    }
+
+    private void connect (List<CNNLayer> layersFrom, List<CNNLayer> layersTo) {
+        assert(layersFrom.size() == layersTo.size());
+        for (int i = 0; i < layersFrom.size(); i++)
+            layersTo.get(i).connect(layersFrom.get(i));
+    }
+
+    private static int getNextDim (int dim, int window) {
+        int x = 0, count = 0;
+        while (x + window <= dim) {
+            count++;
+            x++;
+        }
+        return count;
     }
 }
