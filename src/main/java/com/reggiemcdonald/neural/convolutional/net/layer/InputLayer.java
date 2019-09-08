@@ -26,7 +26,7 @@ public class InputLayer implements CNNLayer {
 
     @Override
     public CNeuron get(int x, int y) {
-        int idx = (int) (dim_x * x) + y - 1;
+        int idx = (int) (dim_x * x) + y;
         return neurons.get (idx);
     }
 

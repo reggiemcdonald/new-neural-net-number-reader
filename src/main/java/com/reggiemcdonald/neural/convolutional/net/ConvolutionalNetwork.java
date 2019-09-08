@@ -40,6 +40,8 @@ public class ConvolutionalNetwork {
 
         createPoolings (poolingSizes);
         createOutputs  (hasSigmoidal, poolingSizes[poolingSizes.length-1], numberOfOutputs);
+
+        connect();
     }
 
     private void createInputs (int[] sizes, int stride) {
@@ -74,6 +76,7 @@ public class ConvolutionalNetwork {
 
     private void createPoolings (int[] sizes) {
         // TODO: CNN Init
+        poolings = new ArrayList<>();
     }
 
     private void createOutputs (boolean hasSigmoidal, int sigmoidalSize, int softmaxSize) {
@@ -83,17 +86,19 @@ public class ConvolutionalNetwork {
     private void connect () {
         // Connect the input layers to the first convolutional layers
         connect (inputs, convolutionals.get(0));
+
         // connect the later convolutional layers to each other
-        for (int i = 1; i < convolutionals.size()-1; i++) {
+        for (int i = 0; i < convolutionals.size()-1; i++) {
             connect(convolutionals.get(i), convolutionals.get(i+1));
         }
-        // Connect the last convolutional to the pooling layer
-        connect (convolutionals.get(convolutionals.size()-1), poolings);
 
-        // TODO: Connect poolings to sigmoidal output
+        // TODO: Create the next layers first, then run connection
+
+        // Connect the last convolutional to the pooling layer
+//        connect (convolutionals.get(convolutionals.size()-1), poolings);
 
         // Connect the sigmoidal output to the softmax layer
-        softmaxOutput.connect(sigmoidalOutput);
+//        softmaxOutput.connect(sigmoidalOutput);
 
     }
 

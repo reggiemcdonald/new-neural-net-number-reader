@@ -2,6 +2,7 @@ package com.reggiemcdonald.neural.convolutional.net.layer;
 
 import com.reggiemcdonald.neural.convolutional.net.CNeuron;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -10,6 +11,7 @@ public class PoolingLayer implements CNNLayer {
 
     public PoolingLayer (int size) {
         // TODO: Layer init
+        makeNeurons ();
     }
 
     @Override
@@ -46,5 +48,10 @@ public class PoolingLayer implements CNNLayer {
     @Override
     public Iterator<CNeuron> iterator() {
         return neurons.iterator();
+    }
+
+    private void makeNeurons() {
+        this.neurons = new ArrayList<>();
+        // TODO;
     }
 }

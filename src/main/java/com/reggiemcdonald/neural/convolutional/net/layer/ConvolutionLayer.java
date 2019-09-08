@@ -27,12 +27,13 @@ public class ConvolutionLayer implements CNNLayer {
 
     @Override
     public CNeuron get(int x, int y) {
-        return null;
+        int idx = x + (y * dim_y);
+        return neurons.get(idx);
     }
 
     @Override
     public CNeuron get(int idx) {
-        return null;
+        return neurons.get(idx);
     }
 
     @Override
@@ -41,10 +42,10 @@ public class ConvolutionLayer implements CNNLayer {
         for (CNeuron neuron : neurons) {
             makeConnections(neuron, from,  x, y);
             if (x + window_width < from.dim_x()) {
-                x += window_width;
+                x ++;
             } else {
                 x = 0;
-                y += window_width;
+                y ++;
             }
         }
         return this;
