@@ -10,6 +10,12 @@ public class SoftmaxLayer implements CNNLayer {
     public SoftmaxLayer (int size) {
         // TODO: Layer init
     }
+
+    @Override
+    public CNeuron getNeuron(int x, int y) {
+        return null;
+    }
+
     @Override
     public CNNLayer connect(CNNLayer to) {
         return this;

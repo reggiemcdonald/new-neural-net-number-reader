@@ -12,6 +12,11 @@ public class ConvolutionLayer implements CNNLayer {
     }
 
     @Override
+    public CNeuron getNeuron(int x, int y) {
+        return null;
+    }
+
+    @Override
     public CNNLayer connect(CNNLayer to) {
         return this;
     }
