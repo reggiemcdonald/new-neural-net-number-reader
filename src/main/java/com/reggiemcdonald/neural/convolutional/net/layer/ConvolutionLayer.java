@@ -11,12 +11,12 @@ public class ConvolutionLayer implements CNNLayer {
     List<CNeuron> neurons;
     private double dim_x, dim_y;
 
-    public ConvolutionLayer (int size) {
+    public ConvolutionLayer (int dim) {
         // TODO: Layer init
     }
 
     @Override
-    public CNeuron getNeuron(int x, int y) {
+    public CNeuron get(int x, int y) {
         return null;
     }
 

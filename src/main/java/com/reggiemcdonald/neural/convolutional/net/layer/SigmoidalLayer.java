@@ -2,6 +2,7 @@ package com.reggiemcdonald.neural.convolutional.net.layer;
 
 import com.reggiemcdonald.neural.convolutional.net.CNeuron;
 
+import java.util.Iterator;
 import java.util.List;
 
 public class SigmoidalLayer implements CNNLayer {
@@ -12,7 +13,7 @@ public class SigmoidalLayer implements CNNLayer {
     }
 
     @Override
-    public CNeuron getNeuron(int x, int y) {
+    public CNeuron get(int x, int y) {
         return null;
     }
 
@@ -25,5 +26,10 @@ public class SigmoidalLayer implements CNNLayer {
     public int size() {
         // TODO: Stub
         return 0;
+    }
+
+    @Override
+    public Iterator<CNeuron> iterator() {
+        return neurons.iterator();
     }
 }

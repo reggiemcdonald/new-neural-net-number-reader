@@ -2,7 +2,6 @@ package com.reggiemcdonald.neural.convolutional.net;
 
 import com.reggiemcdonald.neural.convolutional.math.COutput;
 import com.reggiemcdonald.neural.convolutional.net.learning.CLearner;
-import com.reggiemcdonald.neural.feedforward.net.Synapse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +14,7 @@ import java.util.Random;
  */
 public class CNeuron {
     // TODO
-    private List<Synapse> toThis, fromThis;
+    private List<CSynapse> toThis, fromThis;
     private double bias, output;
     private CLearner learner;
     private COutput outputFunction;
@@ -82,5 +81,37 @@ public class CNeuron {
      */
     public COutput outputFunction () {
         return outputFunction;
+    }
+
+    public CNeuron addConnectionToThis (CSynapse s) {
+        if (!toThis.contains(s)) {
+            toThis.add (s);
+            s.from().addConnectionFromThis(s);
+        }
+        return this;
+    }
+
+    public CNeuron addConnectionFromThis (CSynapse s) {
+        if (!fromThis.contains(s)) {
+            fromThis.add (s);
+            s.to().addConnectionToThis(s);
+        }
+        return this;
+    }
+
+    public CNeuron removeConnectionToThis (CSynapse s) {
+        if (toThis.contains(s)) {
+            toThis.remove(s);
+            s.from().removeConnectionFromThis(s);
+        }
+        return this;
+    }
+
+    public CNeuron removeConnectionFromThis (CSynapse s) {
+        if (fromThis.contains(s)) {
+            fromThis.remove(s);
+            s.to().removeConnectionToThis(s);
+        }
+        return this;
     }
  }
