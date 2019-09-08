@@ -18,6 +18,11 @@ public class PoolingLayer implements CNNLayer {
     }
 
     @Override
+    public CNeuron get(int idx) {
+        return null;
+    }
+
+    @Override
     public CNNLayer connect(CNNLayer to) {
         return this;
     }
@@ -25,6 +30,16 @@ public class PoolingLayer implements CNNLayer {
     @Override
     public int size() {
         // TODO: Stub
+        return 0;
+    }
+
+    @Override
+    public int dim_x() {
+        return 0;
+    }
+
+    @Override
+    public int dim_y() {
         return 0;
     }
 

@@ -2,6 +2,7 @@ package com.reggiemcdonald.neural.convolutional.net.layer;
 
 import com.reggiemcdonald.neural.convolutional.net.CNeuron;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -21,6 +22,11 @@ public class ConvolutionLayer implements CNNLayer {
     }
 
     @Override
+    public CNeuron get(int idx) {
+        return null;
+    }
+
+    @Override
     public CNNLayer connect(CNNLayer to) {
         return this;
     }
@@ -29,5 +35,20 @@ public class ConvolutionLayer implements CNNLayer {
     public int size() {
         // TODO: Stub
         return 0;
+    }
+
+    @Override
+    public int dim_x() {
+        return 0;
+    }
+
+    @Override
+    public int dim_y() {
+        return 0;
+    }
+
+    @Override
+    public Iterator<CNeuron> iterator() {
+        return neurons.iterator();
     }
 }
