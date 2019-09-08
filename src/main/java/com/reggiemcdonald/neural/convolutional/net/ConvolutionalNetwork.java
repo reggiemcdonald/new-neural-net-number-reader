@@ -23,10 +23,11 @@ public class ConvolutionalNetwork {
      * @param convolutionalSizes   an int[] of perfect squares describing the sizes of the convolutions (keep small)
      * @param poolingSizes         an int[] of the pooling sizes
      * @param numberOfOutputs      the number of neurons in the output layer
+     * @param stride               the stride length - TODO: Should this be an int[]
      * @param hasSigmoidal         set to true if a sigmoidal output layer should be included
      */
     public ConvolutionalNetwork (int[] inputLayerSizes, int[] convolutionalSizes,
-                                 int[] poolingSizes, int numberOfOutputs, boolean hasSigmoidal) {
+                                 int[] poolingSizes, int numberOfOutputs, int stride, boolean hasSigmoidal) {
 
         if (inputLayerSizes == null || inputLayerSizes.length == 0)
             throw new RuntimeException("Initialization Error: Must have at least one input layer");
@@ -34,17 +35,17 @@ public class ConvolutionalNetwork {
             throw new RuntimeException ("Initialization Error: Must have at least one convolution");
         if (poolingSizes == null || poolingSizes.length == 0)
             throw new RuntimeException ("Initialization Error: Must have at least one pooling layer");
-        createInputs       (inputLayerSizes);
+        createInputs       (inputLayerSizes, stride);
         createConvolutions (convolutionalSizes);
 
         createPoolings (poolingSizes);
         createOutputs  (hasSigmoidal, poolingSizes[poolingSizes.length-1], numberOfOutputs);
     }
 
-    private void createInputs (int[] sizes) {
+    private void createInputs (int[] sizes, int stride) {
         inputs = new ArrayList<>(sizes.length);
         for (int i : sizes)
-            inputs.add (new InputLayer(i));
+            inputs.add (new InputLayer(i, stride));
     }
 
     private void createConvolutions (int[] sizes) {

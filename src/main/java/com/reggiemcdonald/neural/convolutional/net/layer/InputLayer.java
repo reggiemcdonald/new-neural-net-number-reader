@@ -1,9 +1,11 @@
 package com.reggiemcdonald.neural.convolutional.net.layer;
 
 import com.reggiemcdonald.neural.convolutional.net.CNeuron;
+import com.reggiemcdonald.neural.convolutional.net.CNeuronFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * An layer of inputs to a convolutional neural network
@@ -13,11 +15,13 @@ import java.util.List;
 public class InputLayer implements CNNLayer {
     private List<CNeuron> neurons;
     private double dim_x, dim_y;
+    private int stride;
 
-    public InputLayer (int size) {
+    public InputLayer (int size, int stride) {
         if (Math.pow (Math.sqrt(size), 2) != size)
             throw new RuntimeException("Initialization Error: Layer size must be a perfect square");
         dim_x = dim_y = Math.sqrt (size); // Right now, assume this has to be square
+        this.stride = stride;
         makeNeurons (size);
     }
 
@@ -40,11 +44,13 @@ public class InputLayer implements CNNLayer {
 
     /**
      * Produce size neurons and add them to this layer
+     * Set bias to 1, as per typical output
      * @param size
      */
     private void makeNeurons (int size) {
         neurons = new ArrayList<>(size);
+        Random r = new Random();
         for (int i = 0; i < size; i++)
-            neurons.add (new CNeuron());
+            neurons.add (CNeuronFactory.makeNeuron (CNeuronFactory.CN_TYPE_INPT, 1., r.nextGaussian()));
     }
 }

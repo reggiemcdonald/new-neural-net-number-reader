@@ -4,8 +4,12 @@ import com.reggiemcdonald.neural.convolutional.net.CNeuron;
 
 import java.util.List;
 
+/**
+ * A convolutional layer in a CNN
+ */
 public class ConvolutionLayer implements CNNLayer {
     List<CNeuron> neurons;
+    private double dim_x, dim_y;
 
     public ConvolutionLayer (int size) {
         // TODO: Layer init
