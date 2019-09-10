@@ -11,33 +11,48 @@ import java.util.Random;
 
 /**
  * A convolutional layer in a CNN
+ * The kernel is an array of weights sized according to the receiving window
+ * that are common among each dim_x * dim_y neurons in the layer
  */
 public class ConvolutionLayer implements CNNLayer {
     List<CNeuron> neurons;
     private int dim_x, dim_y;
     private int window_width;
+    private double[][] kernel;
+    private double bias;
 
     public ConvolutionLayer (int dim_x, int dim_y, int window_width) {
         assert (dim_x == dim_y);
+        Random r          = new Random ();
         this.dim_x        = dim_x;
         this.dim_y        = dim_y;
         this.window_width = window_width;
+        this.kernel       = makeKernel (window_width, r);
+        this.bias         = r.nextGaussian();
         makeNeurons ();
     }
 
+    private double[][] makeKernel (int window_width, Random r) {
+        double[][] kernel = new double[window_width][window_width];
+        for (int i = 0; i < kernel.length; i++)
+            for (int j = 0; j < kernel[i].length; j++)
+                kernel[i][j] = r.nextGaussian();
+        return kernel;
+    }
+
     @Override
-    public CNeuron get(int x, int y) {
+    public CNeuron get (int x, int y) {
         int idx = x + (y * dim_y);
         return neurons.get(idx);
     }
 
     @Override
-    public CNeuron get(int idx) {
+    public CNeuron get (int idx) {
         return neurons.get(idx);
     }
 
     @Override
-    public CNNLayer connect(CNNLayer from) {
+    public CNNLayer connect (CNNLayer from) {
         int x = 0, y = 0;
         for (CNeuron neuron : neurons) {
             makeConnections(neuron, from,  x, y);
@@ -58,7 +73,7 @@ public class ConvolutionLayer implements CNNLayer {
             int currY = 0;
             while (currY < window_width) {
                 to.addConnectionToThis(
-                        new CSynapse(from.get(currX+x, currY+y),to, r.nextGaussian(), window_width * window_width)
+                        new CSynapse(from.get(currX+x, currY+y),to, kernel[currX][currY], window_width * window_width)
                 );
                 currY++;
             }
@@ -67,8 +82,7 @@ public class ConvolutionLayer implements CNNLayer {
     }
 
     @Override
-    public int size() {
-        // TODO: Stub
+    public int size () {
         return neurons.size();
     }
 
@@ -93,7 +107,7 @@ public class ConvolutionLayer implements CNNLayer {
         int size = dim_x() * dim_y();
         for (int i = 0; i < size; i++) {
             CNeuron neuron = CNeuronFactory
-                    .makeNeuron(CNeuronFactory.CN_TYPE_CONV, r.nextGaussian(), r.nextGaussian());
+                    .makeNeuron(CNeuronFactory.CN_TYPE_CONV, bias, r.nextGaussian());
             neurons.add (neuron);
         }
     }

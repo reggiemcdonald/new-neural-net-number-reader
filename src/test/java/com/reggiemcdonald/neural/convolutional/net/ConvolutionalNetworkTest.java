@@ -6,8 +6,9 @@ public class ConvolutionalNetworkTest {
 
     @Test
     public void testNetwork () {
-        int[] inputs = {28, 28, 28}, conv = {5, 5, 5}, pooling = {5};
-        ConvolutionalNetwork cnn = new ConvolutionalNetwork(inputs, conv, pooling, 10, 1, true);
+        ConvolutionalNetwork cnn = new ConvolutionalNetwork(28, new int[] {5}, new int[] {2},
+                new int[] {3,3}, 10, new int[] {1,2}, true);
+        System.out.println("Done");
     }
 
 

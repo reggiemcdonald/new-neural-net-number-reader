@@ -14,6 +14,10 @@ public class PoolingLayer implements CNNLayer {
         makeNeurons ();
     }
 
+    public PoolingLayer (int dim_x, int dim_y, int window_width, boolean isMaxPooling) {
+
+    }
+
     @Override
     public CNeuron get(int x, int y) {
         return null;
