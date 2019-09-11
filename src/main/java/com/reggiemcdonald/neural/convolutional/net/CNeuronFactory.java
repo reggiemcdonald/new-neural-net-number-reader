@@ -2,8 +2,10 @@ package com.reggiemcdonald.neural.convolutional.net;
 
 import com.reggiemcdonald.neural.convolutional.math.ConvCOutput;
 import com.reggiemcdonald.neural.convolutional.math.InputCOutput;
+import com.reggiemcdonald.neural.convolutional.math.PoolCOutput;
 import com.reggiemcdonald.neural.convolutional.net.learning.ConvCLearner;
 import com.reggiemcdonald.neural.convolutional.net.learning.InputCLearner;
+import com.reggiemcdonald.neural.convolutional.net.learning.PoolCLearner;
 
 public class CNeuronFactory {
 
@@ -55,6 +57,10 @@ public class CNeuronFactory {
                 return neuron
                         .learner(new InputCLearner(neuron))
                         .outputFunction(new ConvCOutput(neuron));
+            case CN_TYPE_POOL:
+                return neuron
+                        .learner(new PoolCLearner(neuron))
+                        .outputFunction(new PoolCOutput(neuron));
             default:
                 throw new RuntimeException("Not yet implemented");
         }

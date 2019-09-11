@@ -2,6 +2,7 @@ package com.reggiemcdonald.neural.convolutional.net.layer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * A full layer of a neural network containing
@@ -14,6 +15,7 @@ public class CAggregateLayer {
     private boolean isMaxPooling = true; // Default. False is average pooling
     private List<ConvolutionLayer> convolutionLayers;
     private List<PoolingLayer> poolingLayers;
+    private double[][][] kernel;
 
     public CAggregateLayer(int cDim, int pDim,  int depth, int cWindowWidth, int pWindowWidth, int cStride, int pStride) {
         this.cDim  = cDim;
@@ -25,7 +27,9 @@ public class CAggregateLayer {
         this.pStride = pStride;
         this.convolutionLayers = new ArrayList<>(depth);
         this.poolingLayers = new ArrayList<>(depth);
-        makeLayers();
+        makeKernel ();
+        makeLayers ();
+        connectConvolutionToPooling ();
     }
 
     public CAggregateLayer(int cDim, int pDim, int depth, int cWindowWidth, int pWindowWidth, int cStride, int pStride, boolean isMaxPooling) {
@@ -39,7 +43,9 @@ public class CAggregateLayer {
         this.isMaxPooling      = isMaxPooling;
         this.convolutionLayers = new ArrayList<>(depth);
         this.poolingLayers     = new ArrayList<>(depth);
-        makeLayers();
+        makeKernel ();
+        makeLayers ();
+        connectConvolutionToPooling ();
     }
 
     /**
@@ -47,9 +53,31 @@ public class CAggregateLayer {
      */
     private void makeLayers() {
         for (int i = 0; i < depth; i++) {
-            convolutionLayers.add (new ConvolutionLayer(cDim, cDim, cWindowWidth));
-            poolingLayers.add (new PoolingLayer (pDim, pDim, cWindowWidth, isMaxPooling));
+            convolutionLayers.add (new ConvolutionLayer(cDim, cDim, cWindowWidth, kernel));
+            poolingLayers.add (new PoolingLayer (pDim, pDim, pWindowWidth, isMaxPooling));
         }
+    }
+
+    /**
+     * Produce the cDim * cDim * depth kernel to be passed to the convolutional layers
+     */
+    private void makeKernel () {
+        Random r = new Random();
+        kernel = new double[depth][cDim][cDim];
+        for (int i = 0; i < depth; i++) {
+            for (int j = 0; j < cDim; j++)
+                for (int k = 0; k < cDim; k++)
+                    kernel[i][j][k] = r.nextGaussian();
+        }
+    }
+
+    /**
+     * Establish the connection between the Convolution and Pooling layers
+     * Pooling layer only receives input from one channel
+     */
+    private void connectConvolutionToPooling () {
+        for (int i = 0; i < poolingLayers.size(); i++)
+            poolingLayers.get(i).connect(convolutionLayers.get(i), i);
     }
 
     /**
@@ -80,5 +108,15 @@ public class CAggregateLayer {
         return new ArrayList<>(poolingLayers);
     }
 
+    /**
+     * Produce a connection from the list of from layers
+     * to the convolution layers of this complete layer
+     * @param from
+     */
+    public void connectToThis (List<CNNLayer> from) {
+        for (ConvolutionLayer c : convolutionLayers)
+            for (int i = 0; i < convolutionLayers.size(); i++)
+                c.connect(from.get(i), i);
+    }
 
 }

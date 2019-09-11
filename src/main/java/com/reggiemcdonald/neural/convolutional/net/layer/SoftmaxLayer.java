@@ -25,7 +25,7 @@ public class SoftmaxLayer implements CNNLayer {
     }
 
     @Override
-    public CNNLayer connect(CNNLayer from) {
+    public CNNLayer connect(CNNLayer from, int k) {
         return this;
     }
 

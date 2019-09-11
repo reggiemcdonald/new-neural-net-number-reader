@@ -36,7 +36,7 @@ public class InputLayer implements CNNLayer {
     }
 
     @Override
-    public CNNLayer connect(CNNLayer from) {
+    public CNNLayer connect(CNNLayer from, int k) {
         // Does nothing ??
         return this;
     }

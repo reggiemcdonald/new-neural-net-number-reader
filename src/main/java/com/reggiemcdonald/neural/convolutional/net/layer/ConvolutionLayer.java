@@ -18,26 +18,18 @@ public class ConvolutionLayer implements CNNLayer {
     List<CNeuron> neurons;
     private int dim_x, dim_y;
     private int window_width;
-    private double[][] kernel;
+    private double[][][] kernel;
     private double bias;
 
-    public ConvolutionLayer (int dim_x, int dim_y, int window_width) {
+    public ConvolutionLayer (int dim_x, int dim_y, int window_width, double[][][] kernel) {
         assert (dim_x == dim_y);
         Random r          = new Random ();
         this.dim_x        = dim_x;
         this.dim_y        = dim_y;
         this.window_width = window_width;
-        this.kernel       = makeKernel (window_width, r);
+        this.kernel       = kernel;
         this.bias         = r.nextGaussian();
         makeNeurons ();
-    }
-
-    private double[][] makeKernel (int window_width, Random r) {
-        double[][] kernel = new double[window_width][window_width];
-        for (int i = 0; i < kernel.length; i++)
-            for (int j = 0; j < kernel[i].length; j++)
-                kernel[i][j] = r.nextGaussian();
-        return kernel;
     }
 
     @Override
@@ -52,10 +44,10 @@ public class ConvolutionLayer implements CNNLayer {
     }
 
     @Override
-    public CNNLayer connect (CNNLayer from) {
+    public CNNLayer connect (CNNLayer from, int k) {
         int x = 0, y = 0;
         for (CNeuron neuron : neurons) {
-            makeConnections(neuron, from,  x, y);
+            makeConnections(neuron, from, x, y, k);
             if (x + window_width < from.dim_x()) {
                 x ++;
             } else {
@@ -66,14 +58,14 @@ public class ConvolutionLayer implements CNNLayer {
         return this;
     }
 
-    private void makeConnections (CNeuron to, CNNLayer from, int x, int y) {
+    private void makeConnections (CNeuron to, CNNLayer from, int x, int y, int k) {
         int currX = 0;
         Random r = new Random();
         while (currX < window_width) {
             int currY = 0;
             while (currY < window_width) {
                 to.addConnectionToThis(
-                        new CSynapse(from.get(currX+x, currY+y),to, kernel[currX][currY], window_width * window_width)
+                        new CSynapse(from.get(currX+x, currY+y),to, kernel[k][currX][currY], window_width * window_width)
                 );
                 currY++;
             }

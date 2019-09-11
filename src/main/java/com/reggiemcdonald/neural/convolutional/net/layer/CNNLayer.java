@@ -23,9 +23,11 @@ public interface CNNLayer extends Iterable<CNeuron> {
     /**
      * Creates connections from from, to this
      * @param from
+     * @param k the kernel level to use for weights where inputs to the convolution layer have d channels,
+     *          0 <= k < d
      * @return
      */
-    CNNLayer connect (CNNLayer from);
+    CNNLayer connect (CNNLayer from, int k);
 
 
 
