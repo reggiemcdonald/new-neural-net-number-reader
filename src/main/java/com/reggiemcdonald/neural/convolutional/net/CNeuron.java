@@ -12,7 +12,7 @@ import java.util.Random;
  * Synapses from the feedforward network are sufficient
  * Initialize hyperparameters with gaussians
  */
-public class CNeuron {
+public class CNeuron implements Propagatable{
     // TODO
     private List<CSynapse> toThis, fromThis;
     private double bias, output;
@@ -114,4 +114,9 @@ public class CNeuron {
         }
         return this;
     }
- }
+
+    @Override
+    public void propagate() {
+        // TODO: Propagate
+    }
+}

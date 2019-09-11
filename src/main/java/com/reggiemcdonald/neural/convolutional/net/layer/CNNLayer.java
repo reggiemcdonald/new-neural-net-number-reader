@@ -1,8 +1,9 @@
 package com.reggiemcdonald.neural.convolutional.net.layer;
 
 import com.reggiemcdonald.neural.convolutional.net.CNeuron;
+import com.reggiemcdonald.neural.convolutional.net.Propagatable;
 
-public interface CNNLayer extends Iterable<CNeuron> {
+public interface CNNLayer extends Iterable<CNeuron>, Propagatable {
     // TODO: Specify the CNN Layer
 
     /**

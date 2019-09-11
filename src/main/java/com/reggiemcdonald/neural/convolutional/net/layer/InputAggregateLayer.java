@@ -1,9 +1,11 @@
 package com.reggiemcdonald.neural.convolutional.net.layer;
 
+import com.reggiemcdonald.neural.convolutional.net.Propagatable;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class InputAggregateLayer {
+public class InputAggregateLayer implements Propagatable {
     private int dim, depth, stride;
     private List<InputLayer> inputLayers;
 
@@ -34,5 +36,9 @@ public class InputAggregateLayer {
         return dim;
     }
 
+    @Override
+    public void propagate () {
+        // TODO: Propagate
+    }
 
 }

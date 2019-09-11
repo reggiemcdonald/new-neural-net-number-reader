@@ -73,4 +73,9 @@ public class InputLayer implements CNNLayer {
     public Iterator<CNeuron> iterator() {
         return neurons.iterator();
     }
+
+    @Override
+    public void propagate() {
+        // TODO: Propagate
+    }
 }

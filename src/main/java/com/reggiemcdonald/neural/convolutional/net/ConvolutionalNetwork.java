@@ -1,6 +1,7 @@
 package com.reggiemcdonald.neural.convolutional.net;
 
-import com.reggiemcdonald.neural.convolutional.net.layer.CNNLayer;
+import com.reggiemcdonald.neural.convolutional.net.decipher.Decipher;
+import com.reggiemcdonald.neural.convolutional.net.decipher.IndexOfMaxDecipher;
 import com.reggiemcdonald.neural.convolutional.net.layer.*;
 import com.reggiemcdonald.neural.convolutional.net.util.LayerUtilities;
 
@@ -15,6 +16,8 @@ public class ConvolutionalNetwork {
     private List<CNNLayer> sigmoidalOutputs;
 
     private CNNLayer softmaxOutput;
+
+    private Decipher<?> decipher = new IndexOfMaxDecipher(); // Default behaviour
 
     /**
      * Another bad constructor
@@ -114,7 +117,7 @@ public class ConvolutionalNetwork {
                     .connect(sigmoidalOutputs.get(i-1), 0);
         }
         // Connect the final sigmoidal layer to the softmax layer
-        softmaxOutput.connect(sigmoidalOutputs.get(sigmoidalOutputs.size()), 0);
+        softmaxOutput.connect(sigmoidalOutputs.get(sigmoidalOutputs.size()-1), 0);
     }
 
     /**
@@ -127,5 +130,18 @@ public class ConvolutionalNetwork {
         for (int i = 0; i < layersTo.size(); i++)
             for (int j = 0; j < layersFrom.size(); j++)
                 layersTo.get(i).connect(layersFrom.get(j), j);
+    }
+
+    public void propagate () {
+        // TODO: Propagate
+        // Propagate at the input layer
+        inputAggregateLayer.propagate();
+        // Propagate the convolutional layers
+
+        // Propagate the feed-forward layers
+    }
+
+    public void setDecipher (Decipher decipher) {
+        this.decipher = decipher;
     }
 }

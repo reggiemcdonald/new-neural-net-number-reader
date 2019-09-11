@@ -72,4 +72,8 @@ public class SigmoidalLayer implements CNNLayer {
         return neurons.iterator();
     }
 
+    @Override
+    public void propagate() {
+        // TODO: Propagate
+    }
 }

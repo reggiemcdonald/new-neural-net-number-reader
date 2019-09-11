@@ -103,4 +103,9 @@ public class ConvolutionLayer implements CNNLayer {
             neurons.add (neuron);
         }
     }
+
+    @Override
+    public void propagate() {
+        // TODO: Propagate
+    }
 }

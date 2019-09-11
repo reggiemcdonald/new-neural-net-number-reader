@@ -2,6 +2,7 @@ package com.reggiemcdonald.neural.convolutional.net.layer;
 
 import com.reggiemcdonald.neural.convolutional.net.CNeuron;
 import com.reggiemcdonald.neural.convolutional.net.CSynapse;
+import com.reggiemcdonald.neural.convolutional.net.Propagatable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.Random;
  * 2. A d-deep pooling layer
  * Maintains convolutional and pooling layers in their respective positions
  */
-public class CAggregateLayer {
+public class CAggregateLayer implements Propagatable {
     private int cDim, pDim, depth, cWindowWidth, pWindowWidth, cStride, pStride;
     private boolean isMaxPooling = true; // Default. False is average pooling
     private List<ConvolutionLayer> convolutionLayers;
@@ -160,4 +161,8 @@ public class CAggregateLayer {
         return poolingLayers.get(k).get(i);
     }
 
+    @Override
+    public void propagate() {
+        // TODO: Propagate
+    }
 }
