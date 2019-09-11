@@ -1,6 +1,7 @@
 package com.reggiemcdonald.neural.convolutional.net;
 
 import com.reggiemcdonald.neural.convolutional.math.COutput;
+import com.reggiemcdonald.neural.convolutional.net.layer.CNNLayer;
 import com.reggiemcdonald.neural.convolutional.net.learning.CLearner;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ public class CNeuron implements Propagatable{
     private double bias, output;
     private CLearner learner;
     private COutput outputFunction;
+    private CNNLayer layer;
 
     /**
      * Default no-arg constructor
@@ -115,8 +117,36 @@ public class CNeuron implements Propagatable{
         return this;
     }
 
+    public double output() {
+        return output;
+    }
+
+    public void setOutput(double output) {
+        this.output = output;
+    }
+
+    public double bias () {
+        return bias;
+    }
+
+    public void setBias (double bias) {
+        this.bias = bias;
+    }
+
     @Override
     public void propagate() {
-        // TODO: Propagate
+        setOutput(outputFunction.compute());
+    }
+
+    public List<CSynapse> synapsesToThis () {
+        return toThis;
+    }
+
+    public List<CSynapse> synapsesFromThis () {
+        return fromThis;
+    }
+
+    public CNNLayer layer () {
+        return layer;
     }
 }

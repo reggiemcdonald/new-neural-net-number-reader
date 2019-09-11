@@ -1,5 +1,6 @@
 package com.reggiemcdonald.neural.convolutional.net.layer;
 
+import com.reggiemcdonald.neural.convolutional.net.CNeuron;
 import com.reggiemcdonald.neural.convolutional.net.Propagatable;
 
 import java.util.ArrayList;
@@ -40,6 +41,10 @@ public class InputAggregateLayer implements Propagatable {
     public void propagate () {
         for (Propagatable p : inputLayers())
             p.propagate();
+    }
+
+    public CNeuron get (int i, int j, int k) {
+        return inputLayers.get(i).get(j, k);
     }
 
 }

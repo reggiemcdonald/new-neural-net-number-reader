@@ -121,18 +121,6 @@ public class ConvolutionalNetwork {
     }
 
     /**
-     * Connects adjacent layers
-     * @param layersFrom
-     * @param layersTo
-     */
-    private void connect (List<CNNLayer> layersFrom, List<CNNLayer> layersTo) {
-        assert(layersFrom.size() == layersTo.size());
-        for (int i = 0; i < layersTo.size(); i++)
-            for (int j = 0; j < layersFrom.size(); j++)
-                layersTo.get(i).connect(layersFrom.get(j), j);
-    }
-
-    /**
      * Initialize the signal propagation
      */
     public void propagate () {
@@ -143,6 +131,13 @@ public class ConvolutionalNetwork {
 
         for (Propagatable p : sigmoidalOutputs)
             p.propagate();
+    }
+
+    public void input (double[][][] input) {
+        for (int i = 0; i < input.length; i++)
+            for (int j = 0; j < input[i].length; j++)
+                for (int k = 0; k < input[i][j].length; k++)
+                    inputAggregateLayer.get(i,j,k).setOutput(input[i][j][k]);
     }
 
     public void setDecipher (Decipher decipher) {

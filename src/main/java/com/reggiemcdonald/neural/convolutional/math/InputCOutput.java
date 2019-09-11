@@ -9,5 +9,10 @@ public class InputCOutput implements COutput {
         this.neuron = neuron;
     }
 
+    @Override
+    public double compute() {
+        return neuron.output();
+    }
+
     // TODO
 }
