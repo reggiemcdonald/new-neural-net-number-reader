@@ -163,6 +163,9 @@ public class CAggregateLayer implements Propagatable {
 
     @Override
     public void propagate() {
-        // TODO: Propagate
+        for (Propagatable p : convolutionLayers)
+            p.propagate();
+        for (Propagatable p : poolingLayers)
+            p.propagate();
     }
 }

@@ -132,13 +132,17 @@ public class ConvolutionalNetwork {
                 layersTo.get(i).connect(layersFrom.get(j), j);
     }
 
+    /**
+     * Initialize the signal propagation
+     */
     public void propagate () {
-        // TODO: Propagate
-        // Propagate at the input layer
         inputAggregateLayer.propagate();
-        // Propagate the convolutional layers
 
-        // Propagate the feed-forward layers
+        for (Propagatable p : convolutionalLayers)
+            p.propagate();
+
+        for (Propagatable p : sigmoidalOutputs)
+            p.propagate();
     }
 
     public void setDecipher (Decipher decipher) {

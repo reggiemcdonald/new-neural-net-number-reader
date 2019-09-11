@@ -1,5 +1,9 @@
 package com.reggiemcdonald.neural.convolutional.net.decipher;
 
+/**
+ * The default decipher behaviour -
+ * find the most strongly outputting neuron in the output layer
+ */
 public class IndexOfMaxDecipher implements Decipher<Integer> {
 
     @Override

@@ -3,6 +3,7 @@ package com.reggiemcdonald.neural.convolutional.net.layer;
 import com.reggiemcdonald.neural.convolutional.net.CNeuron;
 import com.reggiemcdonald.neural.convolutional.net.CNeuronFactory;
 import com.reggiemcdonald.neural.convolutional.net.CSynapse;
+import com.reggiemcdonald.neural.convolutional.net.Propagatable;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -106,6 +107,7 @@ public class ConvolutionLayer implements CNNLayer {
 
     @Override
     public void propagate() {
-        // TODO: Propagate
+        for (Propagatable p : this)
+            p.propagate();
     }
 }

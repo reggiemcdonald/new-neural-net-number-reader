@@ -38,7 +38,8 @@ public class InputAggregateLayer implements Propagatable {
 
     @Override
     public void propagate () {
-        // TODO: Propagate
+        for (Propagatable p : inputLayers())
+            p.propagate();
     }
 
 }
