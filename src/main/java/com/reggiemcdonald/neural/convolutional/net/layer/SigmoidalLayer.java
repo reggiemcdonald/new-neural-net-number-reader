@@ -1,48 +1,70 @@
 package com.reggiemcdonald.neural.convolutional.net.layer;
 
 import com.reggiemcdonald.neural.convolutional.net.CNeuron;
+import com.reggiemcdonald.neural.convolutional.net.CNeuronFactory;
+import com.reggiemcdonald.neural.convolutional.net.CSynapse;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 public class SigmoidalLayer implements CNNLayer {
     private List<CNeuron> neurons;
 
     public SigmoidalLayer (int size) {
-        // TODO: Layer init
-        makeNeurons ();
+        makeNeurons (size);
+    }
+
+    /**
+     * Produce size neurons to fill this layer with gaussian intializations
+     * @param size
+     */
+    private void makeNeurons (int size) {
+        Random r = new Random();
+        this.neurons = new ArrayList<>(size);
+        for (int i = 0; i < size; i++) {
+            CNeuron neuron = CNeuronFactory.makeNeuron(
+                    CNeuronFactory.CN_TYPE_SIGM, r.nextGaussian(), r.nextGaussian()
+            );
+            neurons.add(neuron);
+        }
     }
 
     @Override
     public CNeuron get(int x, int y) {
-        return null;
+        return neurons.get (y);
     }
 
     @Override
     public CNeuron get(int idx) {
-        return null;
+        return neurons.get (idx);
     }
 
     @Override
-    public CNNLayer connect(CNNLayer from, int k) {
+    public CNNLayer connect(CNNLayer fromLayer, int k) {
+        Random r = new Random();
+        CNNLayer toLayer = this;
+        for (CNeuron to : toLayer)
+            for (CNeuron from : fromLayer)
+                to.addConnectionToThis(new CSynapse(from, to, r.nextGaussian(), fromLayer.size()));
         return this;
     }
 
     @Override
     public int size() {
         // TODO: Stub
-        return 0;
+        return neurons.size();
     }
 
     @Override
     public int dim_x() {
-        return 0;
+        return 1;
     }
 
     @Override
     public int dim_y() {
-        return 0;
+        return neurons.size();
     }
 
     @Override
@@ -50,8 +72,4 @@ public class SigmoidalLayer implements CNNLayer {
         return neurons.iterator();
     }
 
-    private void makeNeurons () {
-        this.neurons = new ArrayList<>();
-        // TODO
-    }
 }
