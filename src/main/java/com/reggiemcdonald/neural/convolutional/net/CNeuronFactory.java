@@ -23,7 +23,6 @@ public class CNeuronFactory {
                 return neuron
                         .learner(new InputCLearner(neuron))
                         .outputFunction(new InputCOutput(neuron));
-            // TODO: Complete neural factory
             case CN_TYPE_CONV:
                 return neuron
                         .learner(new ConvCLearner(neuron))
@@ -60,7 +59,6 @@ public class CNeuronFactory {
                 return neuron
                         .learner(new InputCLearner(neuron))
                         .outputFunction(new InputCOutput(neuron));
-            // TODO: Complete neural factory
             case CN_TYPE_CONV:
                 return neuron
                         .learner(new ConvCLearner(neuron))
