@@ -43,12 +43,13 @@ public class PoolingLayer implements CNNLayer {
 
     @Override
     public CNeuron get(int x, int y) {
-        return null;
+        int idx = (x * dim_x) + y;
+        return neurons.get(idx);
     }
 
     @Override
     public CNeuron get(int idx) {
-        return null;
+        return neurons.get(idx);
     }
 
     @Override

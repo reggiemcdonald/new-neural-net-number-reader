@@ -1,5 +1,8 @@
 package com.reggiemcdonald.neural.convolutional.net.layer;
 
+import com.reggiemcdonald.neural.convolutional.net.CNeuron;
+import com.reggiemcdonald.neural.convolutional.net.CSynapse;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -117,6 +120,44 @@ public class CAggregateLayer {
         for (ConvolutionLayer c : convolutionLayers)
             for (int i = 0; i < convolutionLayers.size(); i++)
                 c.connect(from.get(i), i);
+    }
+
+    /**
+     * Returns the total number of outputting pooling neurons in this layer
+     * @return
+     */
+    public int density() {
+        return pDim * pDim * depth;
+    }
+
+    /**
+     * Flattens the pooling layers, returning a linear sigmoidal layer
+     * @return SigmoidalLayer
+     */
+    public CNNLayer flatten () {
+        Random r = new Random();
+        int density = density();
+        CNNLayer sigmoidalFlat = new SigmoidalLayer(density);
+        for (int i = 0; i < density; i++) {
+            CNeuron from = getPooling(i),
+                    to   = sigmoidalFlat.get(i);
+            sigmoidalFlat.get(i).addConnectionToThis(
+                    new CSynapse(from, to, r.nextGaussian())
+            );
+        }
+        return sigmoidalFlat;
+    }
+
+    public CNeuron getPooling (int i) {
+        int perLayer = pDim * pDim;
+        int x = i / perLayer;
+        i -= (x * perLayer);
+        return poolingLayers.get(x).get(i);
+    }
+
+    public CNeuron getPooling (int x, int y, int k) {
+        int i = (x * pDim) + y;
+        return poolingLayers.get(k).get(i);
     }
 
 }

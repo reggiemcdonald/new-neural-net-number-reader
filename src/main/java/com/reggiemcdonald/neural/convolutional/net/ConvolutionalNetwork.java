@@ -22,6 +22,7 @@ public class ConvolutionalNetwork {
      * @param convolutionWindowSizes and int[] of the window sizes for each convolution layer
      * @param poolingWindowSizes an int[] of the window sizes for each of the poolings
      * @param depths an int[] of the depths for the input and convolution layers
+     * @param sigmoidalOutputSizes an int[] of sizes for additional sigmoidal outputs (beyond flatten layer)
      * @param numberOfOutputs the number of neurons to be in the output layer
      * @param stride an int[] of stride lengths
      * @param hasSigmoidalLayer true if the network should have a sigmoidal layer
@@ -40,7 +41,7 @@ public class ConvolutionalNetwork {
             throw new RuntimeException("Init Error: Insufficient number of entries in the depths array");
         if (stride == null || stride.length != convolutionWindowSizes.length + poolingWindowSizes.length)
             throw new RuntimeException("Init Error: Insufficient stride measurements");
-        if (hasSigmoidalLayer && (sigmoidalOutputSizes == null || sigmoidalOutputSizes.length == 0))
+        if (hasSigmoidalLayer && (sigmoidalOutputSizes == null))
             throw new RuntimeException("Init Error: Must have at least one sigmoidal output layer; preferably more");
 
         inputAggregateLayer = new InputAggregateLayer (inputLayerDimension, depths[0], stride[0]);
@@ -50,6 +51,14 @@ public class ConvolutionalNetwork {
         System.out.println("Here");
     }
 
+    /**
+     * Create the convolutional layers of this complete layer
+     * @param cSizes a list of window sizes for the convolutions
+     * @param pSizes a list of window sizes for the associated poolings
+     * @param depths a list of depths at each level of the network
+     * @param stride a list of stride measurements
+     * Note: cSizes.length == pSizes.length
+     */
     private void createConvolutions (int[] cSizes, int[] pSizes, int[] depths, int[] stride) {
         convolutionalLayers = new ArrayList<>(cSizes.length);
         // Make the first CAggregateLayer immediately following the Input Layer
@@ -66,15 +75,28 @@ public class ConvolutionalNetwork {
 
     }
 
+    /**
+     * Produces the output layers of this network and assumes the existance of a single flatten layer
+     * for feed-forward
+     * @param sigmoidalOutputSizes
+     * @param softmaxSize
+     * @param hasSigmoidalLayer
+     */
     private void createOutputs (int[] sigmoidalOutputSizes, int softmaxSize, boolean hasSigmoidalLayer) {
         // TODO: CNN init
-//        if (hasSigmoidalLayer) {
-//            for (int sigmoidalSize : sigmoidalOutputSizes)
-//                sigmoidalOutputs.add (new SigmoidalLayer(sigmoidalSize));
-//
-//        }
+        sigmoidalOutputs = new ArrayList<>();
+        CAggregateLayer lastConvLayer = convolutionalLayers.get(convolutionalLayers.size()-1);
+        sigmoidalOutputs.add (lastConvLayer.flatten());
+        if (hasSigmoidalLayer) {
+            for (int sigmoidalLayerSize : sigmoidalOutputSizes)
+                sigmoidalOutputs.add (new SigmoidalLayer(sigmoidalLayerSize));
+        }
+        softmaxOutput = new SoftmaxLayer (softmaxSize);
     }
 
+    /**
+     * Connects the layers
+     */
     private void connect () {
         // Connect the input layers to the first convolutional layers
         convolutionalLayers.get(0).connectToThis (inputAggregateLayer.inputLayers());
@@ -85,26 +107,25 @@ public class ConvolutionalNetwork {
                     .connectToThis(convolutionalLayers.get(i-1).poolingLayers());
         }
 
-        // TODO: Create the next layers first, then run connection
-
-        // Connect the sigmoidal output to the softmax layer
-//        softmaxOutput.connect(sigmoidalOutput);
-
+        // Connect the sigmoidal layers
+        for (int i = 1; i < sigmoidalOutputs.size(); i++) {
+            sigmoidalOutputs
+                    .get(i)
+                    .connect(sigmoidalOutputs.get(i-1), 0);
+        }
+        // Connect the final sigmoidal layer to the softmax layer
+        softmaxOutput.connect(sigmoidalOutputs.get(sigmoidalOutputs.size()), 0);
     }
 
+    /**
+     * Connects adjacent layers
+     * @param layersFrom
+     * @param layersTo
+     */
     private void connect (List<CNNLayer> layersFrom, List<CNNLayer> layersTo) {
         assert(layersFrom.size() == layersTo.size());
         for (int i = 0; i < layersTo.size(); i++)
             for (int j = 0; j < layersFrom.size(); j++)
                 layersTo.get(i).connect(layersFrom.get(j), j);
-    }
-
-    private static int getNextDim (int dim, int window) {
-        int x = 0, count = 0;
-        while (x + window <= dim) {
-            count++;
-            x++;
-        }
-        return count;
     }
 }
