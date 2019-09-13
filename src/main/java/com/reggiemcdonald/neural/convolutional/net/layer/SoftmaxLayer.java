@@ -9,7 +9,6 @@ import com.reggiemcdonald.neural.convolutional.net.Propagatable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 
 public class SoftmaxLayer implements CNNLayer {
     private List<CNeuron> neurons;
@@ -21,15 +20,14 @@ public class SoftmaxLayer implements CNNLayer {
     }
 
     /**
-     * Make the neurons for this layer
+     * Make the neurons for this layer. Initialize values to 0
      * @param size
      */
     private void makeNeurons (int size) {
-        Random r = new Random();
         neurons  = new ArrayList<>();
         for (int i = 0; i < size; i++) {
             CNeuron neuron = CNeuronFactory.makeNeuron(
-                    CNeuronFactory.CN_TYPE_SFTM, r.nextGaussian(), r.nextGaussian()
+                    CNeuronFactory.CN_TYPE_SFTM, 0, 0
             );
             neurons.add (neuron);
         }
@@ -47,11 +45,11 @@ public class SoftmaxLayer implements CNNLayer {
 
     @Override
     public CNNLayer connect(CNNLayer fromLayer, int k) {
-        Random r = new Random();
+        // We initialize the weights to be 0 for softmax layers
         CNNLayer toLayer = this;
         for (CNeuron to : toLayer)
             for (CNeuron from : fromLayer)
-                to.addConnectionToThis(new CSynapse(from, to, r.nextGaussian(), fromLayer.size()));
+                to.addConnectionToThis(new CSynapse(from, to, 0., fromLayer.size()));
         return this;
     }
 
@@ -96,5 +94,12 @@ public class SoftmaxLayer implements CNNLayer {
             allZ = d;
         }
         return allZ;
+    }
+
+    public double[] output() {
+        double[] d = new double[size()];
+        for (int i = 0; i < d.length; i++)
+            d[i] = neurons.get(i).output();
+        return d;
     }
 }

@@ -65,7 +65,7 @@ public class Network implements Serializable {
     private void connectAndCreateLayers(List< List<Neuron> > layerSets) {
         Random r = new Random();
         int layerIndex = 0;
-        // Create the input layer
+        // Create the wrapInput layer
         input = connectAndCreateLayer(layerSets.get (0), layerSets.get (1), layerIndex, LayerType.INPUT, r);
         layerIndex++;
         // Create the hidden layers
@@ -97,7 +97,7 @@ public class Network implements Serializable {
     }
 
     /**
-     * Set the input layer for propagation, returning this
+     * Set the wrapInput layer for propagation, returning this
      * @param img
      * @return
      */
@@ -112,7 +112,7 @@ public class Network implements Serializable {
 
     /**
      * Forward propagate throughout the neural network, returning this
-     * Assumes that the input layer has been set
+     * Assumes that the wrapInput layer has been set
      * @return
      */
     public Network propagate () {
@@ -174,7 +174,6 @@ public class Network implements Serializable {
     }
 
     private void learn_batch (List<NumberImage> batch, double eta) {
-        // TODO
         // Input each image and then backwards propagate
         for (NumberImage x : batch) {
             input (x.image);

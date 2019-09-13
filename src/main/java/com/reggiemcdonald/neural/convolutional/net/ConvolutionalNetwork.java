@@ -3,9 +3,13 @@ package com.reggiemcdonald.neural.convolutional.net;
 import com.reggiemcdonald.neural.convolutional.net.decipher.Decipher;
 import com.reggiemcdonald.neural.convolutional.net.decipher.IndexOfMaxDecipher;
 import com.reggiemcdonald.neural.convolutional.net.layer.*;
+import com.reggiemcdonald.neural.convolutional.net.util.DefaultInputWrapper;
+import com.reggiemcdonald.neural.convolutional.net.util.InputWrapper;
 import com.reggiemcdonald.neural.convolutional.net.util.LayerUtilities;
+import com.reggiemcdonald.neural.feedforward.res.NumberImage;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ConvolutionalNetwork {
@@ -19,12 +23,15 @@ public class ConvolutionalNetwork {
 
     private Decipher<?> decipher = new IndexOfMaxDecipher(); // Default behaviour
 
+    // Set a default InputWrapper
+    private InputWrapper inputWrapper = new DefaultInputWrapper();
+
     /**
      * Another bad constructor
-     * @param inputLayerDimension an int of dimensions of the square 2D input layers
+     * @param inputLayerDimension an int of dimensions of the square 2D wrapInput layers
      * @param convolutionWindowSizes and int[] of the window sizes for each convolution layer
      * @param poolingWindowSizes an int[] of the window sizes for each of the poolings
-     * @param depths an int[] of the depths for the input and convolution layers
+     * @param depths an int[] of the depths for the wrapInput and convolution layers
      * @param sigmoidalOutputSizes an int[] of sizes for additional sigmoidal outputs (beyond flatten layer)
      * @param numberOfOutputs the number of neurons to be in the output layer
      * @param stride an int[] of stride lengths
@@ -33,7 +40,7 @@ public class ConvolutionalNetwork {
     public ConvolutionalNetwork (int inputLayerDimension, int[] convolutionWindowSizes, int[] poolingWindowSizes,
                              int[] depths, int[] sigmoidalOutputSizes, int numberOfOutputs, int[] stride, boolean hasSigmoidalLayer) {
         if (inputLayerDimension == 0)
-            throw new RuntimeException("Init Error: Must have at least one input layer");
+            throw new RuntimeException("Init Error: Must have at least one wrapInput layer");
         if (convolutionWindowSizes == null || convolutionWindowSizes.length == 0)
             throw new RuntimeException ("Init Error: Must have at least one convolution");
         if (poolingWindowSizes == null || poolingWindowSizes.length == 0)
@@ -51,7 +58,6 @@ public class ConvolutionalNetwork {
         createConvolutions (convolutionWindowSizes, poolingWindowSizes, depths, stride);
         createOutputs (sigmoidalOutputSizes, numberOfOutputs, hasSigmoidalLayer);
         connect ();
-        System.out.println("Here");
     }
 
     /**
@@ -101,7 +107,7 @@ public class ConvolutionalNetwork {
      * Connects the layers
      */
     private void connect () {
-        // Connect the input layers to the first convolutional layers
+        // Connect the wrapInput layers to the first convolutional layers
         convolutionalLayers.get(0).connectToThis (inputAggregateLayer.inputLayers());
         // connect the later convolutional layers to each other
         for (int i = 1; i < convolutionalLayers.size(); i++) {
@@ -140,7 +146,116 @@ public class ConvolutionalNetwork {
                     inputAggregateLayer.get(i,j,k).setOutput(input[i][j][k]);
     }
 
+    /**
+     * Sets the output decipher for this network
+     * @param decipher
+     */
     public void setDecipher (Decipher decipher) {
         this.decipher = decipher;
     }
+
+    /**
+     * @return the decipher of this network
+     */
+    public Decipher decipher() {return decipher;}
+
+    /**
+     * @return the wrapInput wrapper of this network
+     */
+    public InputWrapper inputWrapper() {return inputWrapper;}
+
+    /**
+     * Set the wrapInput wrapper of this network
+     * @param wrapper
+     */
+    public void setInputWrapper (InputWrapper wrapper) {
+        this.inputWrapper = wrapper;
+    }
+
+    /**
+     * Returns the output of this layer
+     * @return
+     */
+    public double[] output() {
+        return ((SoftmaxLayer)softmaxOutput).output();
+    }
+
+    /**
+     * Train the network
+     * TODO: Make this generic - remove references to NumberImage
+     * @param trainingData
+     * @param epochs
+     * @param batchSize
+     * @param eta
+     * @param verbose
+     */
+    public void learn (List<NumberImage> trainingData, int epochs, int batchSize, double eta, boolean verbose) {
+        // Randomize the order of the images
+        Collections.shuffle(trainingData);
+        // Partition into batches of size batchSize
+        List<List<NumberImage>> batches = new ArrayList<>();
+        int idx = 0;
+        for (int i = 0; i < trainingData.size() / batchSize; i++) {
+            List<NumberImage> batch = new ArrayList<>();
+            for (int j = 0; j < batchSize; j++) {
+                batch.add(trainingData.get(idx));
+                idx++;
+            }
+            batches.add(batch);
+        }
+        // For 0 to epoch times ...
+        for (int i = 0; i < epochs; i++) {
+            // For each batch
+            System.out.println("Beginning Epoch " + (i + 1));
+            for (List<NumberImage> batch : batches)
+                learnBatch (batch, eta);
+            if (verbose)
+                test (trainingData);
+        }
+    }
+
+    public void learnBatch (List<NumberImage> batch, double eta) {
+        // TODO: Remove reference to NumberImage class (make generic)
+        // Input each image and the backwards propagate
+        for (NumberImage x : batch) {
+            input(inputWrapper.wrapInput(x.image));
+            propagate();
+            backwardsPropagate(x.getResult());
+        }
+        finalizeLearning(batch.size(), eta);
+    }
+
+    /**
+     * Run the backwards propagation algorithm using SGD
+     * @param expected
+     */
+    private ConvolutionalNetwork backwardsPropagate (double[] expected) {
+        // TODO
+
+        // Get the error array of the output layer
+        // Update Bias and Weights
+
+        // Repeat above for the connected layers
+
+        // Repeat the above the convolutional layers
+
+        return this;
+    }
+
+    /**
+     * R
+     * @param batchSize
+     * @param eta
+     */
+    public ConvolutionalNetwork finalizeLearning (int batchSize, double eta) {
+        // TODO
+        // Apply updates to the network layer by layer, and zero after
+        return this;
+    }
+
+    public void test (List<NumberImage> testData) {
+        // TODO
+    }
+
+
 }

@@ -36,7 +36,7 @@ public class InputNeuron implements Neuron {
 
     @Override
     public double compute() {
-        // Input Neurons directly output their set signal (the input)
+        // Input Neurons directly output their set signal (the wrapInput)
         return output;
     }
 

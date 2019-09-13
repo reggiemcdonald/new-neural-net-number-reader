@@ -9,7 +9,7 @@ public class IndexOfMaxDecipher implements Decipher<Integer> {
     @Override
     public Integer decode(double[] output) {
         if (output == null || output.length == 0)
-            throw new RuntimeException("Decode given ambiguous input");
+            throw new RuntimeException("Decode given ambiguous wrapInput");
         int idx = 0;
         double max = output[0];
         for (int i = 1; i < output.length; i++) {

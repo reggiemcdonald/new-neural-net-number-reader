@@ -19,7 +19,7 @@ public class InputAggregateLayer implements Propagatable {
     }
 
     /**
-     * Produce the depth input layers of the aggregate layer
+     * Produce the depth wrapInput layers of the aggregate layer
      */
     private void makeLayers () {
         for (int i = 0; i < depth; i++)
@@ -31,7 +31,7 @@ public class InputAggregateLayer implements Propagatable {
     }
 
     /**
-     * @return the dimension of the input layers
+     * @return the dimension of the wrapInput layers
      */
     public int dim () {
         return dim;

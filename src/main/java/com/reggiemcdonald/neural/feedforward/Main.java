@@ -33,7 +33,7 @@ public class Main {
 
     public void run (List<NumberImage> images) {
         try {
-            System.out.println("Enter any number to randomly pick an image to input into the network.");
+            System.out.println("Enter any number to randomly pick an image to wrapInput into the network.");
             s.nextInt();
             NumberImage img = randomPick(images);
             Desktop.getDesktop().open(new File("saved.bmp"));

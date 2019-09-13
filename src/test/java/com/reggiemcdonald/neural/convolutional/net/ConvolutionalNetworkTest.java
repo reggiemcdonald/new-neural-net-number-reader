@@ -1,5 +1,6 @@
 package com.reggiemcdonald.neural.convolutional.net;
 
+import com.reggiemcdonald.neural.convolutional.net.util.InputWrapper;
 import com.reggiemcdonald.neural.feedforward.res.ImageLoader;
 import com.reggiemcdonald.neural.feedforward.res.NumberImage;
 import org.junit.Test;
@@ -23,7 +24,7 @@ public class ConvolutionalNetworkTest {
         ConvolutionalNetwork cnn = new ConvolutionalNetwork(28, new int[] {5}, new int[] {2},
                 new int[] {3,3}, new int[] {},10, new int[] {1,2}, true);
         List<NumberImage> numberImages = ImageLoader.load(ImageLoader.TEST_IMAGES, ImageLoader.TEST_LABELS);
-        cnn.input(myWrapper.input(numberImages.get(0).image));
+        cnn.input(myWrapper.wrapInput(numberImages.get(0).image));
         System.out.println("Done");
     }
 

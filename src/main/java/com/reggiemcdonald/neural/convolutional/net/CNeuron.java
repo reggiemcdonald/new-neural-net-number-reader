@@ -2,7 +2,7 @@ package com.reggiemcdonald.neural.convolutional.net;
 
 import com.reggiemcdonald.neural.convolutional.math.COutput;
 import com.reggiemcdonald.neural.convolutional.net.layer.CNNLayer;
-import com.reggiemcdonald.neural.convolutional.net.learning.CLearner;
+import com.reggiemcdonald.neural.convolutional.net.learning.neuron.CLearner;
 
 import java.util.ArrayList;
 import java.util.List;

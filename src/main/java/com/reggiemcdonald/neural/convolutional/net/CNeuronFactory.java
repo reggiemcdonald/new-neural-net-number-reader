@@ -1,7 +1,7 @@
 package com.reggiemcdonald.neural.convolutional.net;
 
 import com.reggiemcdonald.neural.convolutional.math.*;
-import com.reggiemcdonald.neural.convolutional.net.learning.*;
+import com.reggiemcdonald.neural.convolutional.net.learning.neuron.*;
 
 public class CNeuronFactory {
 

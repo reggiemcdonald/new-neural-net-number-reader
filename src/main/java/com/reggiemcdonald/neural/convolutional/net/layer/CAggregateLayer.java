@@ -77,7 +77,7 @@ public class CAggregateLayer implements Propagatable {
 
     /**
      * Establish the connection between the Convolution and Pooling layers
-     * Pooling layer only receives input from one channel
+     * Pooling layer only receives wrapInput from one channel
      */
     private void connectConvolutionToPooling () {
         for (int i = 0; i < poolingLayers.size(); i++)
