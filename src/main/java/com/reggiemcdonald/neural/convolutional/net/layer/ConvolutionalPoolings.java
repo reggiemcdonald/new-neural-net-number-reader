@@ -14,14 +14,14 @@ import java.util.Random;
  * 2. A d-deep pooling layer
  * Maintains convolutional and pooling layers in their respective positions
  */
-public class CAggregateLayer implements Propagatable {
+public class ConvolutionalPoolings implements Propagatable {
     private int cDim, pDim, depth, cWindowWidth, pWindowWidth, cStride, pStride;
     private boolean isMaxPooling = true; // Default. False is average pooling
     private List<ConvolutionLayer> convolutionLayers;
     private List<PoolingLayer> poolingLayers;
     private double[][][] kernel;
 
-    public CAggregateLayer(int cDim, int pDim,  int depth, int cWindowWidth, int pWindowWidth, int cStride, int pStride) {
+    public ConvolutionalPoolings(int cDim, int pDim, int depth, int cWindowWidth, int pWindowWidth, int cStride, int pStride) {
         this.cDim  = cDim;
         this.pDim  = pDim;
         this.depth = depth;
@@ -36,7 +36,7 @@ public class CAggregateLayer implements Propagatable {
         connectConvolutionToPooling ();
     }
 
-    public CAggregateLayer(int cDim, int pDim, int depth, int cWindowWidth, int pWindowWidth, int cStride, int pStride, boolean isMaxPooling) {
+    public ConvolutionalPoolings(int cDim, int pDim, int depth, int cWindowWidth, int pWindowWidth, int cStride, int pStride, boolean isMaxPooling) {
         this.cDim              = cDim;
         this.pDim              = pDim;
         this.depth             = depth;
@@ -53,7 +53,7 @@ public class CAggregateLayer implements Propagatable {
     }
 
     /**
-     * Build all the layers of this CAggregateLayer
+     * Build all the layers of this ConvolutionalPoolings
      */
     private void makeLayers() {
         for (int i = 0; i < depth; i++) {
@@ -167,5 +167,10 @@ public class CAggregateLayer implements Propagatable {
             p.propagate();
         for (Propagatable p : poolingLayers)
             p.propagate();
+    }
+
+    public ConvolutionalPoolings workBackwards (double[] delta) {
+        // TODO
+        return this;
     }
 }

@@ -3,6 +3,7 @@ package com.reggiemcdonald.neural.convolutional.net;
 import com.reggiemcdonald.neural.convolutional.net.decipher.Decipher;
 import com.reggiemcdonald.neural.convolutional.net.decipher.IndexOfMaxDecipher;
 import com.reggiemcdonald.neural.convolutional.net.layer.*;
+import com.reggiemcdonald.neural.convolutional.net.learning.layer.CLayerLearner;
 import com.reggiemcdonald.neural.convolutional.net.util.DefaultInputWrapper;
 import com.reggiemcdonald.neural.convolutional.net.util.InputWrapper;
 import com.reggiemcdonald.neural.convolutional.net.util.LayerUtilities;
@@ -16,7 +17,7 @@ public class ConvolutionalNetwork {
 
     private InputAggregateLayer inputAggregateLayer;
 
-    private List<CAggregateLayer> convolutionalLayers;
+    private List<ConvolutionalPoolings> convolutionalLayers;
     private List<CNNLayer> sigmoidalOutputs;
 
     private CNNLayer softmaxOutput;
@@ -54,6 +55,7 @@ public class ConvolutionalNetwork {
         if (hasSigmoidalLayer && (sigmoidalOutputSizes == null))
             throw new RuntimeException("Init Error: Must have at least one sigmoidal output layer; preferably more");
 
+        inputWrapper = new DefaultInputWrapper();
         inputAggregateLayer = new InputAggregateLayer (inputLayerDimension, depths[0], stride[0]);
         createConvolutions (convolutionWindowSizes, poolingWindowSizes, depths, stride);
         createOutputs (sigmoidalOutputSizes, numberOfOutputs, hasSigmoidalLayer);
@@ -70,16 +72,16 @@ public class ConvolutionalNetwork {
      */
     private void createConvolutions (int[] cSizes, int[] pSizes, int[] depths, int[] stride) {
         convolutionalLayers = new ArrayList<>(cSizes.length);
-        // Make the first CAggregateLayer immediately following the Input Layer
+        // Make the first ConvolutionalPoolings immediately following the Input Layer
         int cDim, pDim;
         cDim = LayerUtilities.nextDimension(inputAggregateLayer.dim(), cSizes[0], stride[0]);
         pDim = LayerUtilities.nextDimension(cDim, pSizes[0], stride[1]);
-        convolutionalLayers.add (new CAggregateLayer(cDim, pDim, depths[0], cSizes[0], pSizes[0], stride[0], stride[1]));
+        convolutionalLayers.add (new ConvolutionalPoolings(cDim, pDim, depths[0], cSizes[0], pSizes[0], stride[0], stride[1]));
 
         for (int i = 1; i < cSizes.length; i++) {
             cDim = LayerUtilities.nextDimension(convolutionalLayers.get(i-1).cDim(), cSizes[i], stride[i+1]);
             pDim = LayerUtilities.nextDimension(convolutionalLayers.get(i-1).pDim(), pSizes[i], stride[i+2]);
-            convolutionalLayers.add (new CAggregateLayer(cDim, pDim, depths[i], cSizes[i], pSizes[i], stride[i+1], stride[i+2]));
+            convolutionalLayers.add (new ConvolutionalPoolings(cDim, pDim, depths[i], cSizes[i], pSizes[i], stride[i+1], stride[i+2]));
         }
 
     }
@@ -94,7 +96,7 @@ public class ConvolutionalNetwork {
     private void createOutputs (int[] sigmoidalOutputSizes, int softmaxSize, boolean hasSigmoidalLayer) {
         // TODO: CNN init
         sigmoidalOutputs = new ArrayList<>();
-        CAggregateLayer lastConvLayer = convolutionalLayers.get(convolutionalLayers.size()-1);
+        ConvolutionalPoolings lastConvLayer = convolutionalLayers.get(convolutionalLayers.size()-1);
         sigmoidalOutputs.add (lastConvLayer.flatten());
         if (hasSigmoidalLayer) {
             for (int sigmoidalLayerSize : sigmoidalOutputSizes)
@@ -214,8 +216,10 @@ public class ConvolutionalNetwork {
         }
     }
 
-    public void learnBatch (List<NumberImage> batch, double eta) {
+    @SuppressWarnings("unchecked")
+    private void learnBatch (List<NumberImage> batch, double eta) {
         // TODO: Remove reference to NumberImage class (make generic)
+        // TODO: Fix unchecked type warning
         // Input each image and the backwards propagate
         for (NumberImage x : batch) {
             input(inputWrapper.wrapInput(x.image));
@@ -234,11 +238,30 @@ public class ConvolutionalNetwork {
 
         // Get the error array of the output layer
         // Update Bias and Weights
+        double[] delta = softmaxOutput.learner().delta(expected);
+        softmaxOutput
+                .learner()
+                .applyBiasUpdates(delta)
+                .applyWeightUpdates(delta);
 
-        // Repeat above for the connected layers
+        // Repeat above for the FC layer
+        workBackwards(sigmoidalOutputs, delta);
 
-        // Repeat the above the convolutional layers
+        // Repeat above for the ConvPoolings
+        for (ConvolutionalPoolings layer : convolutionalLayers)
+            layer.workBackwards(delta);
 
+        return this;
+    }
+
+    private ConvolutionalNetwork workBackwards(List<CNNLayer> layers, double[] delta) {
+        for (int i = layers.size() - 1; i > -1; i--) {
+            CLayerLearner learner = layers.get(i).learner();
+            delta = learner.delta (delta);
+            learner
+                    .applyBiasUpdates (delta)
+                    .applyWeightUpdates (delta);
+        }
         return this;
     }
 
@@ -247,14 +270,34 @@ public class ConvolutionalNetwork {
      * @param batchSize
      * @param eta
      */
-    public ConvolutionalNetwork finalizeLearning (int batchSize, double eta) {
+    private ConvolutionalNetwork finalizeLearning (int batchSize, double eta) {
         // TODO
         // Apply updates to the network layer by layer, and zero after
+        softmaxOutput.learner().finalizeLearning(batchSize, eta);
+
+        for (CNNLayer layer : sigmoidalOutputs)
+            layer.learner().finalizeLearning(batchSize, eta);
+
+        for (ConvolutionalPoolings cp : convolutionalLayers) {
+            for (CNNLayer p : cp.poolingLayers())
+                p.learner().finalizeLearning(batchSize, eta);
+            for (CNNLayer c : cp.convolutionalLayers())
+                c.learner().finalizeLearning(batchSize, eta);
+        }
+
         return this;
     }
 
+    @SuppressWarnings("unchecked")
     public void test (List<NumberImage> testData) {
-        // TODO
+        int correct = 0;
+        for (NumberImage i : testData) {
+            input (inputWrapper.wrapInput(i));
+            propagate ();
+            if (decipher.decode(output()) == i.getResult())
+                correct++;
+        }
+        System.out.println("Correct: " + correct + " out of " + testData.size());
     }
 
 

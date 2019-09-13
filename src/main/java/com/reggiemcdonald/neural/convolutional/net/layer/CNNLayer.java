@@ -2,6 +2,7 @@ package com.reggiemcdonald.neural.convolutional.net.layer;
 
 import com.reggiemcdonald.neural.convolutional.net.CNeuron;
 import com.reggiemcdonald.neural.convolutional.net.Propagatable;
+import com.reggiemcdonald.neural.convolutional.net.learning.layer.CLayerLearner;
 
 public interface CNNLayer extends Iterable<CNeuron>, Propagatable {
     // TODO: Specify the CNN Layer
@@ -51,6 +52,11 @@ public interface CNNLayer extends Iterable<CNeuron>, Propagatable {
      * @return
      */
     int dim_y();
+
+    /**
+     * @return the layer learner for this
+     */
+    CLayerLearner learner();
 
 
 }

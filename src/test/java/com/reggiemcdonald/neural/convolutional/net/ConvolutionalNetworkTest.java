@@ -24,7 +24,7 @@ public class ConvolutionalNetworkTest {
         ConvolutionalNetwork cnn = new ConvolutionalNetwork(28, new int[] {5}, new int[] {2},
                 new int[] {3,3}, new int[] {},10, new int[] {1,2}, true);
         List<NumberImage> numberImages = ImageLoader.load(ImageLoader.TEST_IMAGES, ImageLoader.TEST_LABELS);
-        cnn.input(myWrapper.wrapInput(numberImages.get(0).image));
+        cnn.learn(numberImages, 30, 10, 3.0, true);
         System.out.println("Done");
     }
 
