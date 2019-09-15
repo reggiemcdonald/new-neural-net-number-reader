@@ -2,6 +2,7 @@ package com.reggiemcdonald.neural.convolutional.net.learning.layer;
 
 import com.reggiemcdonald.neural.convolutional.net.CNeuron;
 import com.reggiemcdonald.neural.convolutional.net.layer.CNNLayer;
+import com.reggiemcdonald.neural.convolutional.net.learning.neuron.SigmoidCLearner;
 
 public class SigmoidalLayerLearner implements CLayerLearner {
     private CNNLayer layer;
@@ -10,8 +11,8 @@ public class SigmoidalLayerLearner implements CLayerLearner {
         this.layer = layer;
     }
     @Override
-    public double[] delta(double[] deltaNextLayer) {
-        double[] delta = new double[layer.size()];
+    public double[][] delta(double[][] deltaNextLayer) {
+        double[][] delta = new double[1][layer.size()];
         double[] activations = derive(activations());
         CNNLayer forwardLayer = layer
                 .get(0)
@@ -20,34 +21,35 @@ public class SigmoidalLayerLearner implements CLayerLearner {
                 .to()
                 .layer();
 
-        for (int i = 0; i < delta.length; i++) {
+        for (int i = 0; i < delta[0].length; i++) {
             double d = 0.;
-            for (int j = 0; j < deltaNextLayer.length; j++) {
+            for (int j = 0; j < deltaNextLayer[0].length; j++) {
                 d += forwardLayer
                         .get(j)
                         .synapsesToThis()
                         .get(i)
-                        .weight() * deltaNextLayer[j];
+                        .weight() * deltaNextLayer[0][j];
             }
-            delta[i] = d * activations[i];
+            delta[0][i] = d * activations[i];
         }
         return delta;
     }
 
     @Override
-    public CLayerLearner incrementBiasUpdate(double[] delta) {
+    public CLayerLearner incrementBiasUpdate(double[][] delta) {
         for (int i = 0; i < delta.length; i++) {
-            layer.get(i).learner().incrementBiasUpdate(delta[i]);
+            layer.get(i).learner().incrementBiasUpdate(delta[0][i]);
         }
         return this;
     }
 
     @Override
-    public CLayerLearner incrementWeightUpdate(double[] delta) {
+    public CLayerLearner incrementWeightUpdate(double[][] delta) {
         for (int i = 0; i < delta.length; i++) {
             CNeuron neuron = layer.get(i);
-            neuron.learner().incrementWeightUpdate(
-                    neuron.learner().deltaWeight(delta[i])
+            SigmoidCLearner learner = (SigmoidCLearner) neuron.learner();
+            learner.incrementWeightUpdate(
+                    learner.deltaWeight(delta[0][i])
             );
         }
         return this;

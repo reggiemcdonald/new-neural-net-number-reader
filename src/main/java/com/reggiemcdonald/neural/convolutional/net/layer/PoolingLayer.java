@@ -5,29 +5,35 @@ import com.reggiemcdonald.neural.convolutional.net.CNeuronFactory;
 import com.reggiemcdonald.neural.convolutional.net.CSynapse;
 import com.reggiemcdonald.neural.convolutional.net.Propagatable;
 import com.reggiemcdonald.neural.convolutional.net.learning.layer.CLayerLearner;
+import com.reggiemcdonald.neural.convolutional.net.learning.layer.PoolingLayerLearner;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 public class PoolingLayer implements CNNLayer {
-    private int dim_x, dim_y, window_width;
+    private int dim_x, dim_y, window_width, stride;
     private boolean isMaxPooling = true; // Default to this because its better
     private List<CNeuron> neurons;
     private CLayerLearner learner;
+    private boolean[][] maxIndices;
 
-    public PoolingLayer (int dim_x, int dim_y, int window_width) {
+    public PoolingLayer (int dim_x, int dim_y, int window_width, int stride) {
         this.dim_x        = dim_x;
         this.dim_y        = dim_y;
         this.window_width = window_width;
+        this.stride       = stride;
+        this.learner      = new PoolingLayerLearner(this);
         makeNeurons ();
     }
 
-    public PoolingLayer (int dim_x, int dim_y, int window_width, boolean isMaxPooling) {
+    public PoolingLayer (int dim_x, int dim_y, int window_width, int stride, boolean isMaxPooling) {
         this.dim_x        = dim_x;
         this.dim_y        = dim_y;
         this.window_width = window_width;
+        this.stride       = stride;
         this.isMaxPooling = isMaxPooling;
+        this.learner      = new PoolingLayerLearner(this);
         makeNeurons ();
     }
 
@@ -127,5 +133,9 @@ public class PoolingLayer implements CNNLayer {
     public void propagate() {
         for (Propagatable p : this)
             p.propagate();
+    }
+
+    public int stride() {
+        return stride;
     }
 }

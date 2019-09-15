@@ -20,9 +20,10 @@ public class SoftmaxCOutput implements COutput {
     }
 
     private double[] expAll (double[] d) {
+        double[] expAll = new double[d.length];
         for (int i = 0; i < d.length; i++)
-            d[i] = Math.exp(d[i]);
-        return d;
+            expAll[i] = Math.exp(d[i]);
+        return expAll;
     }
 
     private double sum (double[] a) {
@@ -32,7 +33,7 @@ public class SoftmaxCOutput implements COutput {
         return s;
     }
 
-    private double z () {
+    public double z () {
         double output = 0.;
         for (CSynapse c : neuron.synapsesToThis())
             output += (c.weight() * c.from().output());

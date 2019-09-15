@@ -17,10 +17,10 @@ public interface CLearner {
     void incrementBiasUpdate(double delta);
 
     /**
-     * Increment the weight updates to be applied
+     * Increment the weight update to be applied
      * @param delta
      */
-    void incrementWeightUpdate(double[] delta);
+    void incrementWeightUpdate(double[][] delta);
 
     /**
      * Applies the bias update, then resets them
@@ -36,11 +36,13 @@ public interface CLearner {
      */
     void applyWeightUpdate(int batchSize, double eta);
 
+
     /**
-     * Compute the weight update
-     * @param deltaBias
+     * Sets the weight updates
+     * @param weightUpdates
      * @return
      */
-    double[] deltaWeight (double deltaBias);
+    CLearner setWeightUpdates(double[][] weightUpdates);
+
 
 }

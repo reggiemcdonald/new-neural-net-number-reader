@@ -1,70 +1,77 @@
 package com.reggiemcdonald.neural.convolutional.net.learning.layer;
 
+import com.reggiemcdonald.neural.convolutional.net.CNeuron;
 import com.reggiemcdonald.neural.convolutional.net.layer.CNNLayer;
+import com.reggiemcdonald.neural.convolutional.net.layer.ConvolutionLayer;
+import com.reggiemcdonald.neural.convolutional.net.util.LayerUtilities;
 
 public class ConvolutionLayerLearner implements CLayerLearner {
     private CNNLayer layer;
+    private double[][] weightUpdates;
 
     public ConvolutionLayerLearner (CNNLayer layer) {
         this.layer = layer;
     }
 
     @Override
-    public double[] delta(double[] deltaNextLayer) {
-        // Produce a matrix the size of the convolutional dimensions
-        int dimX = layer.dim_x(), dimY = layer.dim_y();
-        double[] delta = new double[dimX * dimY];
-
-        // Get the window width of the pooling layer connected to this
-        CNNLayer forwardLayer = layer
-                .get(0)
-                .synapsesFromThis()
-                .get(0)
-                .to()
-                .layer();
-        int windowWidth = forwardLayer.window_width();
-        // Set the indices of the neurons that are max to the gradient
-        // And then every other index in the delta array stays 0
-        int i = 0, x = 0, y = 0;
-        while (x < dimX) {
-            while (y < dimY) {
-                for (int x_in = 0; x_in < x + windowWidth; x_in++) {
-                    for (int y_in = 0; y_in < y + windowWidth; y_in++) {
-                        int coord = coordinatesToIndex(x, y);
-                        delta[coord] =
-                                (layer.get(x_in, y_in).output() == forwardLayer.get(i).output() ? deltaNextLayer[i] : 0.);
-                    }
-                }
-                // Update the indices
-                i++;
-                if (x + windowWidth < dimX) {
-                    x += windowWidth;
-                } else {
-                    x = 0;
-                    y += windowWidth;
-                }
-            }
-        }
-        return delta;
-
+    public double[][] delta(double[][] deltaNextLayer) {
+        return LayerUtilities.convolve(inputActivations(), deltaNextLayer, ((ConvolutionLayer)layer).stride());
     }
 
     @Override
-    public CLayerLearner incrementBiasUpdate(double[] delta) {
-        return null;
+    public CLayerLearner incrementBiasUpdate(double[][] delta) {
+        double biasUpdate = LayerUtilities.sum(delta);
+        for (CNeuron neuron : layer)
+            neuron.learner().incrementBiasUpdate(biasUpdate);
+        return this;
     }
 
     @Override
-    public CLayerLearner incrementWeightUpdate(double[] delta) {
-        return null;
+    public CLayerLearner incrementWeightUpdate(double[][] delta) {
+        // When a weight is shared across connections,
+        // the gradient update for that weight is the sum of the gradients
+        // across all the connections that share the same weight
+
+        // Build the array to hold the weight updates
+        int weightUpdateLength = layer.window_width() * layer.window_width();
+        if (weightUpdates == null || weightUpdates.length != weightUpdateLength)
+            weightUpdates = new double[weightUpdateLength][weightUpdateLength];
+        // TODO STUB
+
+        for (int i = 0; i < weightUpdateLength; i++)
+            for (int j = 0; j < weightUpdateLength; j++)
+                weightUpdates[i][j] += delta[i][j];
+
+
+
+
+        return this;
     }
 
     @Override
     public CLayerLearner finalizeLearning(int batchSize, double eta) {
-        return null;
+        for (CNeuron neuron : layer) {
+            neuron.learner().applyBiasUpdate(batchSize, eta);
+            neuron.learner().setWeightUpdates(weightUpdates).applyWeightUpdate(batchSize, eta);
+        }
+
+        return this;
     }
 
-    private int coordinatesToIndex (int x, int y) {
-        return (x * layer.dim_x()) + y;
+    private double[][] inputActivations() {
+        CNNLayer earlylayer = layer
+                .get(0)
+                .synapsesToThis()
+                .get(0)
+                .from()
+                .layer();
+        int x = earlylayer.dim_x();
+        int y = earlylayer.dim_y();
+        double[][] d = new double[x][y];
+        for (int i = 0; i < d.length; i++)
+            for (int j = 0; j < y; j++)
+                d[i][j] = earlylayer.get(i,j).output();
+        return d;
     }
+
 }

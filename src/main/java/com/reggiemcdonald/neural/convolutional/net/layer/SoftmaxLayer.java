@@ -1,6 +1,6 @@
 package com.reggiemcdonald.neural.convolutional.net.layer;
 
-import com.reggiemcdonald.neural.convolutional.math.SigmoidCOutput;
+import com.reggiemcdonald.neural.convolutional.math.SoftmaxCOutput;
 import com.reggiemcdonald.neural.convolutional.net.CNeuron;
 import com.reggiemcdonald.neural.convolutional.net.CNeuronFactory;
 import com.reggiemcdonald.neural.convolutional.net.CSynapse;
@@ -11,6 +11,7 @@ import com.reggiemcdonald.neural.convolutional.net.learning.layer.SoftmaxLayerLe
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 public class SoftmaxLayer implements CNNLayer {
     private List<CNeuron> neurons;
@@ -29,9 +30,10 @@ public class SoftmaxLayer implements CNNLayer {
      */
     private void makeNeurons (int size) {
         neurons  = new ArrayList<>();
+        Random r = new Random();
         for (int i = 0; i < size; i++) {
             CNeuron neuron = CNeuronFactory.makeNeuron(
-                    CNeuronFactory.CN_TYPE_SFTM, this, 0, 0
+                    CNeuronFactory.CN_TYPE_SFTM, this, r.nextGaussian(), 0
             );
             neurons.add (neuron);
         }
@@ -50,10 +52,11 @@ public class SoftmaxLayer implements CNNLayer {
     @Override
     public CNNLayer connect(CNNLayer fromLayer, int k) {
         // We initialize the weights to be 0 for softmax layers
+        Random r = new Random();
         CNNLayer toLayer = this;
         for (CNeuron to : toLayer)
             for (CNeuron from : fromLayer)
-                to.addConnectionToThis(new CSynapse(from, to, 0., fromLayer.size()));
+                to.addConnectionToThis(new CSynapse(from, to, r.nextGaussian(), fromLayer.size()));
         return this;
     }
 
@@ -102,7 +105,7 @@ public class SoftmaxLayer implements CNNLayer {
             double[] d = new double[size()];
             int size = size();
             for (int i = 0; i < size; i++) {
-                SigmoidCOutput outputF = (SigmoidCOutput)get(i).outputFunction();
+                SoftmaxCOutput outputF = (SoftmaxCOutput)get(i).outputFunction();
                 d[i] = outputF.z();
             }
             allZ = d;

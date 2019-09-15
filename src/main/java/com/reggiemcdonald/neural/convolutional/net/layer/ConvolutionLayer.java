@@ -5,6 +5,7 @@ import com.reggiemcdonald.neural.convolutional.net.CNeuronFactory;
 import com.reggiemcdonald.neural.convolutional.net.CSynapse;
 import com.reggiemcdonald.neural.convolutional.net.Propagatable;
 import com.reggiemcdonald.neural.convolutional.net.learning.layer.CLayerLearner;
+import com.reggiemcdonald.neural.convolutional.net.learning.layer.ConvolutionLayerLearner;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -20,11 +21,12 @@ public class ConvolutionLayer implements CNNLayer {
     List<CNeuron> neurons;
     private int dim_x, dim_y;
     private int window_width;
+    private int stride;
     private double[][][] kernel;
     private double bias;
     private CLayerLearner learner;
 
-    public ConvolutionLayer (int dim_x, int dim_y, int window_width, double[][][] kernel) {
+    public ConvolutionLayer (int dim_x, int dim_y, int window_width, double[][][] kernel, int stride) {
         assert (dim_x == dim_y);
         Random r          = new Random ();
         this.dim_x        = dim_x;
@@ -32,7 +34,9 @@ public class ConvolutionLayer implements CNNLayer {
         this.window_width = window_width;
         this.kernel       = kernel;
         this.bias         = r.nextGaussian();
+        this.stride       = stride;
         // New CLayerLearner
+        learner = new ConvolutionLayerLearner(this);
         makeNeurons ();
     }
 
@@ -50,13 +54,14 @@ public class ConvolutionLayer implements CNNLayer {
     @Override
     public CNNLayer connect (CNNLayer from, int k) {
         int x = 0, y = 0;
+
         for (CNeuron neuron : neurons) {
             makeConnections(neuron, from, x, y, k);
-            if (x + window_width < from.dim_x()) {
-                x ++;
+            if (x + window_width < from.dim_x() - 1) {
+                x++;
             } else {
                 x = 0;
-                y ++;
+                y++;
             }
         }
         return this;
@@ -64,7 +69,7 @@ public class ConvolutionLayer implements CNNLayer {
 
     private void makeConnections (CNeuron to, CNNLayer from, int x, int y, int k) {
         int currX = 0;
-        Random r = new Random();
+
         while (currX < window_width) {
             int currY = 0;
             while (currY < window_width) {
@@ -109,11 +114,10 @@ public class ConvolutionLayer implements CNNLayer {
 
     private void makeNeurons () {
         neurons = new ArrayList<>();
-        Random r = new Random();
         int size = dim_x() * dim_y();
         for (int i = 0; i < size; i++) {
             CNeuron neuron = CNeuronFactory
-                    .makeNeuron(CNeuronFactory.CN_TYPE_CONV, this, bias, r.nextGaussian());
+                    .makeNeuron(CNeuronFactory.CN_TYPE_CONV, this, bias, 0.);
             neurons.add (neuron);
         }
     }
@@ -122,5 +126,9 @@ public class ConvolutionLayer implements CNNLayer {
     public void propagate() {
         for (Propagatable p : this)
             p.propagate();
+    }
+
+    public int stride () {
+        return stride;
     }
 }

@@ -15,39 +15,39 @@ import java.util.Random;
  * Maintains convolutional and pooling layers in their respective positions
  */
 public class ConvolutionalPoolings implements Propagatable {
-    private int cDim, pDim, depth, cWindowWidth, pWindowWidth, cStride, pStride;
+    private int cDim, pDim, depth, cWindowWidth, pWindowWidth, cStride, pStride, kernelDepth;
     private boolean isMaxPooling = true; // Default. False is average pooling
     private List<ConvolutionLayer> convolutionLayers;
     private List<PoolingLayer> poolingLayers;
-    private double[][][] kernel;
 
-    public ConvolutionalPoolings(int cDim, int pDim, int depth, int cWindowWidth, int pWindowWidth, int cStride, int pStride) {
-        this.cDim  = cDim;
-        this.pDim  = pDim;
-        this.depth = depth;
-        this.cWindowWidth = cWindowWidth;
-        this.pWindowWidth = pWindowWidth;
-        this.cStride = cStride;
-        this.pStride = pStride;
-        this.convolutionLayers = new ArrayList<>(depth);
-        this.poolingLayers = new ArrayList<>(depth);
-        makeKernel ();
+    public ConvolutionalPoolings(int cDim, int pDim, int layerDepth, int kernelDepth, int cWindowWidth, int pWindowWidth, int cStride, int pStride) {
+        this.cDim              = cDim;
+        this.pDim              = pDim;
+        this.depth             = layerDepth;
+        this.cWindowWidth      = cWindowWidth;
+        this.pWindowWidth      = pWindowWidth;
+        this.cStride           = cStride;
+        this.pStride           = pStride;
+        this.convolutionLayers = new ArrayList<>(layerDepth);
+        this.poolingLayers     = new ArrayList<>(layerDepth);
+        this.kernelDepth       = kernelDepth;
         makeLayers ();
         connectConvolutionToPooling ();
     }
 
-    public ConvolutionalPoolings(int cDim, int pDim, int depth, int cWindowWidth, int pWindowWidth, int cStride, int pStride, boolean isMaxPooling) {
+    public ConvolutionalPoolings(int cDim, int pDim, int layerDepth, int kernelDepth, int cWindowWidth, int pWindowWidth, int cStride, int pStride, boolean isMaxPooling) {
         this.cDim              = cDim;
         this.pDim              = pDim;
-        this.depth             = depth;
+        this.depth             = layerDepth;
         this.cWindowWidth      = cWindowWidth;
         this.pWindowWidth      = pWindowWidth;
         this.cStride           = cStride;
         this.pStride           = pStride;
         this.isMaxPooling      = isMaxPooling;
-        this.convolutionLayers = new ArrayList<>(depth);
-        this.poolingLayers     = new ArrayList<>(depth);
-        makeKernel ();
+        this.convolutionLayers = new ArrayList<>(layerDepth);
+        this.poolingLayers     = new ArrayList<>(layerDepth);
+        this.kernelDepth       = kernelDepth;
+        makeKernel (kernelDepth);
         makeLayers ();
         connectConvolutionToPooling ();
     }
@@ -57,22 +57,23 @@ public class ConvolutionalPoolings implements Propagatable {
      */
     private void makeLayers() {
         for (int i = 0; i < depth; i++) {
-            convolutionLayers.add (new ConvolutionLayer(cDim, cDim, cWindowWidth, kernel));
-            poolingLayers.add (new PoolingLayer (pDim, pDim, pWindowWidth, isMaxPooling));
+            convolutionLayers.add (new ConvolutionLayer(cDim, cDim, cWindowWidth, makeKernel(kernelDepth), cStride));
+            poolingLayers.add (new PoolingLayer (pDim, pDim, pWindowWidth, pStride,true));
         }
     }
 
     /**
      * Produce the cDim * cDim * depth kernel to be passed to the convolutional layers
      */
-    private void makeKernel () {
+    private double[][][] makeKernel (int kernelDepth) {
         Random r = new Random();
-        kernel = new double[depth][cDim][cDim];
-        for (int i = 0; i < depth; i++) {
+        double[][][] kernel = new double[kernelDepth][cDim][cDim];
+        for (int i = 0; i < kernelDepth; i++) {
             for (int j = 0; j < cDim; j++)
                 for (int k = 0; k < cDim; k++)
                     kernel[i][j][k] = r.nextGaussian();
         }
+        return kernel;
     }
 
     /**
@@ -119,7 +120,7 @@ public class ConvolutionalPoolings implements Propagatable {
      */
     public void connectToThis (List<CNNLayer> from) {
         for (ConvolutionLayer c : convolutionLayers)
-            for (int i = 0; i < convolutionLayers.size(); i++)
+            for (int i = 0; i < from.size(); i++)
                 c.connect(from.get(i), i);
     }
 
@@ -169,11 +170,12 @@ public class ConvolutionalPoolings implements Propagatable {
             p.propagate();
     }
 
-    public ConvolutionalPoolings workBackwards (double[] delta) {
+    public ConvolutionalPoolings workBackwards (double[][] delta) {
         for (int i = poolingLayers.size() - 1; i > -1; i--) {
             PoolingLayer p = poolingLayers.get(i);
             ConvolutionLayer c = convolutionLayers.get(i);
-            double[] convDelta = c.learner().delta(delta);
+            double[][] poolDelta = p.learner().delta(delta);
+            double[][] convDelta = c.learner().delta(poolDelta);
             c.learner().incrementBiasUpdate(convDelta);
             c.learner().incrementWeightUpdate(convDelta);
         }

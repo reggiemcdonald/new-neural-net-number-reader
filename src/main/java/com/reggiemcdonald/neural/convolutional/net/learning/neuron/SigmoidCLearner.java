@@ -8,8 +8,8 @@ import java.util.List;
 
 public class SigmoidCLearner implements CLearner {
     private CNeuron neuron;
-    private transient double   biasUpdate;
-    private transient double[] weightUpdates = null; // set to null initially
+    private transient double     biasUpdate;
+    private transient double[][] weightUpdates = null; // set to null initially
 
     public SigmoidCLearner (CNeuron neuron) {
         this.neuron = neuron;
@@ -26,13 +26,13 @@ public class SigmoidCLearner implements CLearner {
     }
 
     @Override
-    public void incrementWeightUpdate(double[] delta) {
+    public void incrementWeightUpdate(double[][] delta) {
         if (weightUpdates == null || weightUpdates.length != neuron.synapsesToThis().size())
-            weightUpdates = new double[neuron.synapsesToThis().size()];
-        if (delta.length != weightUpdates.length)
+            weightUpdates = new double[1][neuron.synapsesToThis().size()];
+        if (delta[0].length != weightUpdates[0].length)
             throw new RuntimeException("Fatal: length of delta should equal inputs");
-        for (int i = 0; i < weightUpdates.length; i++)
-            weightUpdates[i] += delta[i];
+        for (int i = 0; i < weightUpdates[0].length; i++)
+            weightUpdates[0][i] += delta[0][i];
     }
 
     @Override
@@ -46,13 +46,35 @@ public class SigmoidCLearner implements CLearner {
         List<CSynapse> synapses = neuron.synapsesToThis();
         for (int i = 0; i < weightUpdates.length; i++) {
             CSynapse synapse = synapses.get(i);
-            synapse.weight(synapse.weight() - ((eta / batchSize) * weightUpdates[i]));
+            synapse.weight(synapse.weight() - ((eta / batchSize) * weightUpdates[0][i]));
         }
         Arrays.fill(weightUpdates, 0.);
     }
 
+    /**
+     * Compute the weight update
+     * @param deltaBias
+     * @return
+     */
+    public double[][] deltaWeight(double deltaBias) {
+        double[] inputActivations = activations ();
+        double[][] d = new double[1][inputActivations.length];
+        for (int i = 0; i < d[0].length; i++)
+            d[0][i] = inputActivations[i] * deltaBias;
+        return d;
+    }
+
     @Override
-    public double[] deltaWeight(double deltaBias) {
-        return new double[0];
+    public CLearner setWeightUpdates(double[][] weightUpdates) {
+        return null;
+    }
+
+    private double[] activations () {
+        double[] d = new double[neuron.synapsesToThis().size()];
+        List<CSynapse> synapses = neuron.synapsesToThis();
+        for (int i = 0; i < d.length; i++) {
+            d[i] = synapses.get(i).from().output();
+        }
+        return d;
     }
 }

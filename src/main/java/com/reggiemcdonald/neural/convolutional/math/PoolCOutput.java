@@ -16,7 +16,7 @@ public class PoolCOutput implements COutput {
 
     @Override
     public double compute() {
-        double output = Double.MIN_VALUE;
+        double output = neuron.synapsesToThis().get(0).from().output();
         for (CSynapse c : neuron.synapsesToThis())
             output = Math.max(output, c.from().output());
         return output;

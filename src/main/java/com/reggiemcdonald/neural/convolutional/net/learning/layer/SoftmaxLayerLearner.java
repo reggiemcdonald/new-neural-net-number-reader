@@ -4,6 +4,7 @@ import com.reggiemcdonald.neural.convolutional.net.CNeuron;
 import com.reggiemcdonald.neural.convolutional.net.layer.CNNLayer;
 import com.reggiemcdonald.neural.convolutional.net.layer.SoftmaxLayer;
 import com.reggiemcdonald.neural.convolutional.net.learning.neuron.CLearner;
+import com.reggiemcdonald.neural.convolutional.net.learning.neuron.SoftmaxCLearner;
 
 public class SoftmaxLayerLearner implements CLayerLearner {
     private CNNLayer layer;
@@ -17,24 +18,25 @@ public class SoftmaxLayerLearner implements CLayerLearner {
      * @param deltaNextLayer
      * @return
      */
-    public double[] delta (double[] deltaNextLayer) {
-        double[] outputs = ((SoftmaxLayer)layer).output();
+    public double[][] delta (double[][] deltaNextLayer) {
+        double[][] outputs = new double[1][];
+        outputs[0] = ((SoftmaxLayer)layer).output();
         return crossEntropyCost(outputs, deltaNextLayer);
     }
 
     @Override
-    public CLayerLearner incrementBiasUpdate(double[] delta) {
+    public CLayerLearner incrementBiasUpdate(double[][] delta) {
         for (int i = 0; i < delta.length; i++) {
-            layer.get(i).learner().incrementBiasUpdate(delta[i]);
+            layer.get(i).learner().incrementBiasUpdate(delta[0][i]);
         }
         return this;
     }
 
     @Override
-    public CLayerLearner incrementWeightUpdate(double[] delta) {
+    public CLayerLearner incrementWeightUpdate(double[][] delta) {
         for (int i = 0; i < layer.size(); i++) {
             CNeuron neuron = layer.get(i);
-            neuron.learner().incrementWeightUpdate(deltaWeight(neuron, delta[i]));
+            neuron.learner().incrementWeightUpdate(deltaWeight(neuron, delta[0][i]));
         }
         return this;
     }
@@ -55,13 +57,13 @@ public class SoftmaxLayerLearner implements CLayerLearner {
      * @param delta
      * @return
      */
-    private double[] deltaWeight (CNeuron neuron, double delta) {
-        return neuron.learner().deltaWeight(delta);
+    private double[][] deltaWeight (CNeuron neuron, double delta) {
+        return ((SoftmaxCLearner)neuron.learner()).deltaWeight(delta);
     }
 
-    private double[] crossEntropyCost (double[] outputs, double[] expected) {
-        for (int i = 0; i < outputs.length; i++)
-            outputs[i] -= expected[i];
+    private double[][] crossEntropyCost (double[][] outputs, double[][] expected) {
+        for (int i = 0; i < outputs[0].length; i++)
+            outputs[0][i] -= expected[0][i];
         return outputs;
     }
 

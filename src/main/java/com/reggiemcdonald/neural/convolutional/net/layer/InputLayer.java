@@ -19,7 +19,7 @@ public class InputLayer implements CNNLayer {
     private List<CNeuron> neurons;
     private int dim_x, dim_y;
     private int stride;
-    private CLayerLearner learner;
+    private CLayerLearner learner = null;
 
     public InputLayer (int dim, int stride) {
         dim_x = dim_y = dim;

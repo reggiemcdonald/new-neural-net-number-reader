@@ -10,6 +10,7 @@ import com.reggiemcdonald.neural.convolutional.net.util.LayerUtilities;
 import com.reggiemcdonald.neural.feedforward.res.NumberImage;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -76,12 +77,12 @@ public class ConvolutionalNetwork {
         int cDim, pDim;
         cDim = LayerUtilities.nextDimension(inputAggregateLayer.dim(), cSizes[0], stride[0]);
         pDim = LayerUtilities.nextDimension(cDim, pSizes[0], stride[1]);
-        convolutionalLayers.add (new ConvolutionalPoolings(cDim, pDim, depths[0], cSizes[0], pSizes[0], stride[0], stride[1]));
+        convolutionalLayers.add (new ConvolutionalPoolings(cDim, pDim, depths[1], depths[0], cSizes[0], pSizes[0], stride[0], stride[1]));
 
         for (int i = 1; i < cSizes.length; i++) {
             cDim = LayerUtilities.nextDimension(convolutionalLayers.get(i-1).cDim(), cSizes[i], stride[i+1]);
             pDim = LayerUtilities.nextDimension(convolutionalLayers.get(i-1).pDim(), pSizes[i], stride[i+2]);
-            convolutionalLayers.add (new ConvolutionalPoolings(cDim, pDim, depths[i], cSizes[i], pSizes[i], stride[i+1], stride[i+2]));
+            convolutionalLayers.add (new ConvolutionalPoolings(cDim, pDim, depths[i+1], depths[i], cSizes[i], pSizes[i], stride[i+1], stride[i+2]));
         }
 
     }
@@ -117,7 +118,7 @@ public class ConvolutionalNetwork {
                     .get(i)
                     .connectToThis(convolutionalLayers.get(i-1).poolingLayers());
         }
-
+//        sigmoidalOutputs.get(0).connect()
         // Connect the sigmoidal layers
         for (int i = 1; i < sigmoidalOutputs.size(); i++) {
             sigmoidalOutputs
@@ -139,13 +140,19 @@ public class ConvolutionalNetwork {
 
         for (Propagatable p : sigmoidalOutputs)
             p.propagate();
+
+        softmaxOutput.propagate();
     }
 
+    /**
+     * Change /255 when I get a chance to make this generic
+     * @param input
+     */
     public void input (double[][][] input) {
         for (int i = 0; i < input.length; i++)
             for (int j = 0; j < input[i].length; j++)
                 for (int k = 0; k < input[i][j].length; k++)
-                    inputAggregateLayer.get(i,j,k).setOutput(input[i][j][k]);
+                    inputAggregateLayer.get(i,j,k).setOutput(input[i][j][k] / 255);
     }
 
     /**
@@ -238,14 +245,19 @@ public class ConvolutionalNetwork {
 
         // Get the error array of the output layer
         // Update Bias and Weights
-        double[] delta = softmaxOutput.learner().delta(expected);
+        double[][] reshapedExpected = new double[1][expected.length];
+        reshapedExpected[0] = Arrays.copyOf(expected, expected.length);
+
+        double[][] delta = softmaxOutput.learner().delta(reshapedExpected);
+
         softmaxOutput
                 .learner()
                 .incrementBiasUpdate(delta)
                 .incrementWeightUpdate(delta);
 
         // Repeat above for the FC layer
-        workBackwards(sigmoidalOutputs, delta);
+        delta = workBackwards(sigmoidalOutputs, delta);
+        delta = LayerUtilities.reshapeToSquareMatrix(delta[0], convolutionalLayers.get(convolutionalLayers.size()-1).pDim());
 
         // Repeat above for the ConvPoolings
         for (ConvolutionalPoolings layer : convolutionalLayers)
@@ -254,7 +266,7 @@ public class ConvolutionalNetwork {
         return this;
     }
 
-    private ConvolutionalNetwork workBackwards(List<CNNLayer> layers, double[] delta) {
+    private double[][] workBackwards(List<CNNLayer> layers, double[][] delta) {
         for (int i = layers.size() - 1; i > -1; i--) {
             CLayerLearner learner = layers.get(i).learner();
             delta = learner.delta (delta);
@@ -262,7 +274,7 @@ public class ConvolutionalNetwork {
                     .incrementBiasUpdate(delta)
                     .incrementWeightUpdate(delta);
         }
-        return this;
+        return delta;
     }
 
     /**

@@ -10,7 +10,7 @@ public class NumberImage {
     }
 
     public double[] getResult () {
-        double[] res = new double[47];
+        double[] res = new double[10];
         res[label] = 1;
         return res;
     }

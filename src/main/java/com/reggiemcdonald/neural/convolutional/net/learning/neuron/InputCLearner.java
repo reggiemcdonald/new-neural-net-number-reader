@@ -5,6 +5,7 @@ import com.reggiemcdonald.neural.convolutional.net.CNeuron;
 public class InputCLearner implements CLearner {
     private CNeuron neuron;
 
+    @Deprecated
     public InputCLearner (CNeuron neuron) {
         this.neuron = neuron;
     }
@@ -20,7 +21,7 @@ public class InputCLearner implements CLearner {
     }
 
     @Override
-    public void incrementWeightUpdate(double[] delta) {
+    public void incrementWeightUpdate(double[][] delta) {
 
     }
 
@@ -35,9 +36,10 @@ public class InputCLearner implements CLearner {
     }
 
     @Override
-    public double[] deltaWeight(double deltaBias) {
-        return new double[0];
+    public CLearner setWeightUpdates(double[][] weightUpdates) {
+        return null;
     }
+
 
     // TODO
 }

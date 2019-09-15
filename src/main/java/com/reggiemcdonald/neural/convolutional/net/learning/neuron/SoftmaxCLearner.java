@@ -8,8 +8,8 @@ import java.util.List;
 
 public class SoftmaxCLearner implements CLearner {
     private CNeuron neuron;
-    private transient double biasUpdate;
-    private transient double[] weightUpdates = null; // Initialize to null
+    private transient double     biasUpdate;
+    private transient double[][] weightUpdates = null; // Initialize to null
 
     public SoftmaxCLearner (CNeuron neuron) {
         this.neuron = neuron;
@@ -26,11 +26,11 @@ public class SoftmaxCLearner implements CLearner {
     }
 
     @Override
-    public void incrementWeightUpdate(double[] delta) {
-        if (weightUpdates == null || weightUpdates.length != neuron.synapsesToThis().size())
-            weightUpdates = new double[neuron.synapsesToThis().size()];
-        for (int i = 0; i < delta.length; i++)
-            weightUpdates[i] += delta[i];
+    public void incrementWeightUpdate(double[][] delta) {
+        if (weightUpdates == null || weightUpdates[0].length != neuron.synapsesToThis().size())
+            weightUpdates = new double[1][neuron.synapsesToThis().size()];
+        for (int i = 0; i < delta[0].length; i++)
+            weightUpdates[0][i] += delta[0][i];
     }
 
     @Override
@@ -42,19 +42,30 @@ public class SoftmaxCLearner implements CLearner {
     @Override
     public void applyWeightUpdate(int batchSize, double eta) {
         List<CSynapse> synapses = neuron.synapsesToThis();
-        for (int i = 0; i < weightUpdates.length; i++) {
+        for (int i = 0; i < weightUpdates[0].length; i++) {
             CSynapse synapse = synapses.get(i);
-            synapse.weight(synapse.weight() - ((eta / batchSize) * weightUpdates[i]));
+            synapse.weight(synapse.weight() - ((eta / batchSize) * weightUpdates[0][i]));
         }
         Arrays.fill(weightUpdates, 0);
     }
 
-    @Override
-    public double[] deltaWeight(double deltaBias) {
-        double[] activations = activations();
-        for (int i = 0; i < activations.length; i++)
-            activations[i] *= deltaBias;
+    /**
+     * Compute the weight delta
+     * @param deltaBias
+     * @return
+     */
+    public double[][] deltaWeight(double deltaBias) {
+        double[][] activations = new double[1][];
+        activations[0] = activations();
+        for (int i = 0; i < activations[0].length; i++)
+            activations[0][i] *= deltaBias;
         return activations;
+    }
+
+    @Override
+    public CLearner setWeightUpdates(double[][] weightUpdates) {
+        this.weightUpdates = weightUpdates;
+        return this;
     }
 
     private double[] activations () {

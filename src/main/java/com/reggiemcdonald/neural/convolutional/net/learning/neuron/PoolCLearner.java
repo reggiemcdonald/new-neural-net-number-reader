@@ -20,9 +20,10 @@ public class PoolCLearner implements CLearner{
     }
 
     @Override
-    public void incrementWeightUpdate(double[] delta) {
+    public void incrementWeightUpdate(double[][] delta) {
 
     }
+
 
     @Override
     public void applyBiasUpdate(int batchSize, double eta) {
@@ -35,8 +36,9 @@ public class PoolCLearner implements CLearner{
     }
 
     @Override
-    public double[] deltaWeight(double deltaBias) {
-        return new double[0];
+    public CLearner setWeightUpdates(double[][] weightUpdates) {
+        return null;
     }
-    // TODO
+
+
 }

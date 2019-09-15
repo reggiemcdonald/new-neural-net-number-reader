@@ -4,6 +4,8 @@ import com.reggiemcdonald.neural.convolutional.net.CNeuron;
 
 public class ConvCLearner implements CLearner {
     private CNeuron neuron;
+    private double biasUpdate;
+    private double[] weightUpdate;
 
     public ConvCLearner (CNeuron neuron) {
         this.neuron = neuron;
@@ -16,11 +18,11 @@ public class ConvCLearner implements CLearner {
 
     @Override
     public void incrementBiasUpdate(double delta) {
-
+        biasUpdate += delta;
     }
 
     @Override
-    public void incrementWeightUpdate(double[] delta) {
+    public void incrementWeightUpdate(double[][] delta) {
 
     }
 
@@ -35,8 +37,8 @@ public class ConvCLearner implements CLearner {
     }
 
     @Override
-    public double[] deltaWeight(double deltaBias) {
-        return new double[0];
+    public CLearner setWeightUpdates(double[][] weightUpdates) {
+        return null;
     }
 
 
