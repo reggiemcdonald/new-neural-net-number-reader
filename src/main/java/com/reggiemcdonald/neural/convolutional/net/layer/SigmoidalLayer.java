@@ -92,4 +92,9 @@ public class SigmoidalLayer implements CNNLayer {
         for (Propagatable p : this)
             p.propagate();
     }
+
+    public void input (double[] inputs) {
+        for (int i = 0; i < inputs.length; i++)
+            neurons.get(i).setOutput(inputs[i]);
+    }
 }

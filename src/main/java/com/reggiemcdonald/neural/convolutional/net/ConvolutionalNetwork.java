@@ -7,6 +7,7 @@ import com.reggiemcdonald.neural.convolutional.net.learning.layer.CLayerLearner;
 import com.reggiemcdonald.neural.convolutional.net.util.DefaultInputWrapper;
 import com.reggiemcdonald.neural.convolutional.net.util.InputWrapper;
 import com.reggiemcdonald.neural.convolutional.net.util.LayerUtilities;
+import com.reggiemcdonald.neural.convolutional.net.util.Matrix;
 import com.reggiemcdonald.neural.feedforward.res.NumberImage;
 
 import java.util.ArrayList;
@@ -16,11 +17,10 @@ import java.util.List;
 
 public class ConvolutionalNetwork {
 
-    private InputAggregateLayer inputAggregateLayer;
-
+    private InputLayer inputLayer;
     private List<ConvolutionalPoolings> convolutionalLayers;
+    private SigmoidalLayer feedforwardInput;
     private List<CNNLayer> sigmoidalOutputs;
-
     private CNNLayer softmaxOutput;
 
     private Decipher<?> decipher = new IndexOfMaxDecipher(); // Default behaviour
@@ -57,7 +57,7 @@ public class ConvolutionalNetwork {
             throw new RuntimeException("Init Error: Must have at least one sigmoidal output layer; preferably more");
 
         inputWrapper = new DefaultInputWrapper();
-        inputAggregateLayer = new InputAggregateLayer (inputLayerDimension, depths[0], stride[0]);
+        inputLayer = new InputLayer(inputLayerDimension, inputLayerDimension, depths[0]);
         createConvolutions (convolutionWindowSizes, poolingWindowSizes, depths, stride);
         createOutputs (sigmoidalOutputSizes, numberOfOutputs, hasSigmoidalLayer);
         connect ();
@@ -75,7 +75,7 @@ public class ConvolutionalNetwork {
         convolutionalLayers = new ArrayList<>(cSizes.length);
         // Make the first ConvolutionalPoolings immediately following the Input Layer
         int cDim, pDim;
-        cDim = LayerUtilities.nextDimension(inputAggregateLayer.dim(), cSizes[0], stride[0]);
+        cDim = LayerUtilities.nextDimension(inputLayer.dimX(), cSizes[0], stride[0]);
         pDim = LayerUtilities.nextDimension(cDim, pSizes[0], stride[1]);
         convolutionalLayers.add (new ConvolutionalPoolings(cDim, pDim, depths[1], depths[0], cSizes[0], pSizes[0], stride[0], stride[1]));
 
@@ -97,12 +97,17 @@ public class ConvolutionalNetwork {
     private void createOutputs (int[] sigmoidalOutputSizes, int softmaxSize, boolean hasSigmoidalLayer) {
         // TODO: CNN init
         sigmoidalOutputs = new ArrayList<>();
-        ConvolutionalPoolings lastConvLayer = convolutionalLayers.get(convolutionalLayers.size()-1);
-        sigmoidalOutputs.add (lastConvLayer.flatten());
+        int sizeFromConvolution = convolutionalLayers
+                .get(convolutionalLayers.size() - 1)
+                .poolingDensity();
+
+        sigmoidalOutputs.add (new SigmoidalLayer(sizeFromConvolution));
+
         if (hasSigmoidalLayer) {
             for (int sigmoidalLayerSize : sigmoidalOutputSizes)
                 sigmoidalOutputs.add (new SigmoidalLayer(sigmoidalLayerSize));
         }
+
         softmaxOutput = new SoftmaxLayer (softmaxSize);
     }
 
@@ -110,16 +115,6 @@ public class ConvolutionalNetwork {
      * Connects the layers
      */
     private void connect () {
-        // Connect the wrapInput layers to the first convolutional layers
-        convolutionalLayers.get(0).connectToThis (inputAggregateLayer.inputLayers());
-        // connect the later convolutional layers to each other
-        for (int i = 1; i < convolutionalLayers.size(); i++) {
-            convolutionalLayers
-                    .get(i)
-                    .connectToThis(convolutionalLayers.get(i-1).poolingLayers());
-        }
-//        sigmoidalOutputs.get(0).connect()
-        // Connect the sigmoidal layers
         for (int i = 1; i < sigmoidalOutputs.size(); i++) {
             sigmoidalOutputs
                     .get(i)
@@ -133,13 +128,20 @@ public class ConvolutionalNetwork {
      * Initialize the signal propagation
      */
     public void propagate () {
-        inputAggregateLayer.propagate();
+        // TODO
+        double[][][] output = inputLayer.outputs();
 
-        for (Propagatable p : convolutionalLayers)
-            p.propagate();
+        for (ConvolutionalPoolings cp : convolutionalLayers) {
+            cp.propagate(output);
+            output = cp.outputs();
+        }
 
-        for (Propagatable p : sigmoidalOutputs)
-            p.propagate();
+        double[] flattenedOutput = convolutionalLayers.get(convolutionalLayers.size() - 1).flatten();
+        feedforwardInput.input (flattenedOutput);
+        feedforwardInput.propagate();
+
+        for (CNNLayer layer : sigmoidalOutputs)
+            layer.propagate();
 
         softmaxOutput.propagate();
     }
@@ -149,10 +151,10 @@ public class ConvolutionalNetwork {
      * @param input
      */
     public void input (double[][][] input) {
-        for (int i = 0; i < input.length; i++)
-            for (int j = 0; j < input[i].length; j++)
-                for (int k = 0; k < input[i][j].length; k++)
-                    inputAggregateLayer.get(i,j,k).setOutput(input[i][j][k] / 255);
+        for (double[][] d : input) {
+            Matrix.elementWiseDivide(d, 255.);
+        }
+        inputLayer.set (input);
     }
 
     /**
@@ -259,9 +261,7 @@ public class ConvolutionalNetwork {
         delta = workBackwards(sigmoidalOutputs, delta);
         delta = LayerUtilities.reshapeToSquareMatrix(delta[0], convolutionalLayers.get(convolutionalLayers.size()-1).pDim());
 
-        // Repeat above for the ConvPoolings
-        for (ConvolutionalPoolings layer : convolutionalLayers)
-            layer.workBackwards(delta);
+
 
         return this;
     }
@@ -290,12 +290,7 @@ public class ConvolutionalNetwork {
         for (CNNLayer layer : sigmoidalOutputs)
             layer.learner().finalizeLearning(batchSize, eta);
 
-        for (ConvolutionalPoolings cp : convolutionalLayers) {
-            for (CNNLayer p : cp.poolingLayers())
-                p.learner().finalizeLearning(batchSize, eta);
-            for (CNNLayer c : cp.convolutionalLayers())
-                c.learner().finalizeLearning(batchSize, eta);
-        }
+
 
         return this;
     }

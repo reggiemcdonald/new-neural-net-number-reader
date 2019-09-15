@@ -1,30 +1,18 @@
 package com.reggiemcdonald.neural.convolutional.net.layer;
 
-import com.reggiemcdonald.neural.convolutional.net.CNeuron;
-import com.reggiemcdonald.neural.convolutional.net.CNeuronFactory;
-import com.reggiemcdonald.neural.convolutional.net.CSynapse;
-import com.reggiemcdonald.neural.convolutional.net.Propagatable;
-import com.reggiemcdonald.neural.convolutional.net.learning.layer.CLayerLearner;
-import com.reggiemcdonald.neural.convolutional.net.learning.layer.PoolingLayerLearner;
+import com.reggiemcdonald.neural.convolutional.net.util.Matrix;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-public class PoolingLayer implements CNNLayer {
+public class PoolingLayer {
     private int dim_x, dim_y, window_width, stride;
     private boolean isMaxPooling = true; // Default to this because its better
-    private List<CNeuron> neurons;
-    private CLayerLearner learner;
-    private boolean[][] maxIndices;
+    private double[][] map;
 
     public PoolingLayer (int dim_x, int dim_y, int window_width, int stride) {
         this.dim_x        = dim_x;
         this.dim_y        = dim_y;
         this.window_width = window_width;
         this.stride       = stride;
-        this.learner      = new PoolingLayerLearner(this);
-        makeNeurons ();
+        this.map          = Matrix.zeros(dim_x, dim_y);
     }
 
     public PoolingLayer (int dim_x, int dim_y, int window_width, int stride, boolean isMaxPooling) {
@@ -33,109 +21,35 @@ public class PoolingLayer implements CNNLayer {
         this.window_width = window_width;
         this.stride       = stride;
         this.isMaxPooling = isMaxPooling;
-        this.learner      = new PoolingLayerLearner(this);
-        makeNeurons ();
+        this.map          = Matrix.zeros(dim_x, dim_y);
     }
 
-    /**
-     * Produce the neurons that are present in this layer
-     */
-    private void makeNeurons () {
-        this.neurons = new ArrayList<>();
-        int size = dim_x * dim_y;
-        for (int i = 0; i < size; i++) {
-            CNeuron neuron = CNeuronFactory
-                    .makeNeuron(CNeuronFactory.CN_TYPE_POOL, this,  1.0, 0.);
-            neurons.add (neuron);
-        }
-    }
 
-    @Override
-    public CNeuron get(int x, int y) {
-        int idx = (x * dim_x) + y;
-        return neurons.get(idx);
-    }
-
-    @Override
-    public CNeuron get(int idx) {
-        return neurons.get(idx);
-    }
-
-    @Override
-    public CNNLayer connect(CNNLayer from, int k) {
-        int x = 0, y = 0;
-        for (CNeuron neuron : neurons) {
-            makeConnections(neuron, from, x, y);
-            if (x + window_width < from.dim_x())
-                x++;
-            else {
-                x = 0;
-                y++;
-            }
-        }
-        return this;
-    }
-
-    /**
-     * Produce connections from layer from to the given neuron to
-     * For pooling layers, we keep the weights of the connections to be 1
-     * @param to the neuron receiving the connections
-     * @param from the layer that is sending
-     * @param x the x coordinate of the upper-left corner of the window
-     * @param y the y coordinate in the upper-left corner of the window
-     */
-    private void makeConnections(CNeuron to, CNNLayer from, int x, int y) {
-        int currX = 0;
-        while (currX < window_width) {
-            int currY = 0;
-            while (currY < window_width) {
-                to.addConnectionToThis(
-                        new CSynapse(from.get(currX+x, currY+y),to, 1.0, window_width * window_width)
-                );
-                currY++;
-            }
-            currX++;
-        }
-    }
-
-    @Override
     public int size() {
-        // TODO: Stub
-        return neurons.size();
+        return dim_x * dim_y;
     }
 
-    @Override
     public int dim_x() {
         return dim_x;
     }
 
-    @Override
     public int dim_y() {
         return dim_y;
     }
 
-    @Override
     public int window_width() {
         return window_width;
     }
 
-    @Override
-    public CLayerLearner learner() {
-        return learner;
-    }
-
-    @Override
-    public Iterator<CNeuron> iterator() {
-        return neurons.iterator();
-    }
-
-    @Override
-    public void propagate() {
-        for (Propagatable p : this)
-            p.propagate();
-    }
-
     public int stride() {
         return stride;
+    }
+
+    public double[][] outputs () {
+        return map;
+    }
+
+    public void propagate(double[][] map) {
+        // TODO
     }
 }

@@ -1,96 +1,46 @@
 package com.reggiemcdonald.neural.convolutional.net.layer;
 
-import com.reggiemcdonald.neural.convolutional.net.CNeuron;
-import com.reggiemcdonald.neural.convolutional.net.CNeuronFactory;
-import com.reggiemcdonald.neural.convolutional.net.Propagatable;
 import com.reggiemcdonald.neural.convolutional.net.learning.layer.CLayerLearner;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
+import com.reggiemcdonald.neural.convolutional.net.util.Matrix;
 
 /**
  * An layer of inputs to a convolutional neural network
  * Neurons will be stored in a linear list, but accessible as if they were
  * stored in a 2-Dimensional data structure (size is a perfect square)
  */
-public class InputLayer implements CNNLayer {
-    private List<CNeuron> neurons;
-    private int dim_x, dim_y;
-    private int stride;
+public class InputLayer {
+    private double[][][] maps;
+    private int dimX, dimY, dimZ;
     private CLayerLearner learner = null;
 
-    public InputLayer (int dim, int stride) {
-        dim_x = dim_y = dim;
-        this.stride = stride;
-        makeNeurons (dim);
-    }
-
-    @Override
-    public CNeuron get(int x, int y) {
-        int idx = (int) (dim_x * x) + y;
-        return neurons.get (idx);
-    }
-
-    @Override
-    public CNeuron get(int idx) {
-        return neurons.get(idx);
-    }
-
-    @Override
-    public CNNLayer connect(CNNLayer from, int k) {
-        // Does nothing ??
-        return this;
-    }
-
-    @Override
-    public int size() {
-        // TODO: Stub
-        return 0;
-    }
-
-    @Override
-    public int dim_x() {
-        return dim_x;
-    }
-
-    @Override
-    public int dim_y() {
-        return dim_y;
-    }
-
-    @Override
-    public int window_width() {
-        // Does not have a window width
-        return 0;
-    }
-
-    @Override
-    public CLayerLearner learner() {
-        return learner;
+    public InputLayer (int dimX, int dimY, int dimZ) {
+        this.maps = Matrix.zeros(dimX, dimY, dimZ);
+        this.dimX = dimX;
+        this.dimY = dimY;
+        this.dimZ = dimZ;
     }
 
     /**
-     * Produce size neurons and add them to this layer
-     * Set bias to 1, as per typical output
-     * @param dim
+     * set the inputs of this input layer
+     * @param input
      */
-    private void makeNeurons (int dim) {
-        neurons = new ArrayList<>(dim*dim);
-        Random r = new Random();
-        for (int i = 0; i < dim*dim; i++)
-            neurons.add (CNeuronFactory.makeNeuron (CNeuronFactory.CN_TYPE_INPT, this, 1., r.nextGaussian()));
+    public void set (double[][][] input) {
+        this.maps = Matrix.deepCopy(input);
     }
 
-    @Override
-    public Iterator<CNeuron> iterator() {
-        return neurons.iterator();
+    /**
+     * Get the output
+     * @return
+     */
+    public double[][][] outputs () {
+        return this.maps;
     }
 
-    @Override
-    public void propagate() {
-        for (Propagatable p : this)
-            p.propagate();
-    }
+    public int dimX () { return dimX; }
+
+    public int dimY () { return dimY; }
+
+    public int dimZ () { return dimZ; }
+
+
 }

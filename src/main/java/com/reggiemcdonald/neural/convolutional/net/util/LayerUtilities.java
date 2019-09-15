@@ -46,29 +46,7 @@ public class LayerUtilities {
         return mat;
     }
 
-    /**
-     * Perform an in-place matrix rotation
-     * @param mat
-     * @return
-     */
-    public static double[][] rotate180 (double[][] mat) {
-        int dimX = mat.length, dimY = mat[0].length;
-        for (int i = 0; i < dimX / 2; i++) {
-            for (int j = 0; j < dimY; j++) {
-                double swap = mat[i][j];
-                mat[i][j] = mat[dimX - i - 1][dimY - j - 1];
-                mat[dimX - i - 1][dimY - j - 1] = swap;
-            }
-        }
-        if (dimX % 2 == 1) {
-            for (int i = 0; i < dimY / 2; i++) {
-                double swap = mat[dimX / 2][i];
-                mat[dimX / 2][i] = mat[dimX / 2][dimY - i - 1];
-                mat[dimX][dimY - i - 1] = swap;
-            }
-        }
-        return mat;
-    }
+
 
     /**
      * Perform a convolution
