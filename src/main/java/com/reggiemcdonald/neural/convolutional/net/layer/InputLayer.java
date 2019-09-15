@@ -3,6 +3,7 @@ package com.reggiemcdonald.neural.convolutional.net.layer;
 import com.reggiemcdonald.neural.convolutional.net.CNeuron;
 import com.reggiemcdonald.neural.convolutional.net.CNeuronFactory;
 import com.reggiemcdonald.neural.convolutional.net.Propagatable;
+import com.reggiemcdonald.neural.convolutional.net.learning.layer.CLayerLearner;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -18,6 +19,7 @@ public class InputLayer implements CNNLayer {
     private List<CNeuron> neurons;
     private int dim_x, dim_y;
     private int stride;
+    private CLayerLearner learner;
 
     public InputLayer (int dim, int stride) {
         dim_x = dim_y = dim;
@@ -58,6 +60,17 @@ public class InputLayer implements CNNLayer {
         return dim_y;
     }
 
+    @Override
+    public int window_width() {
+        // Does not have a window width
+        return 0;
+    }
+
+    @Override
+    public CLayerLearner learner() {
+        return learner;
+    }
+
     /**
      * Produce size neurons and add them to this layer
      * Set bias to 1, as per typical output
@@ -67,7 +80,7 @@ public class InputLayer implements CNNLayer {
         neurons = new ArrayList<>(dim*dim);
         Random r = new Random();
         for (int i = 0; i < dim*dim; i++)
-            neurons.add (CNeuronFactory.makeNeuron (CNeuronFactory.CN_TYPE_INPT, 1., r.nextGaussian()));
+            neurons.add (CNeuronFactory.makeNeuron (CNeuronFactory.CN_TYPE_INPT, this, 1., r.nextGaussian()));
     }
 
     @Override

@@ -14,6 +14,31 @@ public class ConvCLearner implements CLearner {
         return 0;
     }
 
+    @Override
+    public void incrementBiasUpdate(double delta) {
+
+    }
+
+    @Override
+    public void incrementWeightUpdate(double[] delta) {
+
+    }
+
+    @Override
+    public void applyBiasUpdate(int batchSize, double eta) {
+
+    }
+
+    @Override
+    public void applyWeightUpdate(int batchSize, double eta) {
+
+    }
+
+    @Override
+    public double[] deltaWeight(double deltaBias) {
+        return new double[0];
+    }
+
 
     // TODO
 }

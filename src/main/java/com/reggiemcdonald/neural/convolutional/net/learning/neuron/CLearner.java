@@ -10,6 +10,37 @@ public interface CLearner {
      */
     double derivative();
 
+    /**
+     * Increment the bias update to be applied
+     * @param delta
+     */
+    void incrementBiasUpdate(double delta);
 
+    /**
+     * Increment the weight updates to be applied
+     * @param delta
+     */
+    void incrementWeightUpdate(double[] delta);
+
+    /**
+     * Applies the bias update, then resets them
+     * @param batchSize
+     * @param eta
+     */
+    void applyBiasUpdate(int batchSize, double eta);
+
+    /**
+     * Applies the weight updates, then resets them
+     * @param batchSize
+     * @param eta
+     */
+    void applyWeightUpdate(int batchSize, double eta);
+
+    /**
+     * Compute the weight update
+     * @param deltaBias
+     * @return
+     */
+    double[] deltaWeight (double deltaBias);
 
 }

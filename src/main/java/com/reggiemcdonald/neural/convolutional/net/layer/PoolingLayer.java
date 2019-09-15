@@ -4,6 +4,7 @@ import com.reggiemcdonald.neural.convolutional.net.CNeuron;
 import com.reggiemcdonald.neural.convolutional.net.CNeuronFactory;
 import com.reggiemcdonald.neural.convolutional.net.CSynapse;
 import com.reggiemcdonald.neural.convolutional.net.Propagatable;
+import com.reggiemcdonald.neural.convolutional.net.learning.layer.CLayerLearner;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -13,6 +14,7 @@ public class PoolingLayer implements CNNLayer {
     private int dim_x, dim_y, window_width;
     private boolean isMaxPooling = true; // Default to this because its better
     private List<CNeuron> neurons;
+    private CLayerLearner learner;
 
     public PoolingLayer (int dim_x, int dim_y, int window_width) {
         this.dim_x        = dim_x;
@@ -37,7 +39,7 @@ public class PoolingLayer implements CNNLayer {
         int size = dim_x * dim_y;
         for (int i = 0; i < size; i++) {
             CNeuron neuron = CNeuronFactory
-                    .makeNeuron(CNeuronFactory.CN_TYPE_POOL, 1.0, 0.);
+                    .makeNeuron(CNeuronFactory.CN_TYPE_POOL, this,  1.0, 0.);
             neurons.add (neuron);
         }
     }
@@ -104,6 +106,16 @@ public class PoolingLayer implements CNNLayer {
     @Override
     public int dim_y() {
         return dim_y;
+    }
+
+    @Override
+    public int window_width() {
+        return window_width;
+    }
+
+    @Override
+    public CLayerLearner learner() {
+        return learner;
     }
 
     @Override

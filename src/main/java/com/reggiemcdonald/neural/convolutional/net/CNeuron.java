@@ -16,7 +16,7 @@ import java.util.Random;
 public class CNeuron implements Propagatable{
     // TODO
     private List<CSynapse> toThis, fromThis;
-    private double bias, output;
+    private double bias, output, biasUpdate;
     private CLearner learner;
     private COutput outputFunction;
     private CNNLayer layer;
@@ -30,6 +30,7 @@ public class CNeuron implements Propagatable{
         fromThis       = new ArrayList<>();
         bias           = r.nextGaussian ();
         output         = r.nextGaussian ();
+        biasUpdate     = 0.;
         learner        = null;
         outputFunction = null;
     }
@@ -41,12 +42,13 @@ public class CNeuron implements Propagatable{
      * @param output
      */
     public CNeuron (double bias, double output) {
-        this.toThis    = new ArrayList<>();
-        this.fromThis  = new ArrayList<>();
-        this.bias      = bias;
-        this.output    = output;
-        learner        = null;
-        outputFunction = null;
+        this.toThis     = new ArrayList<>();
+        this.fromThis   = new ArrayList<>();
+        this.bias       = bias;
+        this.output     = output;
+        this.biasUpdate = 0.;
+        learner         = null;
+        outputFunction  = null;
     }
 
     /**
@@ -85,6 +87,11 @@ public class CNeuron implements Propagatable{
         return outputFunction;
     }
 
+    /**
+     * Adds a connection to this
+     * @param s
+     * @return
+     */
     public CNeuron addConnectionToThis (CSynapse s) {
         if (!toThis.contains(s)) {
             toThis.add (s);
@@ -93,6 +100,11 @@ public class CNeuron implements Propagatable{
         return this;
     }
 
+    /**
+     * Adds a synapse from this to some other neuron
+     * @param s
+     * @return
+     */
     public CNeuron addConnectionFromThis (CSynapse s) {
         if (!fromThis.contains(s)) {
             fromThis.add (s);
@@ -101,6 +113,11 @@ public class CNeuron implements Propagatable{
         return this;
     }
 
+    /**
+     * Removes a synapse to this
+     * @param s
+     * @return
+     */
     public CNeuron removeConnectionToThis (CSynapse s) {
         if (toThis.contains(s)) {
             toThis.remove(s);
@@ -109,6 +126,11 @@ public class CNeuron implements Propagatable{
         return this;
     }
 
+    /**
+     * Removes a synapse coming from this neuron
+     * @param s
+     * @return
+     */
     public CNeuron removeConnectionFromThis (CSynapse s) {
         if (fromThis.contains(s)) {
             fromThis.remove(s);
@@ -117,18 +139,34 @@ public class CNeuron implements Propagatable{
         return this;
     }
 
+    /**
+     * Returns the output of this
+     * @return
+     */
     public double output() {
         return output;
     }
 
+    /**
+     * sets the output of this
+     * @param output
+     */
     public void setOutput(double output) {
         this.output = output;
     }
 
+    /**
+     * Returns the bias of this neuron
+     * @return
+     */
     public double bias () {
         return bias;
     }
 
+    /**
+     * Sets the bias
+     * @param bias
+     */
     public void setBias (double bias) {
         this.bias = bias;
     }
@@ -138,15 +176,51 @@ public class CNeuron implements Propagatable{
         setOutput(outputFunction.compute());
     }
 
+    /**
+     * Returns a list of synapses to this
+     * @return
+     */
     public List<CSynapse> synapsesToThis () {
         return toThis;
     }
 
+    /**
+     * returns synapses from this
+     * @return
+     */
     public List<CSynapse> synapsesFromThis () {
         return fromThis;
     }
 
+    /**
+     * Returns the parent layer
+     * @return
+     */
     public CNNLayer layer () {
         return layer;
     }
+
+    /**
+     * Sets the layer of this
+     * @param layer
+     * @return
+     */
+    public CNeuron layer (CNNLayer layer) {
+        this.layer = layer;
+        return this;
+    }
+
+    /**
+     * Returns the current amount of bias update
+     * @return
+     */
+    public double biasUpdate () {return biasUpdate;}
+
+    /**
+     * sets the bias update, returning this
+     * @param d
+     * @return
+     */
+    public CNeuron biasUpdate (double d) {biasUpdate = d; return this;}
+
 }

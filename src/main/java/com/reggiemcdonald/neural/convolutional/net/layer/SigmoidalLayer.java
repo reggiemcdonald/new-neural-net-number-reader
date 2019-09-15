@@ -4,6 +4,8 @@ import com.reggiemcdonald.neural.convolutional.net.CNeuron;
 import com.reggiemcdonald.neural.convolutional.net.CNeuronFactory;
 import com.reggiemcdonald.neural.convolutional.net.CSynapse;
 import com.reggiemcdonald.neural.convolutional.net.Propagatable;
+import com.reggiemcdonald.neural.convolutional.net.learning.layer.CLayerLearner;
+import com.reggiemcdonald.neural.convolutional.net.learning.layer.SigmoidalLayerLearner;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -12,8 +14,10 @@ import java.util.Random;
 
 public class SigmoidalLayer implements CNNLayer {
     private List<CNeuron> neurons;
+    private CLayerLearner learner;
 
     public SigmoidalLayer (int size) {
+        learner = new SigmoidalLayerLearner (this);
         makeNeurons (size);
     }
 
@@ -26,7 +30,7 @@ public class SigmoidalLayer implements CNNLayer {
         this.neurons = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
             CNeuron neuron = CNeuronFactory.makeNeuron(
-                    CNeuronFactory.CN_TYPE_SIGM, r.nextGaussian(), r.nextGaussian()
+                    CNeuronFactory.CN_TYPE_SIGM, this, r.nextGaussian(), r.nextGaussian()
             );
             neurons.add(neuron);
         }
@@ -54,7 +58,6 @@ public class SigmoidalLayer implements CNNLayer {
 
     @Override
     public int size() {
-        // TODO: Stub
         return neurons.size();
     }
 
@@ -66,6 +69,17 @@ public class SigmoidalLayer implements CNNLayer {
     @Override
     public int dim_y() {
         return neurons.size();
+    }
+
+    @Override
+    public int window_width() {
+        // Does not have a window width
+        return 0;
+    }
+
+    @Override
+    public CLayerLearner learner() {
+        return learner;
     }
 
     @Override

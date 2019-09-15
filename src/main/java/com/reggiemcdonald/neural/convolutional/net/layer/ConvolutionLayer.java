@@ -4,6 +4,7 @@ import com.reggiemcdonald.neural.convolutional.net.CNeuron;
 import com.reggiemcdonald.neural.convolutional.net.CNeuronFactory;
 import com.reggiemcdonald.neural.convolutional.net.CSynapse;
 import com.reggiemcdonald.neural.convolutional.net.Propagatable;
+import com.reggiemcdonald.neural.convolutional.net.learning.layer.CLayerLearner;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -21,6 +22,7 @@ public class ConvolutionLayer implements CNNLayer {
     private int window_width;
     private double[][][] kernel;
     private double bias;
+    private CLayerLearner learner;
 
     public ConvolutionLayer (int dim_x, int dim_y, int window_width, double[][][] kernel) {
         assert (dim_x == dim_y);
@@ -30,6 +32,7 @@ public class ConvolutionLayer implements CNNLayer {
         this.window_width = window_width;
         this.kernel       = kernel;
         this.bias         = r.nextGaussian();
+        // New CLayerLearner
         makeNeurons ();
     }
 
@@ -90,6 +93,16 @@ public class ConvolutionLayer implements CNNLayer {
     }
 
     @Override
+    public int window_width() {
+        return window_width;
+    }
+
+    @Override
+    public CLayerLearner learner() {
+        return learner;
+    }
+
+    @Override
     public Iterator<CNeuron> iterator() {
         return neurons.iterator();
     }
@@ -100,7 +113,7 @@ public class ConvolutionLayer implements CNNLayer {
         int size = dim_x() * dim_y();
         for (int i = 0; i < size; i++) {
             CNeuron neuron = CNeuronFactory
-                    .makeNeuron(CNeuronFactory.CN_TYPE_CONV, bias, r.nextGaussian());
+                    .makeNeuron(CNeuronFactory.CN_TYPE_CONV, this, bias, r.nextGaussian());
             neurons.add (neuron);
         }
     }

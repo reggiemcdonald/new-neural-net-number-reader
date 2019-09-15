@@ -5,6 +5,8 @@ import com.reggiemcdonald.neural.convolutional.net.CNeuron;
 import com.reggiemcdonald.neural.convolutional.net.CNeuronFactory;
 import com.reggiemcdonald.neural.convolutional.net.CSynapse;
 import com.reggiemcdonald.neural.convolutional.net.Propagatable;
+import com.reggiemcdonald.neural.convolutional.net.learning.layer.CLayerLearner;
+import com.reggiemcdonald.neural.convolutional.net.learning.layer.SoftmaxLayerLearner;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -14,8 +16,10 @@ public class SoftmaxLayer implements CNNLayer {
     private List<CNeuron> neurons;
     private double[] allZ;
     private boolean allZNeedsUpdate = true;
+    private CLayerLearner learner;
 
     public SoftmaxLayer (int size) {
+        this.learner = new SoftmaxLayerLearner(this);
         makeNeurons (size);
     }
 
@@ -27,7 +31,7 @@ public class SoftmaxLayer implements CNNLayer {
         neurons  = new ArrayList<>();
         for (int i = 0; i < size; i++) {
             CNeuron neuron = CNeuronFactory.makeNeuron(
-                    CNeuronFactory.CN_TYPE_SFTM, 0, 0
+                    CNeuronFactory.CN_TYPE_SFTM, this, 0, 0
             );
             neurons.add (neuron);
         }
@@ -55,7 +59,6 @@ public class SoftmaxLayer implements CNNLayer {
 
     @Override
     public int size() {
-        // TODO: Stub
         return neurons.size();
     }
 
@@ -67,6 +70,17 @@ public class SoftmaxLayer implements CNNLayer {
     @Override
     public int dim_y() {
         return 0;
+    }
+
+    @Override
+    public int window_width() {
+        // Does not have a window width
+        return 0;
+    }
+
+    @Override
+    public CLayerLearner learner() {
+        return learner;
     }
 
     @Override

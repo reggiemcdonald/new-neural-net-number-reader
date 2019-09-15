@@ -54,6 +54,11 @@ public interface CNNLayer extends Iterable<CNeuron>, Propagatable {
     int dim_y();
 
     /**
+     * @return the window width
+     */
+    int window_width();
+
+    /**
      * @return the layer learner for this
      */
     CLayerLearner learner();

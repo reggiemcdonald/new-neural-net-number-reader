@@ -1,6 +1,7 @@
 package com.reggiemcdonald.neural.convolutional.net;
 
 import com.reggiemcdonald.neural.convolutional.math.*;
+import com.reggiemcdonald.neural.convolutional.net.layer.CNNLayer;
 import com.reggiemcdonald.neural.convolutional.net.learning.neuron.*;
 
 public class CNeuronFactory {
@@ -16,29 +17,34 @@ public class CNeuronFactory {
      * @param type
      * @return
      */
-    public static CNeuron makeNeuron (int type) {
+    public static CNeuron makeNeuron (int type, CNNLayer layer) {
         CNeuron neuron = new CNeuron();
         switch (type) {
             case CN_TYPE_INPT:
                 return neuron
                         .learner(new InputCLearner(neuron))
-                        .outputFunction(new InputCOutput(neuron));
+                        .outputFunction(new InputCOutput(neuron))
+                        .layer(layer);
             case CN_TYPE_CONV:
                 return neuron
                         .learner(new ConvCLearner(neuron))
-                        .outputFunction(new ConvCOutput(neuron));
+                        .outputFunction(new ConvCOutput(neuron))
+                        .layer(layer);
             case CN_TYPE_POOL:
                 return neuron
                         .learner(new PoolCLearner(neuron))
-                        .outputFunction(new PoolCOutput(neuron));
+                        .outputFunction(new PoolCOutput(neuron))
+                        .layer(layer);
             case CN_TYPE_SIGM:
                 return neuron
                         .learner(new SigmoidCLearner(neuron))
-                        .outputFunction(new SigmoidCOutput(neuron));
+                        .outputFunction(new SigmoidCOutput(neuron))
+                        .layer(layer);
             case CN_TYPE_SFTM:
                 return neuron
                         .learner(new SoftmaxCLearner(neuron))
-                        .outputFunction(new SoftmaxCOutput(neuron));
+                        .outputFunction(new SoftmaxCOutput(neuron))
+                        .layer(layer);
             default:
                 throw new RuntimeException("Unknown factory request");
         }
@@ -52,29 +58,34 @@ public class CNeuronFactory {
      * @param output
      * @return
      */
-    public static CNeuron makeNeuron (int type, double bias, double output) {
+    public static CNeuron makeNeuron (int type, CNNLayer layer, double bias, double output) {
         CNeuron neuron = new CNeuron (bias, output);
         switch (type) {
             case CN_TYPE_INPT:
                 return neuron
                         .learner(new InputCLearner(neuron))
-                        .outputFunction(new InputCOutput(neuron));
+                        .outputFunction(new InputCOutput(neuron))
+                        .layer(layer);
             case CN_TYPE_CONV:
                 return neuron
                         .learner(new ConvCLearner(neuron))
-                        .outputFunction(new ConvCOutput(neuron));
+                        .outputFunction(new ConvCOutput(neuron))
+                        .layer(layer);
             case CN_TYPE_POOL:
                 return neuron
                         .learner(new PoolCLearner(neuron))
-                        .outputFunction(new PoolCOutput(neuron));
+                        .outputFunction(new PoolCOutput(neuron))
+                        .layer(layer);
             case CN_TYPE_SIGM:
                 return neuron
                         .learner(new SigmoidCLearner(neuron))
-                        .outputFunction(new SigmoidCOutput(neuron));
+                        .outputFunction(new SigmoidCOutput(neuron))
+                        .layer(layer);
             case CN_TYPE_SFTM:
                 return neuron
                         .learner(new SoftmaxCLearner(neuron))
-                        .outputFunction(new SoftmaxCOutput(neuron));
+                        .outputFunction(new SoftmaxCOutput(neuron))
+                        .layer(layer);
             default:
                 throw new RuntimeException("Unknown factory request");
         }

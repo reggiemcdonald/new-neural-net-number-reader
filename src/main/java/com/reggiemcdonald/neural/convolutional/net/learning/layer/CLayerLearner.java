@@ -14,14 +14,14 @@ public interface CLayerLearner {
      * @param delta
      * @return
      */
-    CLayerLearner applyBiasUpdates(double[] delta);
+    CLayerLearner incrementBiasUpdate(double[] delta);
 
     /**
      * Applies weight updates to the current layer
      * @param delta
      * @return
      */
-    CLayerLearner applyWeightUpdates(double[] delta);
+    CLayerLearner incrementWeightUpdate(double[] delta);
 
     /**
      * Applies the learning to the given layer

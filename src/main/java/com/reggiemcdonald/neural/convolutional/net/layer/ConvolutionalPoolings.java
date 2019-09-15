@@ -170,7 +170,13 @@ public class ConvolutionalPoolings implements Propagatable {
     }
 
     public ConvolutionalPoolings workBackwards (double[] delta) {
-        // TODO
+        for (int i = poolingLayers.size() - 1; i > -1; i--) {
+            PoolingLayer p = poolingLayers.get(i);
+            ConvolutionLayer c = convolutionLayers.get(i);
+            double[] convDelta = c.learner().delta(delta);
+            c.learner().incrementBiasUpdate(convDelta);
+            c.learner().incrementWeightUpdate(convDelta);
+        }
         return this;
     }
 }

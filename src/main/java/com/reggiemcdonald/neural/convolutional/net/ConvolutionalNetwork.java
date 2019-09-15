@@ -241,8 +241,8 @@ public class ConvolutionalNetwork {
         double[] delta = softmaxOutput.learner().delta(expected);
         softmaxOutput
                 .learner()
-                .applyBiasUpdates(delta)
-                .applyWeightUpdates(delta);
+                .incrementBiasUpdate(delta)
+                .incrementWeightUpdate(delta);
 
         // Repeat above for the FC layer
         workBackwards(sigmoidalOutputs, delta);
@@ -259,8 +259,8 @@ public class ConvolutionalNetwork {
             CLayerLearner learner = layers.get(i).learner();
             delta = learner.delta (delta);
             learner
-                    .applyBiasUpdates (delta)
-                    .applyWeightUpdates (delta);
+                    .incrementBiasUpdate(delta)
+                    .incrementWeightUpdate(delta);
         }
         return this;
     }
