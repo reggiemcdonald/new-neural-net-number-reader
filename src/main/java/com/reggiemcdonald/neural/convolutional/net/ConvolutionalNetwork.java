@@ -101,7 +101,7 @@ public class ConvolutionalNetwork {
                 .get(convolutionalLayers.size() - 1)
                 .poolingDensity();
 
-        sigmoidalOutputs.add (new SigmoidalLayer(sizeFromConvolution));
+        feedforwardInput = new SigmoidalLayer(sizeFromConvolution);
 
         if (hasSigmoidalLayer) {
             for (int sigmoidalLayerSize : sigmoidalOutputSizes)
