@@ -27,10 +27,10 @@ public class Matrix {
 
     public static double[][][] gaussianMatrix (int x, int y, int z) {
         Random r = new Random();
-        double[][][] d = new double[x][y][z];
+        double[][][] d = new double[z][x][y];
         for (int i = 0; i < d.length; i++)
             for (int j = 0; j < d[i].length; j++)
-                for (int k = 0; j < d[i][j].length; k++)
+                for (int k = 0; k < d[i][j].length; k++)
                     d[i][j][k] = r.nextGaussian();
 
         return d;

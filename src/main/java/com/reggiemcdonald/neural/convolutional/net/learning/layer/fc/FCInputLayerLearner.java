@@ -10,22 +10,22 @@ public class FCInputLayerLearner implements FullyConnectedLayerLearner {
     }
 
     @Override
-    public double[][] delta(double[][] deltaNextLayer) {
-        return new double[0][];
+    public double[] delta(double[] deltaNextLayer) {
+        return new double[0];
     }
 
     @Override
-    public FullyConnectedLayerLearner incrementBiasUpdate(double[][] delta) {
-        return null;
+    public FullyConnectedLayerLearner incrementBiasUpdate(double[] delta) {
+        return this;
     }
 
     @Override
-    public FullyConnectedLayerLearner incrementWeightUpdate(double[][] delta) {
-        return null;
+    public FullyConnectedLayerLearner incrementWeightUpdate(double[] delta) {
+        return this;
     }
 
     @Override
     public FullyConnectedLayerLearner finalizeLearning(int batchSize, double eta) {
-        return null;
+        return this;
     }
 }
