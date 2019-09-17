@@ -1,6 +1,6 @@
 package com.reggiemcdonald.neural.convolutional.net.learning.layer;
 
-public interface CLayerLearner {
+public interface FullyConnectedLayerLearner {
 
     /**
      * Compute the cost of the layer
@@ -14,18 +14,18 @@ public interface CLayerLearner {
      * @param delta
      * @return
      */
-    CLayerLearner incrementBiasUpdate(double[][] delta);
+    FullyConnectedLayerLearner incrementBiasUpdate(double[][] delta);
 
     /**
      * Applies weight updates to the current layer
      * @param delta
      * @return
      */
-    CLayerLearner incrementWeightUpdate(double[][] delta);
+    FullyConnectedLayerLearner incrementWeightUpdate(double[][] delta);
 
     /**
      * Applies the learning to the given layer
      * @return
      */
-    CLayerLearner finalizeLearning(int batchSize, double eta);
+    FullyConnectedLayerLearner finalizeLearning(int batchSize, double eta);
 }

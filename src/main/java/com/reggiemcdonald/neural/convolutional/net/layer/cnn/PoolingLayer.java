@@ -1,4 +1,4 @@
-package com.reggiemcdonald.neural.convolutional.net.layer;
+package com.reggiemcdonald.neural.convolutional.net.layer.cnn;
 
 import com.reggiemcdonald.neural.convolutional.net.util.Matrix;
 

@@ -2,7 +2,7 @@ package com.reggiemcdonald.neural.convolutional.math;
 
 import com.reggiemcdonald.neural.convolutional.net.CNeuron;
 import com.reggiemcdonald.neural.convolutional.net.CSynapse;
-import com.reggiemcdonald.neural.convolutional.net.layer.SoftmaxLayer;
+import com.reggiemcdonald.neural.convolutional.net.layer.fc.SoftmaxLayer;
 
 public class SoftmaxCOutput implements COutput {
     private CNeuron neuron;

@@ -1,11 +1,11 @@
-package com.reggiemcdonald.neural.convolutional.net.layer;
+package com.reggiemcdonald.neural.convolutional.net.layer.fc;
 
 import com.reggiemcdonald.neural.convolutional.math.SoftmaxCOutput;
 import com.reggiemcdonald.neural.convolutional.net.CNeuron;
 import com.reggiemcdonald.neural.convolutional.net.CNeuronFactory;
 import com.reggiemcdonald.neural.convolutional.net.CSynapse;
 import com.reggiemcdonald.neural.convolutional.net.Propagatable;
-import com.reggiemcdonald.neural.convolutional.net.learning.layer.CLayerLearner;
+import com.reggiemcdonald.neural.convolutional.net.learning.layer.FullyConnectedLayerLearner;
 import com.reggiemcdonald.neural.convolutional.net.learning.layer.SoftmaxLayerLearner;
 
 import java.util.ArrayList;
@@ -13,11 +13,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-public class SoftmaxLayer implements CNNLayer {
+public class SoftmaxLayer implements FullyConnectedLayer {
     private List<CNeuron> neurons;
     private double[] allZ;
     private boolean allZNeedsUpdate = true;
-    private CLayerLearner learner;
+    private FullyConnectedLayerLearner learner;
 
     public SoftmaxLayer (int size) {
         this.learner = new SoftmaxLayerLearner(this);
@@ -40,20 +40,15 @@ public class SoftmaxLayer implements CNNLayer {
     }
 
     @Override
-    public CNeuron get(int x, int y) {
-        return neurons.get(y);
-    }
-
-    @Override
     public CNeuron get(int idx) {
         return neurons.get(idx);
     }
 
     @Override
-    public CNNLayer connect(CNNLayer fromLayer, int k) {
+    public FullyConnectedLayer connect(FullyConnectedLayer fromLayer, int k) {
         // We initialize the weights to be 0 for softmax layers
         Random r = new Random();
-        CNNLayer toLayer = this;
+        FullyConnectedLayer toLayer = this;
         for (CNeuron to : toLayer)
             for (CNeuron from : fromLayer)
                 to.addConnectionToThis(new CSynapse(from, to, r.nextGaussian(), fromLayer.size()));
@@ -66,23 +61,7 @@ public class SoftmaxLayer implements CNNLayer {
     }
 
     @Override
-    public int dim_x() {
-        return 0;
-    }
-
-    @Override
-    public int dim_y() {
-        return 0;
-    }
-
-    @Override
-    public int window_width() {
-        // Does not have a window width
-        return 0;
-    }
-
-    @Override
-    public CLayerLearner learner() {
+    public FullyConnectedLayerLearner learner() {
         return learner;
     }
 

@@ -1,7 +1,7 @@
 package com.reggiemcdonald.neural.convolutional.net;
 
 import com.reggiemcdonald.neural.convolutional.math.*;
-import com.reggiemcdonald.neural.convolutional.net.layer.CNNLayer;
+import com.reggiemcdonald.neural.convolutional.net.layer.fc.FullyConnectedLayer;
 import com.reggiemcdonald.neural.convolutional.net.learning.neuron.*;
 
 public class CNeuronFactory {
@@ -17,7 +17,7 @@ public class CNeuronFactory {
      * @param type
      * @return
      */
-    public static CNeuron makeNeuron (int type, CNNLayer layer) {
+    public static CNeuron makeNeuron (int type, FullyConnectedLayer layer) {
         CNeuron neuron = new CNeuron();
         switch (type) {
             case CN_TYPE_INPT:
@@ -58,7 +58,7 @@ public class CNeuronFactory {
      * @param output
      * @return
      */
-    public static CNeuron makeNeuron (int type, CNNLayer layer, double bias, double output) {
+    public static CNeuron makeNeuron (int type, FullyConnectedLayer layer, double bias, double output) {
         CNeuron neuron = new CNeuron (bias, output);
         switch (type) {
             case CN_TYPE_INPT:

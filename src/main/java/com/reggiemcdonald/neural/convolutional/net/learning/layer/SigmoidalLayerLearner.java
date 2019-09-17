@@ -1,20 +1,20 @@
 package com.reggiemcdonald.neural.convolutional.net.learning.layer;
 
 import com.reggiemcdonald.neural.convolutional.net.CNeuron;
-import com.reggiemcdonald.neural.convolutional.net.layer.CNNLayer;
+import com.reggiemcdonald.neural.convolutional.net.layer.fc.FullyConnectedLayer;
 import com.reggiemcdonald.neural.convolutional.net.learning.neuron.SigmoidCLearner;
 
-public class SigmoidalLayerLearner implements CLayerLearner {
-    private CNNLayer layer;
+public class SigmoidalLayerLearner implements FullyConnectedLayerLearner {
+    private FullyConnectedLayer layer;
 
-    public SigmoidalLayerLearner (CNNLayer layer) {
+    public SigmoidalLayerLearner (FullyConnectedLayer layer) {
         this.layer = layer;
     }
     @Override
     public double[][] delta(double[][] deltaNextLayer) {
         double[][] delta = new double[1][layer.size()];
         double[] activations = derive(activations());
-        CNNLayer forwardLayer = layer
+        FullyConnectedLayer forwardLayer = layer
                 .get(0)
                 .synapsesFromThis()
                 .get(0)
@@ -36,7 +36,7 @@ public class SigmoidalLayerLearner implements CLayerLearner {
     }
 
     @Override
-    public CLayerLearner incrementBiasUpdate(double[][] delta) {
+    public FullyConnectedLayerLearner incrementBiasUpdate(double[][] delta) {
         for (int i = 0; i < delta.length; i++) {
             layer.get(i).learner().incrementBiasUpdate(delta[0][i]);
         }
@@ -44,7 +44,7 @@ public class SigmoidalLayerLearner implements CLayerLearner {
     }
 
     @Override
-    public CLayerLearner incrementWeightUpdate(double[][] delta) {
+    public FullyConnectedLayerLearner incrementWeightUpdate(double[][] delta) {
         for (int i = 0; i < delta.length; i++) {
             CNeuron neuron = layer.get(i);
             SigmoidCLearner learner = (SigmoidCLearner) neuron.learner();
@@ -56,7 +56,7 @@ public class SigmoidalLayerLearner implements CLayerLearner {
     }
 
     @Override
-    public CLayerLearner finalizeLearning(int batchSize, double eta) {
+    public FullyConnectedLayerLearner finalizeLearning(int batchSize, double eta) {
         for (CNeuron neuron : layer) {
             neuron.learner().applyBiasUpdate  (batchSize, eta);
             neuron.learner().applyWeightUpdate(batchSize, eta);

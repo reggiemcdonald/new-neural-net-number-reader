@@ -1,10 +1,10 @@
-package com.reggiemcdonald.neural.convolutional.net.layer;
+package com.reggiemcdonald.neural.convolutional.net.layer.fc;
 
 import com.reggiemcdonald.neural.convolutional.net.CNeuron;
 import com.reggiemcdonald.neural.convolutional.net.CNeuronFactory;
 import com.reggiemcdonald.neural.convolutional.net.CSynapse;
 import com.reggiemcdonald.neural.convolutional.net.Propagatable;
-import com.reggiemcdonald.neural.convolutional.net.learning.layer.CLayerLearner;
+import com.reggiemcdonald.neural.convolutional.net.learning.layer.FullyConnectedLayerLearner;
 import com.reggiemcdonald.neural.convolutional.net.learning.layer.SigmoidalLayerLearner;
 
 import java.util.ArrayList;
@@ -12,9 +12,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-public class SigmoidalLayer implements CNNLayer {
+public class SigmoidalLayer implements FullyConnectedLayer {
     private List<CNeuron> neurons;
-    private CLayerLearner learner;
+    private FullyConnectedLayerLearner learner;
 
     public SigmoidalLayer (int size) {
         learner = new SigmoidalLayerLearner (this);
@@ -37,19 +37,14 @@ public class SigmoidalLayer implements CNNLayer {
     }
 
     @Override
-    public CNeuron get(int x, int y) {
-        return neurons.get (y);
-    }
-
-    @Override
     public CNeuron get(int idx) {
         return neurons.get (idx);
     }
 
     @Override
-    public CNNLayer connect(CNNLayer fromLayer, int k) {
+    public FullyConnectedLayer connect(FullyConnectedLayer fromLayer, int k) {
         Random r = new Random();
-        CNNLayer toLayer = this;
+        FullyConnectedLayer toLayer = this;
         for (CNeuron to : toLayer)
             for (CNeuron from : fromLayer)
                 to.addConnectionToThis(new CSynapse(from, to, r.nextGaussian(), fromLayer.size()));
@@ -62,23 +57,7 @@ public class SigmoidalLayer implements CNNLayer {
     }
 
     @Override
-    public int dim_x() {
-        return 1;
-    }
-
-    @Override
-    public int dim_y() {
-        return neurons.size();
-    }
-
-    @Override
-    public int window_width() {
-        // Does not have a window width
-        return 0;
-    }
-
-    @Override
-    public CLayerLearner learner() {
+    public FullyConnectedLayerLearner learner() {
         return learner;
     }
 

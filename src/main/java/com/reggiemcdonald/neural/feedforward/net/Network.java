@@ -41,7 +41,7 @@ public class Network implements Serializable {
         }
         layerSets.add (inputSet);
 
-        // Hidden CNNLayer
+        // Hidden FullyConnectedLayer
         for (int i = 1; i < layer_dimensions.length - 1; i++) {
             List<Neuron> layer = new ArrayList<>(layer_dimensions[i]);
             for (int j = 0; j < layer_dimensions[i]; j++)
@@ -49,7 +49,7 @@ public class Network implements Serializable {
             layerSets.add (layer);
         }
 
-        // Output CNNLayer
+        // Output FullyConnectedLayer
         List<Neuron> outputSet = new ArrayList<>();
         for (int i = 0; i < layer_dimensions[layer_dimensions.length - 1]; i++) {
             outputSet.add (new OutputNeuron( r.nextGaussian (), r.nextGaussian () ));

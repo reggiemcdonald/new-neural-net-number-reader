@@ -1,15 +1,15 @@
 package com.reggiemcdonald.neural.convolutional.net.learning.layer;
 
 import com.reggiemcdonald.neural.convolutional.net.CNeuron;
-import com.reggiemcdonald.neural.convolutional.net.layer.CNNLayer;
-import com.reggiemcdonald.neural.convolutional.net.layer.ConvolutionLayer;
+import com.reggiemcdonald.neural.convolutional.net.layer.fc.FullyConnectedLayer;
+import com.reggiemcdonald.neural.convolutional.net.layer.cnn.ConvolutionLayer;
 import com.reggiemcdonald.neural.convolutional.net.util.LayerUtilities;
 
-public class ConvolutionLayerLearner implements CLayerLearner {
-    private CNNLayer layer;
+public class ConvolutionLayerLearner implements FullyConnectedLayerLearner {
+    private FullyConnectedLayer layer;
     private double[][] weightUpdates;
 
-    public ConvolutionLayerLearner (CNNLayer layer) {
+    public ConvolutionLayerLearner (FullyConnectedLayer layer) {
         this.layer = layer;
     }
 
@@ -19,7 +19,7 @@ public class ConvolutionLayerLearner implements CLayerLearner {
     }
 
     @Override
-    public CLayerLearner incrementBiasUpdate(double[][] delta) {
+    public FullyConnectedLayerLearner incrementBiasUpdate(double[][] delta) {
         double biasUpdate = LayerUtilities.sum(delta);
         for (CNeuron neuron : layer)
             neuron.learner().incrementBiasUpdate(biasUpdate);
@@ -27,7 +27,7 @@ public class ConvolutionLayerLearner implements CLayerLearner {
     }
 
     @Override
-    public CLayerLearner incrementWeightUpdate(double[][] delta) {
+    public FullyConnectedLayerLearner incrementWeightUpdate(double[][] delta) {
         // When a weight is shared across connections,
         // the gradient update for that weight is the sum of the gradients
         // across all the connections that share the same weight
@@ -49,7 +49,7 @@ public class ConvolutionLayerLearner implements CLayerLearner {
     }
 
     @Override
-    public CLayerLearner finalizeLearning(int batchSize, double eta) {
+    public FullyConnectedLayerLearner finalizeLearning(int batchSize, double eta) {
         for (CNeuron neuron : layer) {
             neuron.learner().applyBiasUpdate(batchSize, eta);
             neuron.learner().setWeightUpdates(weightUpdates).applyWeightUpdate(batchSize, eta);
@@ -59,7 +59,7 @@ public class ConvolutionLayerLearner implements CLayerLearner {
     }
 
     private double[][] inputActivations() {
-        CNNLayer earlylayer = layer
+        FullyConnectedLayer earlylayer = layer
                 .get(0)
                 .synapsesToThis()
                 .get(0)

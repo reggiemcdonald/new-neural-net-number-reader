@@ -1,15 +1,15 @@
 package com.reggiemcdonald.neural.convolutional.net.learning.layer;
 
 import com.reggiemcdonald.neural.convolutional.net.CNeuron;
-import com.reggiemcdonald.neural.convolutional.net.layer.CNNLayer;
-import com.reggiemcdonald.neural.convolutional.net.layer.SoftmaxLayer;
+import com.reggiemcdonald.neural.convolutional.net.layer.fc.FullyConnectedLayer;
+import com.reggiemcdonald.neural.convolutional.net.layer.fc.SoftmaxLayer;
 import com.reggiemcdonald.neural.convolutional.net.learning.neuron.CLearner;
 import com.reggiemcdonald.neural.convolutional.net.learning.neuron.SoftmaxCLearner;
 
-public class SoftmaxLayerLearner implements CLayerLearner {
-    private CNNLayer layer;
+public class SoftmaxLayerLearner implements FullyConnectedLayerLearner {
+    private FullyConnectedLayer layer;
 
-    public SoftmaxLayerLearner(CNNLayer layer) {
+    public SoftmaxLayerLearner(FullyConnectedLayer layer) {
         this.layer = layer;
     }
 
@@ -25,7 +25,7 @@ public class SoftmaxLayerLearner implements CLayerLearner {
     }
 
     @Override
-    public CLayerLearner incrementBiasUpdate(double[][] delta) {
+    public FullyConnectedLayerLearner incrementBiasUpdate(double[][] delta) {
         for (int i = 0; i < delta.length; i++) {
             layer.get(i).learner().incrementBiasUpdate(delta[0][i]);
         }
@@ -33,7 +33,7 @@ public class SoftmaxLayerLearner implements CLayerLearner {
     }
 
     @Override
-    public CLayerLearner incrementWeightUpdate(double[][] delta) {
+    public FullyConnectedLayerLearner incrementWeightUpdate(double[][] delta) {
         for (int i = 0; i < layer.size(); i++) {
             CNeuron neuron = layer.get(i);
             neuron.learner().incrementWeightUpdate(deltaWeight(neuron, delta[0][i]));
@@ -42,7 +42,7 @@ public class SoftmaxLayerLearner implements CLayerLearner {
     }
 
     @Override
-    public CLayerLearner finalizeLearning(int batchSize, double eta) {
+    public FullyConnectedLayerLearner finalizeLearning(int batchSize, double eta) {
         for (CNeuron neuron : layer) {
             CLearner learner = neuron.learner();
             learner.applyBiasUpdate(batchSize, eta);

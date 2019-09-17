@@ -1,7 +1,7 @@
 package com.reggiemcdonald.neural.convolutional.net;
 
 import com.reggiemcdonald.neural.convolutional.math.COutput;
-import com.reggiemcdonald.neural.convolutional.net.layer.CNNLayer;
+import com.reggiemcdonald.neural.convolutional.net.layer.fc.FullyConnectedLayer;
 import com.reggiemcdonald.neural.convolutional.net.learning.neuron.CLearner;
 
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ public class CNeuron implements Propagatable{
     private double bias, output, biasUpdate;
     private CLearner learner;
     private COutput outputFunction;
-    private CNNLayer layer;
+    private FullyConnectedLayer layer;
 
     /**
      * Default no-arg constructor
@@ -196,7 +196,7 @@ public class CNeuron implements Propagatable{
      * Returns the parent layer
      * @return
      */
-    public CNNLayer layer () {
+    public FullyConnectedLayer layer () {
         return layer;
     }
 
@@ -205,7 +205,7 @@ public class CNeuron implements Propagatable{
      * @param layer
      * @return
      */
-    public CNeuron layer (CNNLayer layer) {
+    public CNeuron layer (FullyConnectedLayer layer) {
         this.layer = layer;
         return this;
     }

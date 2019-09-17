@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public enum LayerType implements Serializable {
 
-    // CNNLayer of wrapInput neurons
+    // FullyConnectedLayer of wrapInput neurons
     INPUT,
 
     // The middle layers

@@ -2,8 +2,12 @@ package com.reggiemcdonald.neural.convolutional.net;
 
 import com.reggiemcdonald.neural.convolutional.net.decipher.Decipher;
 import com.reggiemcdonald.neural.convolutional.net.decipher.IndexOfMaxDecipher;
-import com.reggiemcdonald.neural.convolutional.net.layer.*;
-import com.reggiemcdonald.neural.convolutional.net.learning.layer.CLayerLearner;
+import com.reggiemcdonald.neural.convolutional.net.layer.cnn.ConvolutionalPoolings;
+import com.reggiemcdonald.neural.convolutional.net.layer.cnn.InputLayer;
+import com.reggiemcdonald.neural.convolutional.net.layer.fc.FullyConnectedLayer;
+import com.reggiemcdonald.neural.convolutional.net.layer.fc.SigmoidalLayer;
+import com.reggiemcdonald.neural.convolutional.net.layer.fc.SoftmaxLayer;
+import com.reggiemcdonald.neural.convolutional.net.learning.layer.FullyConnectedLayerLearner;
 import com.reggiemcdonald.neural.convolutional.net.util.DefaultInputWrapper;
 import com.reggiemcdonald.neural.convolutional.net.util.InputWrapper;
 import com.reggiemcdonald.neural.convolutional.net.util.LayerUtilities;
@@ -20,8 +24,8 @@ public class ConvolutionalNetwork {
     private InputLayer inputLayer;
     private List<ConvolutionalPoolings> convolutionalLayers;
     private SigmoidalLayer feedforwardInput;
-    private List<CNNLayer> sigmoidalOutputs;
-    private CNNLayer softmaxOutput;
+    private List<FullyConnectedLayer> sigmoidalOutputs;
+    private FullyConnectedLayer softmaxOutput;
 
     private Decipher<?> decipher = new IndexOfMaxDecipher(); // Default behaviour
 
@@ -108,7 +112,7 @@ public class ConvolutionalNetwork {
                 sigmoidalOutputs.add (new SigmoidalLayer(sigmoidalLayerSize));
         }
 
-        softmaxOutput = new SoftmaxLayer (softmaxSize);
+        softmaxOutput = new SoftmaxLayer(softmaxSize);
     }
 
     /**
@@ -140,7 +144,7 @@ public class ConvolutionalNetwork {
         feedforwardInput.input (flattenedOutput);
         feedforwardInput.propagate();
 
-        for (CNNLayer layer : sigmoidalOutputs)
+        for (FullyConnectedLayer layer : sigmoidalOutputs)
             layer.propagate();
 
         softmaxOutput.propagate();
@@ -266,9 +270,9 @@ public class ConvolutionalNetwork {
         return this;
     }
 
-    private double[][] workBackwards(List<CNNLayer> layers, double[][] delta) {
+    private double[][] workBackwards(List<FullyConnectedLayer> layers, double[][] delta) {
         for (int i = layers.size() - 1; i > -1; i--) {
-            CLayerLearner learner = layers.get(i).learner();
+            FullyConnectedLayerLearner learner = layers.get(i).learner();
             delta = learner.delta (delta);
             learner
                     .incrementBiasUpdate(delta)
@@ -287,7 +291,7 @@ public class ConvolutionalNetwork {
         // Apply updates to the network layer by layer, and zero after
         softmaxOutput.learner().finalizeLearning(batchSize, eta);
 
-        for (CNNLayer layer : sigmoidalOutputs)
+        for (FullyConnectedLayer layer : sigmoidalOutputs)
             layer.learner().finalizeLearning(batchSize, eta);
 
 

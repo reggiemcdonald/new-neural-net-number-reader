@@ -1,6 +1,5 @@
-package com.reggiemcdonald.neural.convolutional.net.layer;
+package com.reggiemcdonald.neural.convolutional.net.layer.cnn;
 
-import com.reggiemcdonald.neural.convolutional.net.learning.layer.CLayerLearner;
 import com.reggiemcdonald.neural.convolutional.net.util.Matrix;
 
 /**
@@ -11,7 +10,6 @@ import com.reggiemcdonald.neural.convolutional.net.util.Matrix;
 public class InputLayer {
     private double[][][] maps;
     private int dimX, dimY, dimZ;
-    private CLayerLearner learner = null;
 
     public InputLayer (int dimX, int dimY, int dimZ) {
         this.maps = Matrix.zeros(dimX, dimY, dimZ);

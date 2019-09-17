@@ -1,14 +1,14 @@
 package com.reggiemcdonald.neural.convolutional.net.learning.layer;
 
 import com.reggiemcdonald.neural.convolutional.net.CNeuron;
-import com.reggiemcdonald.neural.convolutional.net.layer.CNNLayer;
-import com.reggiemcdonald.neural.convolutional.net.layer.PoolingLayer;
+import com.reggiemcdonald.neural.convolutional.net.layer.fc.FullyConnectedLayer;
+import com.reggiemcdonald.neural.convolutional.net.layer.cnn.PoolingLayer;
 import com.reggiemcdonald.neural.convolutional.net.util.LayerUtilities;
 
-public class PoolingLayerLearner implements CLayerLearner {
-    private CNNLayer layer;
+public class PoolingLayerLearner implements FullyConnectedLayerLearner {
+    private FullyConnectedLayer layer;
 
-    public PoolingLayerLearner (CNNLayer layer) {
+    public PoolingLayerLearner (FullyConnectedLayer layer) {
         this.layer = layer;
     }
 
@@ -22,7 +22,7 @@ public class PoolingLayerLearner implements CLayerLearner {
     @Override
     public double[][] delta(double[][] delta_next) {
 
-        CNNLayer previousLayer =
+        FullyConnectedLayer previousLayer =
                 layer.get(0)
                 .synapsesToThis()
                 .get(0)
@@ -74,19 +74,19 @@ public class PoolingLayerLearner implements CLayerLearner {
     }
 
     @Override
-    public CLayerLearner incrementBiasUpdate(double[][] delta) {
+    public FullyConnectedLayerLearner incrementBiasUpdate(double[][] delta) {
         // Do nothing
         return this;
     }
 
     @Override
-    public CLayerLearner incrementWeightUpdate(double[][] delta) {
+    public FullyConnectedLayerLearner incrementWeightUpdate(double[][] delta) {
         // TODO
         return this;
     }
 
     @Override
-    public CLayerLearner finalizeLearning(int batchSize, double eta) {
+    public FullyConnectedLayerLearner finalizeLearning(int batchSize, double eta) {
         return null;
     }
 }
