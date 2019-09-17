@@ -4,10 +4,11 @@ import com.reggiemcdonald.neural.convolutional.net.decipher.Decipher;
 import com.reggiemcdonald.neural.convolutional.net.decipher.IndexOfMaxDecipher;
 import com.reggiemcdonald.neural.convolutional.net.layer.cnn.ConvolutionalPoolings;
 import com.reggiemcdonald.neural.convolutional.net.layer.cnn.InputLayer;
+import com.reggiemcdonald.neural.convolutional.net.layer.fc.FCInputLayer;
 import com.reggiemcdonald.neural.convolutional.net.layer.fc.FullyConnectedLayer;
 import com.reggiemcdonald.neural.convolutional.net.layer.fc.SigmoidalLayer;
 import com.reggiemcdonald.neural.convolutional.net.layer.fc.SoftmaxLayer;
-import com.reggiemcdonald.neural.convolutional.net.learning.layer.FullyConnectedLayerLearner;
+import com.reggiemcdonald.neural.convolutional.net.learning.layer.fc.FullyConnectedLayerLearner;
 import com.reggiemcdonald.neural.convolutional.net.util.DefaultInputWrapper;
 import com.reggiemcdonald.neural.convolutional.net.util.InputWrapper;
 import com.reggiemcdonald.neural.convolutional.net.util.LayerUtilities;
@@ -21,16 +22,20 @@ import java.util.List;
 
 public class ConvolutionalNetwork {
 
+    /**
+     * The set of layers comprising the ConvNet
+     */
     private InputLayer inputLayer;
     private List<ConvolutionalPoolings> convolutionalLayers;
-    private SigmoidalLayer feedforwardInput;
-    private List<FullyConnectedLayer> sigmoidalOutputs;
-    private FullyConnectedLayer softmaxOutput;
+    private FCInputLayer fcInputLayer;
+    private List<FullyConnectedLayer> fullyConnectedLayers;
+    private FullyConnectedLayer fcOutputLayer;
 
-    private Decipher<?> decipher = new IndexOfMaxDecipher(); // Default behaviour
-
-    // Set a default InputWrapper
-    private InputWrapper inputWrapper = new DefaultInputWrapper();
+    /**
+     * Adapters here. Instantiate defaults in the constructor
+     */
+    private Decipher<?> decipher;
+    private InputWrapper inputWrapper;
 
     /**
      * Another bad constructor
@@ -45,6 +50,7 @@ public class ConvolutionalNetwork {
      */
     public ConvolutionalNetwork (int inputLayerDimension, int[] convolutionWindowSizes, int[] poolingWindowSizes,
                              int[] depths, int[] sigmoidalOutputSizes, int numberOfOutputs, int[] stride, boolean hasSigmoidalLayer) {
+        // TODO: Create a ConvNet factory for this
         if (inputLayerDimension == 0)
             throw new RuntimeException("Init Error: Must have at least one wrapInput layer");
         if (convolutionWindowSizes == null || convolutionWindowSizes.length == 0)
@@ -60,11 +66,15 @@ public class ConvolutionalNetwork {
         if (hasSigmoidalLayer && (sigmoidalOutputSizes == null))
             throw new RuntimeException("Init Error: Must have at least one sigmoidal output layer; preferably more");
 
-        inputWrapper = new DefaultInputWrapper();
-        inputLayer = new InputLayer(inputLayerDimension, inputLayerDimension, depths[0]);
-        createConvolutions (convolutionWindowSizes, poolingWindowSizes, depths, stride);
-        createOutputs (sigmoidalOutputSizes, numberOfOutputs, hasSigmoidalLayer);
-        connect ();
+        decipher             = new IndexOfMaxDecipher();
+        inputWrapper         = new DefaultInputWrapper();
+        convolutionalLayers  = new ArrayList<>();
+        fullyConnectedLayers = new ArrayList<>();
+        inputLayer           = new InputLayer(inputLayerDimension, inputLayerDimension, depths[0]);
+
+        createConvolutions(convolutionWindowSizes, poolingWindowSizes, depths, stride);
+        createFullyConnectedLayers(sigmoidalOutputSizes, numberOfOutputs, hasSigmoidalLayer);
+        connect();
     }
 
     /**
@@ -76,7 +86,6 @@ public class ConvolutionalNetwork {
      * Note: cSizes.length == pSizes.length
      */
     private void createConvolutions (int[] cSizes, int[] pSizes, int[] depths, int[] stride) {
-        convolutionalLayers = new ArrayList<>(cSizes.length);
         // Make the first ConvolutionalPoolings immediately following the Input Layer
         int cDim, pDim;
         cDim = LayerUtilities.nextDimension(inputLayer.dimX(), cSizes[0], stride[0]);
@@ -98,38 +107,43 @@ public class ConvolutionalNetwork {
      * @param softmaxSize
      * @param hasSigmoidalLayer
      */
-    private void createOutputs (int[] sigmoidalOutputSizes, int softmaxSize, boolean hasSigmoidalLayer) {
-        // TODO: CNN init
-        sigmoidalOutputs = new ArrayList<>();
+    private void createFullyConnectedLayers(int[] sigmoidalOutputSizes, int softmaxSize, boolean hasSigmoidalLayer) {
+
         int sizeFromConvolution = convolutionalLayers
                 .get(convolutionalLayers.size() - 1)
                 .poolingDensity();
 
-        feedforwardInput = new SigmoidalLayer(sizeFromConvolution);
+        fcInputLayer = new FCInputLayer(sizeFromConvolution);
 
         if (hasSigmoidalLayer) {
             for (int sigmoidalLayerSize : sigmoidalOutputSizes)
-                sigmoidalOutputs.add (new SigmoidalLayer(sigmoidalLayerSize));
+                fullyConnectedLayers.add (new SigmoidalLayer(sigmoidalLayerSize));
         }
 
-        softmaxOutput = new SoftmaxLayer(softmaxSize);
+        fcOutputLayer = new SoftmaxLayer(softmaxSize);
     }
 
     /**
      * Connects the layers
      */
     private void connect () {
-        for (int i = 1; i < sigmoidalOutputs.size(); i++) {
-            sigmoidalOutputs
+
+        // Connect the first input layer to the first sigmoidal layer
+        fullyConnectedLayers.get(0).connect(fcInputLayer);
+
+        // Connect the following layers
+        for (int i = 1; i < fullyConnectedLayers.size(); i++) {
+            fullyConnectedLayers
                     .get(i)
-                    .connect(sigmoidalOutputs.get(i-1), 0);
+                    .connect(fullyConnectedLayers.get(i-1));
         }
+
         // Connect the final sigmoidal layer to the softmax layer
-        softmaxOutput.connect(sigmoidalOutputs.get(sigmoidalOutputs.size()-1), 0);
+        fcOutputLayer.connect(fullyConnectedLayers.get(fullyConnectedLayers.size()-1));
     }
 
     /**
-     * Initialize the signal propagation
+     * Initiate signal propagation
      */
     public void propagate () {
         // TODO
@@ -141,13 +155,13 @@ public class ConvolutionalNetwork {
         }
 
         double[] flattenedOutput = convolutionalLayers.get(convolutionalLayers.size() - 1).flatten();
-        feedforwardInput.input (flattenedOutput);
-        feedforwardInput.propagate();
+        fcInputLayer.setAll(flattenedOutput);
+        fcInputLayer.propagate();
 
-        for (FullyConnectedLayer layer : sigmoidalOutputs)
+        for (FullyConnectedLayer layer : fullyConnectedLayers)
             layer.propagate();
 
-        softmaxOutput.propagate();
+        fcOutputLayer.propagate();
     }
 
     /**
@@ -192,7 +206,7 @@ public class ConvolutionalNetwork {
      * @return
      */
     public double[] output() {
-        return ((SoftmaxLayer)softmaxOutput).output();
+        return ((SoftmaxLayer) fcOutputLayer).output();
     }
 
     /**
@@ -254,15 +268,15 @@ public class ConvolutionalNetwork {
         double[][] reshapedExpected = new double[1][expected.length];
         reshapedExpected[0] = Arrays.copyOf(expected, expected.length);
 
-        double[][] delta = softmaxOutput.learner().delta(reshapedExpected);
+        double[][] delta = fcOutputLayer.learner().delta(reshapedExpected);
 
-        softmaxOutput
+        fcOutputLayer
                 .learner()
                 .incrementBiasUpdate(delta)
                 .incrementWeightUpdate(delta);
 
         // Repeat above for the FC layer
-        delta = workBackwards(sigmoidalOutputs, delta);
+        delta = workBackwards(fullyConnectedLayers, delta);
         delta = LayerUtilities.reshapeToSquareMatrix(delta[0], convolutionalLayers.get(convolutionalLayers.size()-1).pDim());
 
 
@@ -289,9 +303,9 @@ public class ConvolutionalNetwork {
     private ConvolutionalNetwork finalizeLearning (int batchSize, double eta) {
         // TODO
         // Apply updates to the network layer by layer, and zero after
-        softmaxOutput.learner().finalizeLearning(batchSize, eta);
+        fcOutputLayer.learner().finalizeLearning(batchSize, eta);
 
-        for (FullyConnectedLayer layer : sigmoidalOutputs)
+        for (FullyConnectedLayer layer : fullyConnectedLayers)
             layer.learner().finalizeLearning(batchSize, eta);
 
 

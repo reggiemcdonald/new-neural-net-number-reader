@@ -1,4 +1,4 @@
-package com.reggiemcdonald.neural.convolutional.net.learning.layer;
+package com.reggiemcdonald.neural.convolutional.net.learning.layer.fc;
 
 import com.reggiemcdonald.neural.convolutional.net.CNeuron;
 import com.reggiemcdonald.neural.convolutional.net.layer.fc.FullyConnectedLayer;

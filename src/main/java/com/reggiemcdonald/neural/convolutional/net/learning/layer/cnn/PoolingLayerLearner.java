@@ -1,14 +1,12 @@
-package com.reggiemcdonald.neural.convolutional.net.learning.layer;
+package com.reggiemcdonald.neural.convolutional.net.learning.layer.cnn;
 
-import com.reggiemcdonald.neural.convolutional.net.CNeuron;
-import com.reggiemcdonald.neural.convolutional.net.layer.fc.FullyConnectedLayer;
-import com.reggiemcdonald.neural.convolutional.net.layer.cnn.PoolingLayer;
-import com.reggiemcdonald.neural.convolutional.net.util.LayerUtilities;
+import com.reggiemcdonald.neural.convolutional.net.layer.cnn.CNNLayer;
+import com.reggiemcdonald.neural.convolutional.net.util.Matrix;
 
-public class PoolingLayerLearner implements FullyConnectedLayerLearner {
-    private FullyConnectedLayer layer;
+public class PoolingLayerLearner implements CNNLayerLearner {
+    private CNNLayer layer;
 
-    public PoolingLayerLearner (FullyConnectedLayer layer) {
+    public PoolingLayerLearner (CNNLayer layer) {
         this.layer = layer;
     }
 
@@ -20,73 +18,58 @@ public class PoolingLayerLearner implements FullyConnectedLayerLearner {
      * @return a matrix (put flat for interface consistency)
      */
     @Override
-    public double[][] delta(double[][] delta_next) {
+    public double[][] delta(CNNLayer previousLayer, double[][] delta_next) {
 
-        FullyConnectedLayer previousLayer =
-                layer.get(0)
-                .synapsesToThis()
-                .get(0)
-                .from()
-                .layer();
+        int dimX             = layer.dimX();
+        int dimY             = layer.dimY();
+        int prevLayerDimX    = previousLayer.dimX();
+        int prevLayerDimY    = previousLayer.dimY();
 
-        int dimX = previousLayer.dim_x();
-        int dimY = previousLayer.dim_y();
+        int windowWidth      = layer.windowWidth();
+        int stride           = layer.stride();
 
-        int windowWidth = layer.window_width();
-        int stride      = ((PoolingLayer)layer).stride();
-        double[][] delta = new double[dimX][dimY];
+        double[][] delta     = Matrix.zeros(prevLayerDimX, prevLayerDimY);
+        double[][] thisMap   = layer.outputs();
+        double[][] backMap   = previousLayer.outputs();
 
-        // Pad the matrix and set values at the indices of the maximums
-        int count = 0, i = 0, j = 0;
-        for (int x = 0; x < layer.dim_x(); x++) {
+        for (int i = 0; i < dimX; i+=stride) {
 
-            for (int y = 0; y < layer.dim_y(); y++) {
+            for (int j = 0; j < dimY; j+=stride) {
+                double output = thisMap[i][j];
+                boolean found = false;
 
-                double gradient = delta_next[x][y];
-                CNeuron neuron  = layer.get(x, y);
-                for (int x_in = 0; x_in < windowWidth; x_in++) {
-                    boolean found = false;
-                    for (int y_in = 0; y_in < windowWidth; y_in++) {
+                for (int x = i; x < i + windowWidth; x++) {
 
-                        int idx = LayerUtilities.coordinatesToIndex(x_in, y_in, windowWidth);
-                        double output = neuron.synapsesToThis().get(idx).from().output();
-                        if (output == neuron.output()) {
-                            delta[i + x_in][j + y_in] = gradient;
-                            System.out.println(i + " " + j);
+                    for (int y = j; y < j + windowWidth; y++) {
+
+                        if (backMap[x][y] == output) {
                             found = true;
-                            count++;
+                            delta[x][y] = delta_next[i][j];
                             break;
                         }
                     }
-                    if (found) {
-                        if (j + stride < dimX) {
-                            j += stride;
-                        } else {
-                            i += stride;
-                            j = 0;
-                        }
-                        break;
-                    }
+                    if (found) break;
                 }
+
             }
         }
+
+
         return delta;
     }
 
     @Override
-    public FullyConnectedLayerLearner incrementBiasUpdate(double[][] delta) {
-        // Do nothing
-        return this;
+    public void incrementBiasUpdates(double[][] delta) {
+        // Nothing to update for this layer
     }
 
     @Override
-    public FullyConnectedLayerLearner incrementWeightUpdate(double[][] delta) {
+    public void incrementWeightUpdates(double[][] delta) {
+        // Nothing to update for this layer
+    }
+
+    @Override
+    public void finalizeLearning(int batchSize, double eta) {
         // TODO
-        return this;
-    }
-
-    @Override
-    public FullyConnectedLayerLearner finalizeLearning(int batchSize, double eta) {
-        return null;
     }
 }

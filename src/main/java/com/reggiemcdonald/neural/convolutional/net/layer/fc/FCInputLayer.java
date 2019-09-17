@@ -3,42 +3,47 @@ package com.reggiemcdonald.neural.convolutional.net.layer.fc;
 import com.reggiemcdonald.neural.convolutional.net.CNeuron;
 import com.reggiemcdonald.neural.convolutional.net.CNeuronFactory;
 import com.reggiemcdonald.neural.convolutional.net.CSynapse;
-import com.reggiemcdonald.neural.convolutional.net.Propagatable;
+import com.reggiemcdonald.neural.convolutional.net.learning.layer.fc.FCInputLayerLearner;
 import com.reggiemcdonald.neural.convolutional.net.learning.layer.fc.FullyConnectedLayerLearner;
-import com.reggiemcdonald.neural.convolutional.net.learning.layer.fc.SigmoidalLayerLearner;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-public class SigmoidalLayer implements FullyConnectedLayer {
+/**
+ * A traditional MLP Input Layer, but with specialized learning
+ * for propagation back to the final CNN Pooling layer
+ */
+public class FCInputLayer implements FullyConnectedLayer {
     private List<CNeuron> neurons;
     private FullyConnectedLayerLearner learner;
 
-    public SigmoidalLayer (int size) {
-        learner = new SigmoidalLayerLearner (this);
+    public FCInputLayer (int size) {
+        this.neurons  = new ArrayList<> (size);
+        this.learner  = new FCInputLayerLearner(this);
         makeNeurons (size);
     }
 
     /**
-     * Produce size neurons to fill this layer with gaussian intializations
+     * Generate the neurons for this layer, setting all their biases to 1
      * @param size
      */
     private void makeNeurons (int size) {
-        Random r = new Random();
-        this.neurons = new ArrayList<>(size);
-        for (int i = 0; i < size; i++) {
+        for (int i = 0 ; i < size ; i++) {
             CNeuron neuron = CNeuronFactory.makeNeuron(
-                    CNeuronFactory.CN_TYPE_SIGM, this, r.nextGaussian(), r.nextGaussian()
+                    CNeuronFactory.CN_TYPE_INPT,
+                    this,
+                    1.,
+                    0.
             );
-            neurons.add(neuron);
+            neurons.add (neuron);
         }
     }
 
     @Override
     public CNeuron get(int idx) {
-        return neurons.get (idx);
+        return null;
     }
 
     @Override
@@ -62,13 +67,22 @@ public class SigmoidalLayer implements FullyConnectedLayer {
     }
 
     @Override
+    public void propagate() {
+        // This doesn't need to do anything in the input layer
+    }
+
+    @Override
     public Iterator<CNeuron> iterator() {
         return neurons.iterator();
     }
 
-    @Override
-    public void propagate() {
-        for (Propagatable p : this)
-            p.propagate();
+    /**
+     * Set the input layer
+     * @param inputs
+     */
+    public void setAll (double[] inputs) {
+        for (int i = 0 ; i < inputs.length; i++) {
+            neurons.get(i).setOutput(inputs[i]);
+        }
     }
 }

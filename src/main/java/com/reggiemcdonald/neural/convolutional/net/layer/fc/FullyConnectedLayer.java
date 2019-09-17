@@ -2,7 +2,7 @@ package com.reggiemcdonald.neural.convolutional.net.layer.fc;
 
 import com.reggiemcdonald.neural.convolutional.net.CNeuron;
 import com.reggiemcdonald.neural.convolutional.net.Propagatable;
-import com.reggiemcdonald.neural.convolutional.net.learning.layer.FullyConnectedLayerLearner;
+import com.reggiemcdonald.neural.convolutional.net.learning.layer.fc.FullyConnectedLayerLearner;
 
 public interface FullyConnectedLayer extends Iterable<CNeuron>, Propagatable {
     // TODO: Specify the CNN Layer
@@ -16,12 +16,10 @@ public interface FullyConnectedLayer extends Iterable<CNeuron>, Propagatable {
 
     /**
      * Creates connections from from, to this
-     * @param from
-     * @param k the kernel level to use for weights where inputs to the convolution layer have d channels,
-     *          0 <= k < d
+     * @param fromLayer layer
      * @return
      */
-    FullyConnectedLayer connect (FullyConnectedLayer from, int k);
+    FullyConnectedLayer connect (FullyConnectedLayer fromLayer);
 
     /**
      * Returns the number of neurons in this layer
@@ -33,6 +31,5 @@ public interface FullyConnectedLayer extends Iterable<CNeuron>, Propagatable {
      * @return the layer learner for this
      */
     FullyConnectedLayerLearner learner();
-
 
 }

@@ -5,8 +5,8 @@ import com.reggiemcdonald.neural.convolutional.net.CNeuron;
 import com.reggiemcdonald.neural.convolutional.net.CNeuronFactory;
 import com.reggiemcdonald.neural.convolutional.net.CSynapse;
 import com.reggiemcdonald.neural.convolutional.net.Propagatable;
-import com.reggiemcdonald.neural.convolutional.net.learning.layer.FullyConnectedLayerLearner;
-import com.reggiemcdonald.neural.convolutional.net.learning.layer.SoftmaxLayerLearner;
+import com.reggiemcdonald.neural.convolutional.net.learning.layer.fc.FullyConnectedLayerLearner;
+import com.reggiemcdonald.neural.convolutional.net.learning.layer.fc.SoftmaxLayerLearner;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -45,7 +45,7 @@ public class SoftmaxLayer implements FullyConnectedLayer {
     }
 
     @Override
-    public FullyConnectedLayer connect(FullyConnectedLayer fromLayer, int k) {
+    public FullyConnectedLayer connect(FullyConnectedLayer fromLayer) {
         // We initialize the weights to be 0 for softmax layers
         Random r = new Random();
         FullyConnectedLayer toLayer = this;

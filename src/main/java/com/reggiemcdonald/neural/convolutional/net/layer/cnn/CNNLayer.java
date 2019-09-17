@@ -42,6 +42,11 @@ public interface CNNLayer extends Serializable {
     int stride();
 
     /**
+     * @return the width of the convolution
+     */
+    int windowWidth();
+
+    /**
      * @return the kernel for this layer
      */
     double[][][] kernel();
