@@ -14,19 +14,22 @@ public interface CNNLayerLearner {
     /**
      * Updates the aggregate bias updates
      * @param delta
+     * @return this
      */
-    void incrementBiasUpdates(double[][] delta);
+    CNNLayerLearner incrementBiasUpdates(double[][] delta);
 
     /**
      * Increments the aggregate weight updates
      * @param delta
+     * @return this
      */
-    void incrementWeightUpdates(double[][] delta);
+    CNNLayerLearner incrementWeightUpdates(double[][] delta);
 
     /**
      * Applies the aggregate updates averaged over batch size and scaled according to learning rate
      * @param batchSize
      * @param eta
+     * @return this
      */
-    void finalizeLearning (int batchSize, double eta);
+    CNNLayerLearner finalizeLearning (int batchSize, double eta);
 }

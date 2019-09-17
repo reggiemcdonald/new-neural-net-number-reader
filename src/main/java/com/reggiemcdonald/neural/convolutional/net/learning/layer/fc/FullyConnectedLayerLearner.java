@@ -7,7 +7,7 @@ public interface FullyConnectedLayerLearner {
      * @param deltaNextLayer
      * @return
      */
-    double[][] delta(double[] deltaNextLayer);
+    double[] delta(double[] deltaNextLayer);
 
     /**
      * Applies a bias update to the current layer

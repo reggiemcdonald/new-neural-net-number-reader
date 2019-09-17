@@ -16,7 +16,6 @@ import com.reggiemcdonald.neural.convolutional.net.util.Matrix;
 import com.reggiemcdonald.neural.feedforward.res.NumberImage;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -265,32 +264,54 @@ public class ConvolutionalNetwork {
 
         // Get the error array of the output layer
         // Update Bias and Weights
-        double[][] reshapedExpected = new double[1][expected.length];
-        reshapedExpected[0] = Arrays.copyOf(expected, expected.length);
 
-        double[][] delta = fcOutputLayer.learner().delta(reshapedExpected);
+        double[] delta = fcOutputLayer.learner().delta(expected);
 
         fcOutputLayer
                 .learner()
                 .incrementBiasUpdate(delta)
                 .incrementWeightUpdate(delta);
 
-        // Repeat above for the FC layer
-        delta = workBackwards(fullyConnectedLayers, delta);
-        delta = LayerUtilities.reshapeToSquareMatrix(delta[0], convolutionalLayers.get(convolutionalLayers.size()-1).pDim());
-
-
+        delta = workBackwards(delta);
+        // Get the dimensions of the last pooling layer
+        int dimX = lastConvolutionalPooling().lastPooling().dim_x();
+        int dimY = lastConvolutionalPooling().lastPooling().dim_y();
+        double[][] reshapedDelta = Matrix.arrayToMatrix(delta, dimX, dimY);
+        // Convolutional Layers
+        reshapedDelta = workBackwards(reshapedDelta);
 
         return this;
     }
 
-    private double[][] workBackwards(List<FullyConnectedLayer> layers, double[][] delta) {
-        for (int i = layers.size() - 1; i > -1; i--) {
-            FullyConnectedLayerLearner learner = layers.get(i).learner();
-            delta = learner.delta (delta);
+    /**
+     * Backpropagate through the fully connected layers
+     * @param delta
+     * @return
+     */
+    private double[] workBackwards(double[] delta) {
+        for (int i = fullyConnectedLayers.size() - 1; i > -1; i--) {
+            FullyConnectedLayerLearner learner =
+                    fullyConnectedLayers.get(i).learner();
+            delta = learner.delta(delta);
             learner
                     .incrementBiasUpdate(delta)
                     .incrementWeightUpdate(delta);
+            return delta;
+
+        }
+        return delta;
+    }
+
+    /**
+     * Backpropagate throughout the convolutional layers
+     * @param delta
+     * @return
+     */
+    private double[][] workBackwards (double[][] delta) {
+        for (int i = convolutionalLayers.size() - 1; i > -1; i--) {
+            delta = convolutionalLayers
+                    .get(i)
+                    .backPropagate(delta);
         }
         return delta;
     }
@@ -323,6 +344,15 @@ public class ConvolutionalNetwork {
                 correct++;
         }
         System.out.println("Correct: " + correct + " out of " + testData.size());
+    }
+
+    /**
+     * @return the last convolutional pooling layer
+     */
+    private ConvolutionalPoolings lastConvolutionalPooling() {
+        return convolutionalLayers.get(
+                convolutionalLayers.size() - 1
+        );
     }
 
 

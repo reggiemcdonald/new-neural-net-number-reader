@@ -234,4 +234,24 @@ public class Matrix {
         }
         return d;
     }
+
+    /**
+     * Convert an array to a dimX * dimY matrix
+     * @param arr
+     * @param dimX
+     * @param dimY
+     * @return
+     */
+    public static double[][] arrayToMatrix (double[] arr, int dimX, int dimY) {
+        // TODO: Error handling
+        double[][] matrix = new double[dimX][dimY];
+        for (int i = 0; i < dimX; i++) {
+
+            for (int j = 0; j < dimY; j++) {
+                int idx = (i * dimX) + j;
+                matrix[i][j] = arr[idx];
+            }
+        }
+        return matrix;
+    }
 }

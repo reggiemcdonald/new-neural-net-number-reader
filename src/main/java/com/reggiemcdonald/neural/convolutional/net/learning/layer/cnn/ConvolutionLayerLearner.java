@@ -18,18 +18,21 @@ public class ConvolutionLayerLearner implements CNNLayerLearner {
     }
 
     @Override
-    public void incrementWeightUpdates (double[][] delta) {
+    public CNNLayerLearner incrementWeightUpdates (double[][] delta) {
         // TODO
+        return this;
     }
 
     @Override
-    public void finalizeLearning(int batchSize, double eta) {
+    public CNNLayerLearner finalizeLearning(int batchSize, double eta) {
         // TODO
+        return this;
     }
 
     @Override
-    public void incrementBiasUpdates (double[][] delta) {
+    public CNNLayerLearner incrementBiasUpdates (double[][] delta) {
         // TODO
+        return this;
     }
 
 

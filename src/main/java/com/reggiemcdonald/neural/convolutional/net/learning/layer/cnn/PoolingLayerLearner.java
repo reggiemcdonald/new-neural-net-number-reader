@@ -59,17 +59,20 @@ public class PoolingLayerLearner implements CNNLayerLearner {
     }
 
     @Override
-    public void incrementBiasUpdates(double[][] delta) {
+    public CNNLayerLearner incrementBiasUpdates(double[][] delta) {
         // Nothing to update for this layer
+        return this;
     }
 
     @Override
-    public void incrementWeightUpdates(double[][] delta) {
+    public CNNLayerLearner incrementWeightUpdates(double[][] delta) {
         // Nothing to update for this layer
+        return this;
     }
 
     @Override
-    public void finalizeLearning(int batchSize, double eta) {
+    public CNNLayerLearner finalizeLearning(int batchSize, double eta) {
         // TODO
+        return this;
     }
 }

@@ -21,7 +21,7 @@ public class InputCLearner implements CLearner {
     }
 
     @Override
-    public void incrementWeightUpdate(double[][] delta) {
+    public void incrementWeightUpdate(double[] delta) {
 
     }
 
@@ -36,7 +36,7 @@ public class InputCLearner implements CLearner {
     }
 
     @Override
-    public CLearner setWeightUpdates(double[][] weightUpdates) {
+    public CLearner setWeightUpdates(double[] weightUpdates) {
         return null;
     }
 

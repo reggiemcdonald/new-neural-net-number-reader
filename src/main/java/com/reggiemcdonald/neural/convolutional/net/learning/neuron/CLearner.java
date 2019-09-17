@@ -20,7 +20,7 @@ public interface CLearner {
      * Increment the weight update to be applied
      * @param delta
      */
-    void incrementWeightUpdate(double[][] delta);
+    void incrementWeightUpdate(double[] delta);
 
     /**
      * Applies the bias update, then resets them
@@ -42,7 +42,7 @@ public interface CLearner {
      * @param weightUpdates
      * @return
      */
-    CLearner setWeightUpdates(double[][] weightUpdates);
+    CLearner setWeightUpdates(double[] weightUpdates);
 
 
 }

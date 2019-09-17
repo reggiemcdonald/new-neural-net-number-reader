@@ -18,25 +18,25 @@ public class SoftmaxLayerLearner implements FullyConnectedLayerLearner {
      * @param deltaNextLayer
      * @return
      */
-    public double[][] delta (double[][] deltaNextLayer) {
-        double[][] outputs = new double[1][];
-        outputs[0] = ((SoftmaxLayer)layer).output();
+    @Override
+    public double[] delta (double[] deltaNextLayer) {
+        double[] outputs = ((SoftmaxLayer)layer).output();
         return crossEntropyCost(outputs, deltaNextLayer);
     }
 
     @Override
-    public FullyConnectedLayerLearner incrementBiasUpdate(double[][] delta) {
+    public FullyConnectedLayerLearner incrementBiasUpdate(double[] delta) {
         for (int i = 0; i < delta.length; i++) {
-            layer.get(i).learner().incrementBiasUpdate(delta[0][i]);
+            layer.get(i).learner().incrementBiasUpdate(delta[i]);
         }
         return this;
     }
 
     @Override
-    public FullyConnectedLayerLearner incrementWeightUpdate(double[][] delta) {
+    public FullyConnectedLayerLearner incrementWeightUpdate(double[] delta) {
         for (int i = 0; i < layer.size(); i++) {
             CNeuron neuron = layer.get(i);
-            neuron.learner().incrementWeightUpdate(deltaWeight(neuron, delta[0][i]));
+            neuron.learner().incrementWeightUpdate(deltaWeight(neuron, delta[i]));
         }
         return this;
     }
@@ -57,13 +57,13 @@ public class SoftmaxLayerLearner implements FullyConnectedLayerLearner {
      * @param delta
      * @return
      */
-    private double[][] deltaWeight (CNeuron neuron, double delta) {
+    private double[] deltaWeight (CNeuron neuron, double delta) {
         return ((SoftmaxCLearner)neuron.learner()).deltaWeight(delta);
     }
 
-    private double[][] crossEntropyCost (double[][] outputs, double[][] expected) {
-        for (int i = 0; i < outputs[0].length; i++)
-            outputs[0][i] -= expected[0][i];
+    private double[] crossEntropyCost (double[] outputs, double[] expected) {
+        for (int i = 0; i < outputs.length; i++)
+            outputs[i] -= expected[i];
         return outputs;
     }
 

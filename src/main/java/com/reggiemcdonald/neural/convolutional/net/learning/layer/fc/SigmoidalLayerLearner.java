@@ -11,8 +11,8 @@ public class SigmoidalLayerLearner implements FullyConnectedLayerLearner {
         this.layer = layer;
     }
     @Override
-    public double[][] delta(double[][] deltaNextLayer) {
-        double[][] delta = new double[1][layer.size()];
+    public double[] delta(double[] deltaNextLayer) {
+        double[] delta = new double[layer.size()];
         double[] activations = derive(activations());
         FullyConnectedLayer forwardLayer = layer
                 .get(0)
@@ -21,35 +21,35 @@ public class SigmoidalLayerLearner implements FullyConnectedLayerLearner {
                 .to()
                 .layer();
 
-        for (int i = 0; i < delta[0].length; i++) {
+        for (int i = 0; i < delta.length; i++) {
             double d = 0.;
-            for (int j = 0; j < deltaNextLayer[0].length; j++) {
+            for (int j = 0; j < deltaNextLayer.length; j++) {
                 d += forwardLayer
                         .get(j)
                         .synapsesToThis()
                         .get(i)
-                        .weight() * deltaNextLayer[0][j];
+                        .weight() * deltaNextLayer[j];
             }
-            delta[0][i] = d * activations[i];
+            delta[i] = d * activations[i];
         }
         return delta;
     }
 
     @Override
-    public FullyConnectedLayerLearner incrementBiasUpdate(double[][] delta) {
+    public FullyConnectedLayerLearner incrementBiasUpdate(double[] delta) {
         for (int i = 0; i < delta.length; i++) {
-            layer.get(i).learner().incrementBiasUpdate(delta[0][i]);
+            layer.get(i).learner().incrementBiasUpdate(delta[i]);
         }
         return this;
     }
 
     @Override
-    public FullyConnectedLayerLearner incrementWeightUpdate(double[][] delta) {
+    public FullyConnectedLayerLearner incrementWeightUpdate(double[] delta) {
         for (int i = 0; i < delta.length; i++) {
             CNeuron neuron = layer.get(i);
             SigmoidCLearner learner = (SigmoidCLearner) neuron.learner();
             learner.incrementWeightUpdate(
-                    learner.deltaWeight(delta[0][i])
+                    learner.deltaWeight(delta[i])
             );
         }
         return this;

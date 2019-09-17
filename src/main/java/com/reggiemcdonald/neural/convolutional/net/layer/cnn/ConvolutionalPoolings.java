@@ -118,6 +118,10 @@ public class ConvolutionalPoolings {
         return out;
     }
 
+    /**
+     * Propagate through the convolutional layers
+     * @param input
+     */
     public void propagate (double[][][] input) {
         for (int i = 0; i < convolutionLayers.size(); i++) {
             ConvolutionLayer c = convolutionLayers.get(i);
@@ -127,6 +131,32 @@ public class ConvolutionalPoolings {
         }
     }
 
+    /**
+     * Run the backpropagation algorithm through the convolutional layers
+     * @param delta
+     * @return
+     */
+    public double[][] backPropagate(double[][] delta) {
+        // TODO: Learning
+        return new double[0][0];
+    }
 
+    /**
+     * @return the last pooling layer in the CP layer
+     */
+    public PoolingLayer lastPooling() {
+        return poolingLayers.get(
+                poolingLayers.size() - 1
+        );
+    }
+
+    /**
+     * @return the last convolution layer in the CP layer
+     */
+    public ConvolutionLayer lastConvolution() {
+        return convolutionLayers.get(
+                convolutionLayers.size() - 1
+        );
+    }
 
 }
