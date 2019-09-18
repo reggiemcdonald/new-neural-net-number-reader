@@ -35,7 +35,7 @@ public class ConvolutionLayer implements CNNLayer  {
 
     public void propagate (double[][][] input ) {
         map = Matrix.elementWiseAdd(
-                Matrix.validConvolve(input, kernel, stride),
+                Matrix.validConvolution(input, kernel, stride),
                 bias
         );
     }

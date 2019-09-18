@@ -1,5 +1,8 @@
 package com.reggiemcdonald.neural.convolutional.net.util;
 
+import com.reggiemcdonald.neural.convolutional.exception.MatrixException;
+
+import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -7,14 +10,41 @@ import java.util.Random;
  */
 public class Matrix {
 
+    /**
+     * An interface for lambda expression syntax
+     */
+    private interface Operator {
+        double operate (double a, double b);
+    }
+
+    /**
+     * Produce a 2D x * y matrix
+     * @param x
+     * @param y
+     * @return
+     */
     public static double[][] zeros (int x, int y) {
         return new double[x][y];
     }
 
+    /**
+     * Produce a 3D x * y * z matrix
+     * Note that for this notation, we will have z x*y 2D square matrices
+     * @param x
+     * @param y
+     * @param z
+     * @return
+     */
     public static double[][][] zeros (int x, int y, int z) {
-        return new double[x][y][z];
+        return new double[z][x][y];
     }
 
+    /**
+     * Generate a gaussian x * y random matrix
+     * @param x
+     * @param y
+     * @return
+     */
     public static double[][] gaussianMatrix (int x, int y) {
         Random r = new Random();
         double[][] d = new double[x][y];
@@ -25,6 +55,13 @@ public class Matrix {
         return d;
     }
 
+    /**
+     * Generate a z * x * y random matrix with all elements sampled from a normal gaussian distribution
+     * @param x
+     * @param y
+     * @param z
+     * @return
+     */
     public static double[][][] gaussianMatrix (int x, int y, int z) {
         Random r = new Random();
         double[][][] d = new double[z][x][y];
@@ -43,7 +80,7 @@ public class Matrix {
      * @param stride
      * @return
      */
-    public static double[][] validConvolve (double[][] map, double[][] kernel, int stride) {
+    public static double[][] validConvolution(double[][] map, double[][] kernel, int stride) {
         int mapX = map.length;
         int mapY = map[0].length;
 
@@ -80,7 +117,7 @@ public class Matrix {
      * @param stride
      * @return
      */
-    public static double[][] validConvolve (double[][][] maps, double[][][] kernels, int stride) {
+    public static double[][] validConvolution(double[][][] maps, double[][][] kernels, int stride) {
 
         int kX = LayerUtilities.nextDimension(maps[0].length, kernels[0].length, stride);
         int kY = LayerUtilities.nextDimension(maps[0][0].length, kernels[0][0].length, stride);
@@ -91,7 +128,7 @@ public class Matrix {
 
             for (double[][] kernel : kernels) {
 
-                sum (out, validConvolve(map, kernel, stride), out);
+                sum (out, validConvolution(map, kernel, stride), out);
             }
         }
         return out;
@@ -107,7 +144,7 @@ public class Matrix {
      */
     public static double[][] sum (double[][] one, double[][] two, double[][] out) {
         if (!sameDimensions (one, two))
-            throw new RuntimeException("Fatal: Dimension mismatch");
+            throw new MatrixException("Fatal: Dimension mismatch");
 
         for (int i = 0; i < one.length; i++) {
 
@@ -139,16 +176,20 @@ public class Matrix {
         int dimX = mat.length, dimY = mat[0].length;
         for (int i = 0; i < dimX / 2; i++) {
             for (int j = 0; j < dimY; j++) {
+
                 double swap = mat[i][j];
                 mat[i][j] = mat[dimX - i - 1][dimY - j - 1];
                 mat[dimX - i - 1][dimY - j - 1] = swap;
+
             }
+
         }
-        if (dimX % 2 == 1) {
+
+        if (dimX % 2 == 0) {
             for (int i = 0; i < dimY / 2; i++) {
                 double swap = mat[dimX / 2][i];
                 mat[dimX / 2][i] = mat[dimX / 2][dimY - i - 1];
-                mat[dimX][dimY - i - 1] = swap;
+                mat[dimX / 2][dimY - i - 1] = swap;
             }
         }
         return mat;
@@ -175,6 +216,19 @@ public class Matrix {
         return out;
     }
 
+
+    private static double[][] elementWiseScalarOperation(double[][] input, double d, Operator opp) {
+
+        for (int i = 0; i < input.length; i++ ) {
+
+            for (int j = 0; j < input[0].length; j++) {
+
+                input[i][j] = opp.operate(input[i][j], d);
+            }
+        }
+        return input;
+    }
+
     /**
      * Add to each element in the matrix, the value d
      * @param input
@@ -182,25 +236,37 @@ public class Matrix {
      * @return
      */
     public static double[][] elementWiseAdd (double[][] input, double d) {
-        for (int i = 0; i < input.length; i++ ) {
-
-            for (int j = 0; j < input[0].length; j++) {
-
-                input[i][j] += d;
-            }
-        }
-        return input;
+        return elementWiseScalarOperation(input, d, (double a, double b) -> (a + b));
     }
 
+    /**
+     * Divide each element in input by d
+     * @param input
+     * @param d
+     * @return
+     */
     public static double[][] elementWiseDivide (double[][] input, double d) {
-        for (int i = 0; i < input.length; i++ ) {
+        return elementWiseScalarOperation(input, d, (double a, double b) -> (a / b));
+    }
 
-            for (int j = 0; j < input[0].length; j++) {
+    /**
+     * Multiply each element of input by d
+     * @param input
+     * @param d
+     * @return
+     */
+    public static double[][] elementWiseMultiply (double[][] input, double d) {
+        return elementWiseScalarOperation(input, d, (double a, double b) -> (a * b));
+    }
 
-                input[i][j] /= d;
-            }
-        }
-        return input;
+    /**
+     * Subtract d from each element of input
+     * @param input
+     * @param d
+     * @return
+     */
+    public static double[][] elementWiseSubtract (double[][] input, double d) {
+        return elementWiseScalarOperation(input, d, (double a, double b) -> (a - b));
     }
 
     /**
@@ -253,5 +319,31 @@ public class Matrix {
             }
         }
         return matrix;
+    }
+
+    /**
+     * An alias to Arrays.deepToString
+     * @param matrix
+     * @return
+     */
+    public static String toString (double[][] matrix) {
+        StringBuilder sb = new StringBuilder();
+        for (double[] m : matrix) {
+            sb.append(Arrays.toString(m));
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
+
+    /**
+     * An alias to Arrays.deepToString
+     * @param matrix
+     * @return
+     */
+    public static String toString (double[][][] matrix) {
+        StringBuilder sb = new StringBuilder();
+        for (double[][] d : matrix)
+            sb.append(toString(d));
+        return sb.toString();
     }
 }
