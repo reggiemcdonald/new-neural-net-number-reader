@@ -17,7 +17,14 @@ public class ConvolutionalPoolings {
     private List<ConvolutionLayer> convolutionLayers;
     private List<PoolingLayer> poolingLayers;
 
-    public ConvolutionalPoolings(int cDim, int pDim, int layerDepth, int kernelDepth, int cWindowWidth, int pWindowWidth, int cStride, int pStride) {
+    public ConvolutionalPoolings(int cDim,
+                                 int pDim,
+                                 int layerDepth,
+                                 int kernelDepth,
+                                 int cWindowWidth,
+                                 int pWindowWidth,
+                                 int cStride, int pStride) {
+
         this.cDim              = cDim;
         this.pDim              = pDim;
         this.depth             = layerDepth;
@@ -31,7 +38,15 @@ public class ConvolutionalPoolings {
         makeLayers ();
     }
 
-    public ConvolutionalPoolings(int cDim, int pDim, int layerDepth, int kernelDepth, int cWindowWidth, int pWindowWidth, int cStride, int pStride, boolean isMaxPooling) {
+    public ConvolutionalPoolings(int cDim,
+                                 int pDim,
+                                 int layerDepth,
+                                 int kernelDepth,
+                                 int cWindowWidth,
+                                 int pWindowWidth,
+                                 int cStride,
+                                 int pStride, boolean isMaxPooling) {
+
         this.cDim              = cDim;
         this.pDim              = pDim;
         this.depth             = layerDepth;
@@ -127,7 +142,7 @@ public class ConvolutionalPoolings {
             ConvolutionLayer c = convolutionLayers.get(i);
             PoolingLayer p = poolingLayers.get(i);
             c.propagate(input);
-            p.propagate (c.outputs());
+            p.propagate(c.outputs());
         }
     }
 

@@ -1,7 +1,11 @@
 package com.reggiemcdonald.neural.convolutional.net;
 
 import com.reggiemcdonald.neural.convolutional.net.util.InputWrapper;
+import com.reggiemcdonald.neural.feedforward.res.ImageLoader;
+import com.reggiemcdonald.neural.feedforward.res.NumberImage;
 import org.junit.Test;
+
+import java.util.List;
 
 public class ConvolutionalNetworkTest {
 
@@ -33,12 +37,18 @@ public class ConvolutionalNetworkTest {
                 new int[] {5},
                 new int[] {2},
                 new int[] {1,3},
-                new int[] {},
+                new int[] {30},
                 10,
                 new int[] {1,2},
                 true);
-//        List<NumberImage> numberImages = ImageLoader.load(ImageLoader.TEST_IMAGES, ImageLoader.TEST_LABELS);
+        List<NumberImage> numberImages = ImageLoader.load(ImageLoader.TRAIN_IMAGES, ImageLoader.TRAIN_LABELS);
 //        cnn.learn(numberImages, 30, 10, 3.0, true);
+        int i = 1;
+        for (NumberImage img : numberImages) {
+            System.out.println("propagating input " + i);
+            cnn.input(cnn.inputWrapper().wrapInput(img.image));
+            i++;
+        }
         System.out.println("Done");
     }
 
