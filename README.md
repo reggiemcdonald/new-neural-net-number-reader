@@ -7,10 +7,14 @@ This is my second attempt at a neural network for reading handwritten numbers, b
 This is an artificial neural network that is taught using the [MNIST Dataset](http://yann.lecun.com/exdb/mnist/) to read handwritten numbers. For example - given an image such as: 
 ![](number-image.bmp), the network is expected to signal that the input represents a "5". On average, the network will be able to <strong>read the image correctly 97% of the time</strong>.
 
-### How does it work? 
-Currently, there is a very primitive text-based UI. You can run it to train a network, and then view images and see what the network guesses them to be. Running is simple! Open the project up in intelliJ or Elclipse, and run the `main (String[])` function defined in `class Main`. The first time you run it will take longer, as it will run the training protocol. After, the network will be saved to disk, so launching `main` will be much faster. The constructor is pretty straightforward, so if you're keen, you could train it to learn to do something other than digit recognition.
+The convolutional network works in the forward propagation, and I'm currently working on the backwards propagation.
 
-### What is an Artifical Neural Network? 
+### How does it work? 
+Currently, there is a very primitive text-based UI for the MLP (`package neural.feedforward`). There is not yet any text-based UI for the convolutional neural network (`package neural.convolutional`).
+
+You can run the text-based UI for the MLP network to train, and then view images and see what the network guesses them to be. Running is simple - open the project up in IntelliJ or Elclipse, and run the `main (String[])` function defined in `class Main`. The first time you run it will take longer, as it will run the training protocol. After, the network will be saved to disk, so launching `main` will be much faster.
+
+### What is an Artifical Neural Network? (MLP Network `package neural.feedforward`)
 To understand aritifical neural networks, its beneficial to first try and understand their biological inspiration. The architecture of an artifical neural network is based upon organic neural networks such as the human brain. The human brain is a dense collection of specialized cells called neurons, which serve as its atomic thinking units. Neurons may form connections to other neurons in the brain/body - biologists call these connections synapses. Analogously, a neuron may be thought of as a graph node, and each synapse as a directed edge to a neighbouring node; the result is a directed graph!
 
 But what makes a neuron unique, is in the way it integrates responses to stimuli. When a neuron "fires", it releases signals to neighbouring neurons that it forms a synapse with. These neighbouring neurons (which are likely receiving inputs from many neurons) can integrate the stimuli that they receive; this integrated signal determines whether the neuron itself will "fire". A neuron can either fire, or not fire. This response can effectively be modelled by the sigmoid function: ![](https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Logistic-curve.svg/2560px-Logistic-curve.svg.png) In the sigmoid function, there is a critical point in the curve where the rate of change in the output grows rapidly. The curve before the critical point is approximately zero. The curve after the critical point is approximately 1. Analogously - the neuron is not firing when the integrated stimulus is below the critical point, and is firing when the integrated stimulus is past the critical point.
@@ -39,6 +43,6 @@ During stochastic gradient descent, we compute the error rate of the layer. We s
 
 With the error rate, we can calculate bias and weight updates layer-by-layer. For bias updates, the bias update for a neuron is its error rate. Weight updates in the output layer is simply the element-wise multiplication between the error and input matrices for a given neuron. We sum these updates for each image in a batch. Then when applying the updates, we take the average of the updates, and multiply it by our learning rate &eta;. We continue this process for the n epochs that we've instructed for training.
 
-
+### What is a Convolutional Nerual Network (CNN; `package neural.convolutional`)
 
 
