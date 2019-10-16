@@ -33,7 +33,7 @@ public class Main {
 
     public void run (List<NumberImage> images) {
         try {
-            System.out.println("Enter any number to randomly pick an image to wrapInput into the network.");
+            System.out.println("Enter any number to randomly pick an image to input into the network.");
             s.nextInt();
             NumberImage img = randomPick(images);
             Desktop.getDesktop().open(new File("saved.bmp"));
@@ -41,7 +41,7 @@ public class Main {
             s.nextInt();
             network.input(img.image).propagate();
             System.out.println("Network answer: " + network.result(network.output()));
-            System.out.println("Actual answer " + (char)img.label);
+            System.out.println("Actual answer: " + img.label);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
