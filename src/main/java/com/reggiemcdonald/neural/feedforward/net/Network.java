@@ -210,7 +210,7 @@ public class Network implements Serializable {
      * Count the number of images correctly identified
      * @param data
      */
-    public void test (List<NumberImage> data) {
+    public int test (List<NumberImage> data) {
         int num_correct = 0;
         for (NumberImage i : data) {
             input (i.image);
@@ -219,7 +219,7 @@ public class Network implements Serializable {
                 num_correct++;
         }
         System.out.println("Correct: " + num_correct + " out of " + data.size());
-
+        return num_correct;
     }
 
     private void finalizeLearning (int n, double eta) {
@@ -258,6 +258,19 @@ public class Network implements Serializable {
             network = (Network)ois.readObject();
             return network;
         } catch (Exception e) {
+            System.out.println("There was an error restoring the network: " + e.getMessage());
+        }
+        return network;
+    }
+
+    public static Network loadWithException(String path) throws IOException {
+        File f = new File (path);
+        Network network = null;
+        try (FileInputStream fis = new FileInputStream(f);
+             ObjectInputStream ois = new ObjectInputStream(fis)) {
+            network = (Network)ois.readObject();
+            return network;
+        } catch (ClassNotFoundException e) {
             System.out.println("There was an error restoring the network: " + e.getMessage());
         }
         return network;

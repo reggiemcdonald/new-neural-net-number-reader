@@ -12,7 +12,7 @@ public class NetworkTest {
     public void testNetwork () {
         Network network = new Network (new int [] {784,100,10});
         List<NumberImage> trainingImages = ImageLoader.load (ImageLoader.TRAIN_IMAGES, ImageLoader.TRAIN_LABELS);
-        network.test (trainingImages);
+//        network.test (trainingImages);
         network.learn (trainingImages,30,10,3.0,false);
         network.test (ImageLoader.load (ImageLoader.TEST_IMAGES, ImageLoader.TEST_LABELS));
     }

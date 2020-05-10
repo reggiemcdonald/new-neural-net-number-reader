@@ -6,6 +6,7 @@ import com.reggiemcdonald.neural.feedforward.res.NumberImage;
 
 import java.awt.*;
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
@@ -36,7 +37,8 @@ public class Main {
             System.out.println("Enter any number to randomly pick an image to input into the network.");
             s.nextInt();
             NumberImage img = randomPick(images);
-            Desktop.getDesktop().open(new File("saved.bmp"));
+            System.out.println(Arrays.deepToString(img.image));
+            Desktop.getDesktop().open(new File("number.png"));
             System.out.println("View the image that has been randomly selected. Enter any number to continue");
             s.nextInt();
             network.input(img.image).propagate();

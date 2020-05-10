@@ -82,12 +82,12 @@ public class ImageLoader {
     }
 
     public static void saveImage (double[][] img) throws IOException {
-        BufferedImage bImg = new BufferedImage(24,24, BufferedImage.TYPE_INT_RGB);
-        for (int y = 0 ; y < 24; y++) {
-            for (int x = 0; x < 24; x++)
+        BufferedImage bImg = new BufferedImage(28,28, BufferedImage.TYPE_INT_RGB);
+        for (int y = 0 ; y < 28; y++) {
+            for (int x = 0; x < 28; x++)
                 bImg.setRGB(x,y,(int)img[y][x]);
         }
-        File out = new File("saved.bmp");
+        File out = new File("number.png");
         ImageIO.write (bImg, "png", out);
     }
 }
