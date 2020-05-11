@@ -25,7 +25,7 @@ public abstract class LayerLearner implements Serializable {
         assert (error.length == layer.size());
         // TODO
         for (Neuron n : layer) {
-            Learner learner = n.learner();
+            NeuronLearner learner = n.learner();
             learner.addToWeightUpdate(learner.computeWeightUpdates( error[n.neuralIndex()] ));
         }
     }

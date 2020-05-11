@@ -1,6 +1,6 @@
 package com.reggiemcdonald.neural.feedforward.net;
 
-import com.reggiemcdonald.neural.feedforward.net.math.Learner;
+import com.reggiemcdonald.neural.feedforward.net.math.NeuronLearner;
 import com.reggiemcdonald.neural.feedforward.net.math.OutputFunction;
 
 import java.io.Serializable;
@@ -97,7 +97,7 @@ public interface Neuron extends Serializable {
      * Returns the learner of the given neuron, if one exists
      * @return
      */
-    Learner learner();
+    NeuronLearner learner();
 
 
 }

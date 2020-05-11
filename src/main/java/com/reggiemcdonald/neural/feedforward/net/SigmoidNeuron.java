@@ -1,9 +1,6 @@
 package com.reggiemcdonald.neural.feedforward.net;
 
-import com.reggiemcdonald.neural.feedforward.net.math.HiddenNeuronLearner;
-import com.reggiemcdonald.neural.feedforward.net.math.Learner;
-import com.reggiemcdonald.neural.feedforward.net.math.OutputFunction;
-import com.reggiemcdonald.neural.feedforward.net.math.SigmoidOutputFunction;
+import com.reggiemcdonald.neural.feedforward.net.math.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +16,7 @@ public class SigmoidNeuron implements Neuron {
     private double           bias;
     private int              neuralIndex;
     private OutputFunction outputFunction;
-    private Learner learner;
+    private NeuronLearner learner;
 
     public SigmoidNeuron () {
         Random r            = new Random ();
@@ -121,7 +118,7 @@ public class SigmoidNeuron implements Neuron {
     }
 
     @Override
-    public Learner learner() {
+    public NeuronLearner learner() {
         return learner;
     }
 }

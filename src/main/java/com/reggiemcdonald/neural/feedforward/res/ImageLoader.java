@@ -81,13 +81,13 @@ public class ImageLoader {
         }
     }
 
-    public static void saveImage (double[][] img) throws IOException {
+    public static void saveImage(double[][] img, String fileName) throws IOException{
         BufferedImage bImg = new BufferedImage(28,28, BufferedImage.TYPE_INT_RGB);
         for (int y = 0 ; y < 28; y++) {
             for (int x = 0; x < 28; x++)
                 bImg.setRGB(x,y,(int)img[y][x]);
         }
-        File out = new File("number.png");
+        File out = new File(fileName);
         ImageIO.write (bImg, "png", out);
     }
 }

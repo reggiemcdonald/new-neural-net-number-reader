@@ -5,6 +5,10 @@ public class NumberImage {
     public int label;
 
     public NumberImage (double[][] image, int label) {
+        if (label < 0 || label > 9) {
+            throw new RuntimeException(
+                    String.format("label must be in range [0, 9], received %d", label));
+        }
         this.image = image;
         this.label = label;
     }

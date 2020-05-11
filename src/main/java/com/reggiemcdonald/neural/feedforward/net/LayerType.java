@@ -12,4 +12,5 @@ public enum LayerType implements Serializable {
 
     // The output layers
     OUTPUT,
+
 }
