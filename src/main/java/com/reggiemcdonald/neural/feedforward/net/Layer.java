@@ -45,7 +45,7 @@ public class Layer implements Iterable<Neuron>, Serializable {
                 layerLearner = new OutputLayerLearner (this);
                 break;
             default:
-                layerLearner = null;
+                throw new RuntimeException("unsupported Layer Type");
         }
     }
 
@@ -80,8 +80,10 @@ public class Layer implements Iterable<Neuron>, Serializable {
      * @return
      */
     public Layer addNeuronToLayer (Neuron neuron) {
-        if (neurons.add (neuron))
-            neuron.setLayerAndIndex (this, neurons.size () - 1);
+        if (!neurons.contains(neuron)) {
+            neurons.add(neuron);
+            neuron.setLayerAndIndex(this, neurons.size() - 1);
+        }
         return this;
     }
 
@@ -160,19 +162,19 @@ public class Layer implements Iterable<Neuron>, Serializable {
      * @param delta_next
      * @return
      */
-    public double[] delta (double[] delta_next) {
+    public double[] delta(double[] delta_next) {
         return layerLearner.delta (delta_next);
     }
 
-    public void addBiasUpdate (double[] error) {
+    public void addBiasUpdate(double[] error) {
         layerLearner.addBiasUpdate (error);
     }
 
-    public void addWeightUpdate (double[] error) {
-        layerLearner.addWeightUpdate (error);
+    public void addWeightUpdate(double[] error) {
+        layerLearner.addWeightUpdate(error);
     }
 
-    public void applyUpdates (int n, double eta) {
+    public void applyUpdates(int n, double eta) {
         layerLearner.applyUpdates(n, eta);
     }
 

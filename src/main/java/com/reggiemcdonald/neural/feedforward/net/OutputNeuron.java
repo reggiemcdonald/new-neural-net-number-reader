@@ -1,9 +1,6 @@
 package com.reggiemcdonald.neural.feedforward.net;
 
-import com.reggiemcdonald.neural.feedforward.net.math.Learner;
-import com.reggiemcdonald.neural.feedforward.net.math.OutputFunction;
-import com.reggiemcdonald.neural.feedforward.net.math.OutputNeuronLearner;
-import com.reggiemcdonald.neural.feedforward.net.math.SigmoidOutputFunction;
+import com.reggiemcdonald.neural.feedforward.net.math.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +13,7 @@ public class OutputNeuron implements Neuron {
     private transient double output;
     private int              neuralIndex;
     private OutputFunction outputFunction;
-    private Learner learner;
+    private NeuronLearner learner;
 
     public OutputNeuron () {
         Random r         = new Random();
@@ -83,7 +80,7 @@ public class OutputNeuron implements Neuron {
 
     @Override
     public List<Synapse> getSynapsesFromThis() {
-        return null;
+        return new ArrayList<>();
     }
 
     @Override
@@ -113,7 +110,7 @@ public class OutputNeuron implements Neuron {
     }
 
     @Override
-    public Learner learner() {
+    public NeuronLearner learner() {
         return learner;
     }
 }

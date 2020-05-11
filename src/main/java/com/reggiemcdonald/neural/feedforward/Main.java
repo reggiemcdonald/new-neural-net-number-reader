@@ -53,7 +53,7 @@ public class Main {
         try {
             Random r = new Random();
             NumberImage img = images.get(r.nextInt(images.size()));
-            ImageLoader.saveImage(img.image);
+            ImageLoader.saveImage(img.image, "number.png");
             return img;
         } catch (Exception e) {
             System.out.println(e.getMessage());

@@ -43,6 +43,6 @@ During stochastic gradient descent, we compute the error rate of the layer. We s
 
 With the error rate, we can calculate bias and weight updates layer-by-layer. For bias updates, the bias update for a neuron is its error rate. Weight updates in the output layer is simply the element-wise multiplication between the error and input matrices for a given neuron. We sum these updates for each image in a batch. Then when applying the updates, we take the average of the updates, and multiply it by our learning rate &eta;. We continue this process for the n epochs that we've instructed for training.
 
-### What is a Convolutional Nerual Network (CNN; `package neural.convolutional`)
-
+### Sources
+I used [this](http://neuralnetworksanddeeplearning.com) resource to learn the basics of neural networks.
 
